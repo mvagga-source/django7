@@ -118,7 +118,7 @@ USE_TZ = True
 
 
 # 정적파일위치 - css, image, js
-STATIC_URL = 'static/'
+STATIC_URL = 'static/' # 정적 파일 요청이 오는 URL
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR,'static'),
 )
