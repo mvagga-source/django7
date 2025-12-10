@@ -6,4 +6,5 @@ app_name = 'student'
 urlpatterns = [
     path('write/', views.write,name='write'),
     path('list/', views.list,name='list'),
+    path('view/<int:sno>/', views.view,name='view'),
 ]

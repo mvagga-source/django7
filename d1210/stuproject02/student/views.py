@@ -28,9 +28,12 @@ def write(request):
         
 def list(request):
     
-    qs = Student.objects.all().order_by("-sno")
-    
+    qs = Student.objects.all().order_by("-sno","name")
     context = {"list":qs}
-    
     return render(request,'student/list.html', context)
+
+def view(request,sno):
     
+    qs = Student.objects.get(sno=sno)
+    context = {"stu":qs}
+    return render(request,'student/view.html',context)
