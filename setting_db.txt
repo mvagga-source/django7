@@ -1,82 +1,3 @@
-1. ctrl + , ==> setting ==> setting.json 클릭
-
-"editor.fontLigatures":  False,
-   "auto-close-tag.activationOnLanguage": [
-    "*"],
-   "emmet.includeLanguages": { "django-html": "html" },
-
-2. auto close tag 설치
-
-3.
-python -m pip install --upgrade pip
-# 설치
-pip install Django
-# 업그레이드
-pip install Django --upgrade
-
-# shell 잘못 설치된 경우
-pip uninstall ipython
-python manage.py shell --plain
-pip install ipython
-
----------------------------------------------------------------------------------------
-
-[ 디장고 프로젝트 실행 ]
-1. 폴더 확인
-cd C:\workspace\django7\d1208 폴더
-
-2. 프로젝트 생성
-django-admin startproject stupjt01
-
-3. app생성
-cd stupjt01
-python manage.py startapp student
-
-4. stupjt01 > setting.py
-INSTALLED_APPS -> 앱등록을 해야 함.
-
-5. urls.py
-from django.urls import path,include
-urlpatterns 부분에
-path('student/', include('student.urls')), 추가
-
-6. student app > urls 이동
-from . import views 상단추가
-app_name='student' 추가
-urlpatterns에
-path('write/', views.write,name='write'), 추가
-
-7. views.py
-def write(request):
-    return render(request,'write.html') 추가
-
-8. templates 폴더 생성후 > write.html 추가
-
-9. 프로젝트 폴더 이동후 > 서버 실행
-python manage.py runserver
-
-
-
-
-## setting.py --------------------------------------------------------------
-
-
-# 사용언어
-LANGUAGE_CODE = 'ko-kr'
-
-# 한국표준 시간사용
-TIME_ZONE = 'Asia/Seoul'
-
-
-# 정적파일위치 - css, image, js
-STATIC_URL = 'static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR,'static'),
-)
-
-------------------------------------------------------------------------
-
-#############
 
 class Student(models.Model):
     
@@ -94,7 +15,6 @@ class Student(models.Model):
 
 admin.site.register(Member)
 
-###################
 
 
 
