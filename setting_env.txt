@@ -75,3 +75,47 @@ STATICFILES_DIRS = (
 )
 
 ------------------------------------------------------------------------
+
+
+### django HTML 문법
+- for 문, if문, 변수 지정 가능
+
+@ if
+{% if list  %}
+{% else %}
+{% endif %}
+
+@ for
+{% for i in list %}
+{% endfor %}
+
+@ 상대경로(url) 적용
+{% url "student:write" %}
+
+@ POST 요청에 대해서만 csrf token을 발급하고 체크한다. (ross Site Request Forgery)
+@ GET / POST / PUT / DELETE : action = "///
+
+
+{% csrf_token %}
+
+
+hobbys = ','.join(hobby) # 리스트 타입을 문자열타입으로 변환하는 방법
+
+
+링크방식
+
+@ form: post 방식
+
+@ rest api url방식(app_name별칭:name별칭) - restful url방식
+<a href='/student/{{i.sno}}/{{i.name}}/view/'> {{i.name}} </a>
+
+@ 앱이름 url방식
+<a href='{% url "student:view" i.sno i.name %}'> {{i.name}} </a>
+
+@ 파라미터 방식
+<a href='/student/view?sno={{i.sno}}&age={{i.name}}'>{{i.name}} </a>
+
+sno = request.GET.get("sno") # 데이터 없으면 None
+age = request.GET['age'] # 데이터 없으면 에러
+
+

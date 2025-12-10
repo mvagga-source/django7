@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{padding:0;margin:0;list-style: none;}
+        .media{
+            width:100%;height:650px;
+            overflow: hidden;
+            /*border: 1px solid red;*/
+        }
+        .media>video{width:100%;}
+        .content{
+            position: absolute;top:200px;left:10px;
+            color:#fff;
+        }
+        .l1{font-size:50px;}
+        .l2{font-size:15px;}
+
+        .section{width: 100%; height:100px; background: #efefef;}
+
+        .main{
+            width:100%;overflow: hidden;
+            display: flex;
+        }        
+        .m_left{
+            width:50%; height: 464px;
+            background: url("../image/nike-just-do-it.avif") no-repeat;
+            background-size: cover;
+            color:#fff;font-weight: 600;font-size:50px;
+            box-sizing: border-box;
+            padding-top:300px ;
+        }
+        .m_left>.u2{
+            width:110px;height:30px;text-align: center;            
+            display: inline-block;
+            background-color: #fff;
+            border-radius: 15px;
+            font-weight: 400;font-size:15px;color: black;            
+        }
+        .m_right{
+            width:50%; height: 464px;
+            background: url("../image/nike-just-do-it\ \(1\).avif") no-repeat;
+            background-size: cover;
+            color:#fff;font-weight: 600;font-size:50px;
+            box-sizing: border-box;
+        }      
+        
+        .footer{width: 100%; height:500px; background: #eee;}
+    </style>
+</head>
+<body>
+    <div class="media">
+        <video src="../image/WHY DO IT   NIKE.mp4" muted loop autoplay></video>
+    </div>
+    <ul class="content">
+        <li class="l1">스우시 시리즈 푸퍼 패딩</li>
+        <li class="l2">추위를 위한 설계, 움직임을 위한 디자인 <br>스우시 시리즈 푸퍼 패딩 컬렉션을 소개합니다.</li>
+    </ul>
+    <div class="section"></div>
+    <div class="main">
+        <div class="m_left">
+            <div class="u1">여성 겨울 의류</div>
+            <div class="u2">구매하기</div>
+        </div>
+        <div class="m_right">남성 겨울 의류</div>
+    </div>
+    <div class="footer"></div>
+
+</body>
+</html>

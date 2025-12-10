@@ -1,126 +1,137 @@
 
-class Student(models.Model):
-    
-    id = models.CharField(max_length=100,primary_key=True)
-    pw = models.CharField(max_length=100)
-    name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=13)
-    gender = models.CharField(max_length=10)
-    age = models.IntegerField(default=0)
-    hobby = models.CharField(max_length=100)
-    
-    # 객체출력 - 주소값, __str__ 객체를 문자열로 출력시켜줌
-    def __str__(self):
-        return f"{self.id},{self.name},{self.age},{self.gender}"
+### models.Model 상속
 
-admin.site.register(Member)
+    @ 테이블생성 시 id - AutoField 생성이됨
+    @ 테이블명 앱이름_클래스명
 
-
-
-
-데이터베이스 생성 - admin 관리자 등록
-
-# db 생성확인
-python manage.py makemigrations
-
-# db 생성
-python manage.py migrate
-
-# admin 관리자등록
-python manage.py createsuperuser
-
-..
-username : admin
-email address : admin@naver.com
-password : 1111
-password(again) : 1111
-
-Bypass password validation and create user anyway? [y/N]: y
+    class Student(models.Model):
+        
+        id = models.CharField(max_length=100,primary_key=True)
+        pw = models.CharField(max_length=100)
+        name = models.CharField(max_length=100)
+        phone = models.CharField(max_length=13)
+        gender = models.CharField(max_length=10)
+        age = models.IntegerField(default=0)
+        hobby = models.CharField(max_length=100)
+        
+        # 객체출력 - 주소값, __str__ 객체를 문자열로 출력시켜줌
+        def __str__(self):
+            return f"{self.id},{self.name},{self.age},{self.gender}"
 
 
+# django admin 등록
+    from .models import Student
+    from student.models import Student
+    admin.site.register(Member)
 
 
-# shell명령어 / DB 관련 명령어 (select, insert, update, delete) //////////////////////////////////////////////////////////////////////
+### admin 관리자 등록(디장고 데이터베이스 생성)
 
-python manage.py shell
+@ db 확인 (migrate history 확인) - 테이블 rollback 기능
+    python manage.py showmigrations
 
-종료 : exit
+@ db 생성확인 (무조건 실행)
+    python manage.py makemigrations
 
-### 데이터 저장
+@ db 생성
+    python manage.py migrate
 
-1.
-from member.models import Member
-qs = Member(id='bbb',pw='1111',name='유관순',age=21,phone='010-1111-1111',gender='여자',hobby='게임,골프')
-qs.save() # commit
+@ admin 관리자등록
+    python manage.py createsuperuser
 
-2.
-Member(id='iii',pw='1111',name='최길동',age=28,phone='010-1111-1111',gender='남자',hobby='수영').save()
+    ..
+    username : admin
+    email address : admin@naver.com
+    password : 1111
+    password(again) : 1111
 
-3.
-Member.objects.create(id='hhh',pw='1111',name='박길동',age=31,phone='010-9111-7111',gender='남자',hobby='축구,야구')
-
-
-Member(id='aaa',pw='1111',name='홍길동',age=20,phone='010-1111-1111',gender='남자',hobby='게임').save()
-Member(id='bbb',pw='1111',name='유관순',age=21,phone='010-1111-2222',gender='여자',hobby='골프').save()
-Member(id='ccc',pw='1111',name='이순신',age=20,phone='010-1111-3333',gender='남자',hobby='게임,골프').save()
-Member(id='ddd',pw='1111',name='강감찬',age=22,phone='010-1111-4444',gender='남자',hobby='골프,수영').save()
-Member(id='eee',pw='1111',name='김구',age=22,phone='010-1111-5555',gender='남자',hobby='수영,조깅').save()
+    Bypass password validation and create user anyway? [y/N]: y
 
 
-### 데이터 검색
+### shell명령어 / DB 관련 (select, insert, update, delete) //////////////////////////////////////////////////////////////////////
 
-# select * from Member;
-Member.objects.all()
+    python manage.py shell
+    exit
 
-# select * from Member where id='aaa';
-# 1개 검색에 사용
-# 파일없을 경우 오류 발생 tray ~ except:사용 필요
-Member.objects.get(id='aaa')
+@ 데이터 저장
 
-# 2개 이상 검색에 사용
-Member.objects.filter(age=23)
-Member.objects.filter(age=20).exists()
+    1.
+    from member.models import Member
+    qs = Member(id='bbb',pw='1111',name='유관순',age=21,phone='010-1111-1111',gender='여자',hobby='게임,골프')
+    qs.save() # commit
 
-# 포함되어 있는지 검색 __contains
-Member.objects.filter(name__contains='순')
+    2.
+    Member(id='iii',pw='1111',name='최길동',age=28,phone='010-1111-1111',gender='남자',hobby='수영').save()
 
-# 시작,끝 부분에 있는 것 검색 : __startswith, __endswith
-Member.objects.filter(name__startswith='순')
-Member.objects.filter(name__endswith='순')
-
-# 비교검색
-#gt(크다),gte(크거나 같다),lt(작다),lte(작거나 같다)
-Member.objects.filter(age__gt=21)
-Member.objects.filter(age__lt=21)
-
-# 특정 컬럼만 검색
-Member.objects.values('name')
-
-# 정렬
-Member.objects.order_by('-age') # 역순
-Member.objects.order_by('age') # 순차
+    3.
+    Member.objects.create(id='hhh',pw='1111',name='박길동',age=31,phone='010-9111-7111',gender='남자',hobby='축구,야구')
 
 
+    Member(id='aaa',pw='1111',name='홍길동',age=20,phone='010-1111-1111',gender='남자',hobby='게임').save()
+    Member(id='bbb',pw='1111',name='유관순',age=21,phone='010-1111-2222',gender='여자',hobby='골프').save()
+    Member(id='ccc',pw='1111',name='이순신',age=20,phone='010-1111-3333',gender='남자',hobby='게임,골프').save()
+    Member(id='ddd',pw='1111',name='강감찬',age=22,phone='010-1111-4444',gender='남자',hobby='골프,수영').save()
+    Member(id='eee',pw='1111',name='김구',age=22,phone='010-1111-5555',gender='남자',hobby='수영,조깅').save()
 
-### 데이터 수정
-1. 1개 검색후
-qs = Member.objects.get(id='aaa')
 
-2. 원하는 컬럼값 수정
-qs.name = '홍길동'
+@ 데이터 검색
 
-3. 저장
-qs.save()
+    // 클래스명.objects // 
 
-### 데이터 삭제
-1. 1개 검색후
-qs = Member.objects.get(id='aaa')
+    # select * from Member;
+    Member.objects.all()
 
-2. 삭제
-qs.delete()
+    # select * from Member where id='aaa';
+    # 1개 검색에 사용
+    # 파일없을 경우 오류 발생 tray ~ except:사용 필요
+    Member.objects.get(id='aaa')
 
-3. 전체 삭제
-Member.objects.all().delete()
+    # 2개 이상 검색에 사용
+    Member.objects.filter(age=23)
+    Member.objects.filter(age=20).exists()
+
+    # 포함되어 있는지 검색 __contains
+    Member.objects.filter(name__contains='순')
+
+    # 시작,끝 부분에 있는 것 검색 : __startswith, __endswith
+    Member.objects.filter(name__startswith='순')
+    Member.objects.filter(name__endswith='순')
+
+    # 비교검색
+    #gt(크다),gte(크거나 같다),lt(작다),lte(작거나 같다)
+    Member.objects.filter(age__gt=21)
+    Member.objects.filter(age__lt=21)
+
+    # 특정 컬럼만 검색
+    Member.objects.values('name')
+
+    # 정렬
+    Member.objects.order_by('-age') # 역순
+    Member.objects.order_by('age') # 순차
+
+
+
+@ 데이터 수정
+
+    1. 1개 검색후
+    qs = Member.objects.get(id='aaa')
+
+    2. 원하는 컬럼값 수정
+    qs.name = '홍길동'
+
+    3. 저장
+    qs.save()
+
+@ 데이터 삭제
+
+    1. 1개 검색후
+    qs = Member.objects.get(id='aaa')
+
+    2. 삭제
+    qs.delete()
+
+    3. 전체 삭제
+    Member.objects.all().delete()
 
 
 

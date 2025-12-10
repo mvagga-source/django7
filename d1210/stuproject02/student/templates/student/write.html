@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>//학생 등록//</h2>
+
+    <form action='{% url "student:write" %}' method='post'>
+        {% csrf_token %}
+        <label>이름</label>
+        <input type='text' id='name' name='name'><br>
+        <label>나이</label>
+        <input type='text' id='age' name='age'><br>
+        <label>학년</label>
+        <input type='text' id='grade' name='grade'><br>
+        <label>성별</label>
+        <input type='radio' name='gender' id='남자' value="남자">
+        <label for='남자'>남자</label>
+        <input type='radio' name='gender' id='여자' value="여자">
+        <label for='여자'>여자</label><br>
+        <label>취미</label>
+        <input type='checkbox' name='hobby' id='게임' value="게임">
+        <label for='게임'>게임</label>
+        <input type='checkbox' name='hobby' id='낚시' value="낚시">
+        <label for='낚시'>낚시</label>
+        <input type='checkbox' name='hobby' id='골프' value="골프">
+        <label for='골프'>골프</label>
+        <input type='checkbox' name='hobby' id='농구' value="농구">
+        <label for='농구'>농구</label>
+        <input type='checkbox' name='hobby' id='등산' value="등산">
+        <label for='등산'>등산</label>
+        <br>
+        <input type='submit' value='학생등록'>
+    </form>
+
+    <ul>
+        <li><a href='/'>메인페이지</a></li>
+    </ul>
+
+</body>
+</html>
