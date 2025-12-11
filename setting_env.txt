@@ -96,6 +96,8 @@ STATICFILES_DIRS = (
 @ GET / POST / PUT / DELETE : action = "///
 
 
+@ form 보안설정
+
 {% csrf_token %}
 
 
@@ -119,3 +121,16 @@ sno = request.GET.get("sno") # 데이터 없으면 None
 age = request.GET['age'] # 데이터 없으면 에러
 
 
+# write, update, delete등 사용(redirect - urls을 사용)
+redirect(reverse('student:list'))
+
+# 주소값 변경없이 이동
+render(request,'student/list.html')
+
+
+
+### html
+
+*{padding:0;margin:0;}
+ol,ul{list-style: none;}
+a{text-decoration: none;color:inherit;}

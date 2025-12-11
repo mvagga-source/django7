@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생등록</title>
+    <style>
+        h2{text-align:center;}
+        div{width:500px;margin:0 auto;}
+    </style>
+</head>
+<body>
+    <h2>// 학생 등록 //</h2>
+    <div>
+        <form action='{% url "student:write" %}' method='POST'>
+            {% csrf_token %}
+            <label>이름</label>
+            <input type='text' name='name' id='name'><br>
+            <label>나이</label>
+            <input type='text' name='age' id='age'><br>
+            <label>학년</label>
+            <input type='text' name='grade' id='grade'><br>
+            <label>성별</label>
+            <input type='radio' name='gender' id='남자' value="남자">
+            <label for='남자'>남자</label>
+            <input type='radio' name='gender' id='여자' value="여자">
+            <label for='여자'>여자</label>
+            <br>
+            <label>취미</label>
+            <input type='checkbox' name='hobby' id='게임' value="게임">
+            <label for='게임'>게임</label>    
+            <input type='checkbox' name='hobby' id='농구' value="농구">
+            <label for='농구'>농구</label>    
+            <input type='checkbox' name='hobby' id='골프' value="골프">
+            <label for='골프'>골프</label>    
+            <input type='checkbox' name='hobby' id='바둑' value="바둑">
+            <label for='바둑'>바둑</label>    
+            <input type='checkbox' name='hobby' id='축구' value="축구">
+            <label for='축구'>축구</label>    
+            <br>
+            <input type='submit' value="등록">
+        </form>
+        <ul>
+            <li><a href='javascript:window.history.back()'>이전 페이지</a></li>
+        </ul>
+    </div>
+
+</body>
+</html>

@@ -1,4 +1,16 @@
 
+
+@ 다운로드
+https://sqlitebrowser.org/dl/
+
+Windows PortableApp
+
+   DB Browser for SQLite - PortableApp
+
+
+app명_클래스명
+
+
 ### models.Model 상속
 
     @ 테이블생성 시 id - AutoField 생성이됨

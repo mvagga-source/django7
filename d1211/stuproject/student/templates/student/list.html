@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생리스트</title>
+    <link rel="shortcut icon" href="">
+    <style>
+        h2{text-align:center;}
+        table{margin:0 auto;}
+        table,th,td{border:1px solid black; border-collapse:collapse;}
+        th,td{width:150px;height:50px;text-align:center;}
+        #btn{width:800px;height:50px;margin:30px auto;border:none;}
+        .d01{
+            width:200px;height:50px;text-align:center;
+            border:1px solid black;margin:0 auto;line-height:50px;background:#eee;
+        }
+        a{text-decoration: none;color:inherit;}
+    </style>
+</head>
+<body>
+    <h2>//학생리스트//</h2>
+    <table>
+        <tr>
+            <th>번호</th>
+            <th>이름</th>
+            <th>나이</th>
+            <th>학년</th>
+            <th>성별</th>
+            <th>취미</th>
+        </tr>
+        {% if list %}
+            {% for stu in list %}
+                <tr>
+                    <td>{{stu.sno}}</td>
+                    {% comment %} <td><a href='/student/view/{{stu.sno}}'>{{stu.name}}</a></td> {% endcomment %}
+                    <td><a href='{% url "student:view" stu.sno %}'>{{stu.name}}</a></td>
+
+                    <td>{{stu.age}}</td>
+                    <td>{{stu.grade}}</td>
+                    <td>{{stu.gender}}</td>
+                    <td>{{stu.hobby}}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan='6'>데이터가 존재하지 않습니다.</td>
+            </tr>
+        {% endif %}
+
+    </table>
+    <div id="btn">
+        <div class='d01'><a href='/student/write'>글쓰기</a></div>
+    </div>
+
+</body>
+</html>

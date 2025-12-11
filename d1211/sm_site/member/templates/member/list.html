@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생리스트</title>
+    <style>
+        h2{text-align:center;}
+        table{margin:0 auto;}
+        table,th,td{border:1px solid black; border-collapse:collapse;}
+        th,td{width:150px;height:40px;text-align:center;font-size:12px;}
+        #btn{width:800px;height:50px;margin:30px auto;border:none;}
+        .d01{
+            width:200px;height:50px;text-align:center;
+            border:1px solid black;margin:0 auto;line-height:50px;background:#eee;
+        }
+        a{text-decoration:none;}
+    </style>
+</head>
+<body>
+    <h2>// 회원 리스트 //</h2>
+    <table>
+        <tr>
+            <th>아이디</th>
+            <th>비밀번호</th>
+            <th>이름</th>
+            <th>전화번호</th>
+            <th>성별</th>
+            <th>취미</th>
+            <th>날짜</th>
+        </tr>
+        {% if list  %}
+        
+            {% for i in list %}
+            <tr>
+                <td>{{i.id}}</td>
+                <td>{{i.pw}}</td>
+                <td>
+                    <a href='/member/view/{{i.id}}'> {{i.name}} </a>
+                </td>
+                <td>{{i.phone}}</td>
+                <td>{{i.gender}}</td>
+                <td>{{i.hobby}}</td>
+                <td>{{i.mdate}}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+
+            <tr>
+                <td colspan='7'>데이터가 존재하지 않습니다.</td>
+            </tr>
+        {% endif %}
+
+    </table>
+    <div id="btn">
+        <div class='d01'><a href='{% url "member:write" %}'>글쓰기</a></div>
+    </div>
+
+</body>
+</html>
