@@ -129,8 +129,33 @@ render(request,'student/list.html')
 
 
 
-### html
+### html 기본 style
 
 *{padding:0;margin:0;}
 ol,ul{list-style: none;}
 a{text-decoration: none;color:inherit;}
+
+
+### 쿠키설정
+
+쿠키 검색
+request.COOKIES  : 모두읽어오기
+request.COOKIES.get('cook_id') : 1개읽어오기
+쿠키 저장
+max_age = 60초 * 60분 * 24시간 * 365일
+response.set_cookie('key','value',max_age=60)
+쿠키 삭제
+response.delete_cookie('cook_id')
+
+
+### 세션
+
+검색
+request.session.session_id
+
+저장
+request.session['session_id'] = 'aaa'
+
+삭제
+del request.session['session_id'] : 한개 삭제
+request.session.clear() : 전체삭제

@@ -7,12 +7,17 @@
 </head>
 <body>
     <h2>메인 페이지</h2>
+    <h2>세션:{{request.session.session_id}}</h2>
+
     <ul>
-        <li><a href='/member/write/'>회원등록</a></li>
-        <li><a href='/member/list/'>회원리스트</a></li>
-        <li><a href='/member/login/'>로그인</a></li>
-        <li><a href='/member/logout/'>로그아웃</a></li>
-        <li><a href='/admin/'>admin 관리자</a></li>
+        {% if not request.session.session_id %}
+            <li><a href='/member/login/'>로그인</a></li>
+            <li><a href='/member/write/'>회원등록</a></li>
+        {% else %}
+            <li><a href='/member/logout/'>로그아웃</a></li>
+            <li><a href='/member/list/'>회원리스트</a></li>
+            <li><a href='/admin/'>admin 관리자</a></li>
+        {% endif %}
     </ul>
 </body>
 </html>

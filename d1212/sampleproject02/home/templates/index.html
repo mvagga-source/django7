@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>메인페이지</h2>
+    {% if not request.session.session_id %}
+    <h3>로그인 전입니다. 로그인을 하시면 더 많은 서비스를 제공합니다.</h3>
+    <ul>
+        <li><a href='/member/login/'>로그인</a></li>
+        <li><a href='/member/notice/'>회원안내</a></li>
+        <li><a href='/member/write/'>회원등록</a></li>
+    </ul>
+    {% else %}
+    <h3>{{request.session.session_name}}님 환영합니다.</h3>
+    <ul>
+        <li><a href='/member/logout/'>로그아웃</a></li>
+        <li><a href='/member/list/'>회원리스트</a></li>
+        <li><a href='/admin/'>admin관리자</a></li>
+    </ul>
+    {% endif %}
+</body>
+</html>
