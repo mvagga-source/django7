@@ -68,17 +68,13 @@ def update(request,sno):
         hobby = ','.join(hobbys)
         print("post확인: ",hobby)
         
-        # Student db저장
-        # Student.objects.create(name=name,age=age,grade=grade,gender=gender,hobby=hobby)
-        
         qs = Student.objects.get(sno=sno)
         qs.name = name
         qs.age = age
         qs.grade = grade
         qs.gender = gender
         qs.hobby = hobby
-        
-        # qs = Student(name=name,age=age,grade=grade,gender=gender,hobby=hobby)
+
         qs.save()
 
         return redirect(reverse('student:list'))

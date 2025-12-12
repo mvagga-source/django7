@@ -12,7 +12,7 @@
 <body>
     <h2>// 학생 수정 //</h2>
     <div>
-        <form action='{% url "student:update" %}' method='POST'>
+        <form action='{% url "student:update" stu.sno %}' method='POST'>
             {% csrf_token %}
             <label>이름</label>
             <input type='text' name='name' id='name' value="{{stu.name}}"><br>
