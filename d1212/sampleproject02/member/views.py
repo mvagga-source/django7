@@ -18,9 +18,7 @@ def login(request):
         login_keep = request.POST.get("login_keep")
         
         qs = Member.objects.filter(id=id,pw=pw)
-        
-        
-        
+
         if qs:
             print("아이디, 비번 일치!")
             request.session['session_id'] = id
