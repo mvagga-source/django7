@@ -201,6 +201,15 @@
   }
   </style>
   <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+  <script>
+    if('{{flag}}' == '1'){
+      alert("게시글이 수정되었습니다.")
+      location.href='/board/list/'
+    }else if('{{flag}}' == '2'){
+      alert("게시글에 답글되었습니다.")
+      location.href='/board/list/'
+    }
+  </script>
 </head>
 <body>
   <!-- Header -->
@@ -255,8 +264,8 @@
           {% for b in list %}
             <tr>
               <td>{{b.bno}}</td>
-              <td class="title"><a href="">{{b.btitle}}</a></td>
-              <td>{{b.member.name}}</td>
+              <td class="title">{% for i in ''|rjust:b.bindent %}▶ {% endfor %}<a href="/board/view/{{b.bno}}/">{{b.btitle}}</a></td>
+              <td>{{b.member.name}}({{b.member.id}})</td>
               <td class="date">{{b.bdate|date:'Y-m-d H:i'}}</td>
               <td class="views">{{b.bhit}}</td>
             </tr>

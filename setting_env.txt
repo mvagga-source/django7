@@ -151,7 +151,9 @@ response.delete_cookie('cook_id')
 ### 세션
 
 검색
-request.session.session_id
+html   : request.session.session_id
+python : request.session['session_id']
+         request.session.get('session_id')
 
 저장
 request.session['session_id'] = 'aaa'
