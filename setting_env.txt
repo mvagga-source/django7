@@ -161,3 +161,24 @@ request.session['session_id'] = 'aaa'
 삭제
 del request.session['session_id'] : 한개 삭제
 request.session.clear() : 전체삭제
+
+
+### 이미지 업로드
+
+pip install pillow
+
+<form action='/board/write' method='POST' enctype='multipart/form-data'>
+
+@ settings.py 설정
+# url정보가 /media로 들오오면 media폴더로 연경
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+# MEDIA_ROOT = r'd:/fileUpload' 로컬경로 저장
+
+@ urls.py 설정
+from django.conf import settings
+from django.conf.urls.static import static
+# 파일 업로드 url구성
+urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
+
+bfile = request.FILES.get('bfile')

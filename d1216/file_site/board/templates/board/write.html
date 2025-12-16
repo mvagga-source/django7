@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성</title>
+</head>
+<body>
+    <h2>/ 게시글 작성 /</h2>
+    <form action='/board/write/' method='POST' enctype='multipart/form-data'>
+    {% csrf_token %}
+        <label>제목</label>
+        <input type='text' name='btitle'><br><br>
+        <label>파일첨부</label><br>
+        <input type='file' name='bfile' onchage='readURL(this);'><br><br>
+        <img id='preview' style='width:100px'><br><br>
+        <input type='submit' value='저장'>
+    </form>
+    <script>
+        // 이미지 업로드시 이미지 미리보기 함수
+        function readURL(input){
+            // 파일첨부가 있으면
+            if(input.files && input.files[0]){
+                var reader = new FileReader();
+                reader.onload = function(e){
+                    document.getElementById('preview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }else{
+                // 없을 경우 빈공백 처리
+                document.getElementById('preview').src = '';
+            }
+        }
+    </script>
+</body>
+</html>
