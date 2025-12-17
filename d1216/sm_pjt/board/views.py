@@ -26,13 +26,15 @@ def reply(request, bno):
         id = request.session['session_id']
         qs = Member.objects.get(id=id)
         
+        bfile = request.FILES.get('bfile','')
+        
         # 1. bgroup에 부모보다 높은 bstep을 1증가를 시커주기
         bstepup_qs = Board.objects.filter(bgroup=bgroup,bstep__gt=bstep)
         # 2. 검색된 데이터에서 bstep을 뽑아서 1씩 증가
         bstepup_qs.update(bstep=F('bstep')+1)
         
         Board.objects.create(btitle=btitle,bcontent=bcontent,member=qs,\
-            bgroup=bgroup,bstep=bstep+1,bindent=bindent+1)
+            bgroup=bgroup,bstep=bstep+1,bindent=bindent+1,bfile=bfile)
         
         return redirect('/board/list?flag=2') # request->flag 파라미터 방식
 
