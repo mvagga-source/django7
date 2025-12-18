@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인페이지</title>
+</head>
+<body>
+    <h2>메인페이지</h2>
+    {% if not request.session.session_id %}
+        <ul>
+            <li><a href='/member/login/'>로그인</a></li>
+            <li><a href=''>회원가입</a></li>
+            <li><a href='/admin/'>admin관리자</a></li>
+        </ul>
+    {% else %}
+        <ul>
+            <li><a href='{% url "member:logout" %}'>로그아웃</a></li>
+            <li><a href='/board/list/'>게시판</a></li>
+            <li><a href='/board/view2/101/'>하단댓글게시판</a></li>
+            <li><a href='/board/chart/'>chart.js 그래프 출력</a></li>
+            <li><a href='/admin/'>admin관리자</a></li>
+        </ul>
+    {% endif %}
+    
+</body>
+</html>

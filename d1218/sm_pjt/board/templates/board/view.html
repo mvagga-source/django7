@@ -1,0 +1,321 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <meta name='csrf_token' content='{{csrf_token}}' >
+  <title>VLAST Shop - 게시글 상세보기</title>
+  <link rel='stylesheet' href='{% static "css/view.css" %}'>
+  <script>
+  </script>
+
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="top-menu">
+      <a href="#">회원가입</a> |
+      <a href="#">로그인</a> |
+      <a href="#">주문조회</a> |
+      <a href="#">최근본상품</a>
+    </div>
+    <div class="icons">
+      <i class="fas fa-search"></i>
+      <i class="fas fa-user"></i>
+      <i class="fas fa-shopping-bag"></i>
+    </div>
+  </div>
+
+  <!-- Detail View -->
+  <div class="detail-container">
+    <div class="detail-title">{{board.btitle}}</div>
+    <div class="detail-info">
+      <div>작성자: {{board.member.name}}</div>
+      <div>작성일: {{board.bdate|date:'Y-m-d H:i'}}</div>
+      <div>조회수: {{board.bhit}}</div>
+    </div>
+    <div class="detail-content">
+      {{board.bcontent}}
+      <br>
+      {% if board.bfile %}
+        <img src='/media/{{board.bfile}}' style='width:150px;'>
+      {% else %}
+        첨부된 파일이 없습니다.
+      {% endif %}
+    </div>
+    <div class="detail-buttons">
+      <a href="/board/list/">목록으로</a>
+      <a href="/board/reply/{{board.bno}}/">답글달기</a>
+      {% if board.member.id == request.session.session_id  %}
+        <a href="/board/update/{{board.bno}}/">수정</a>
+        <button id="deleteBtn">삭제</button>
+      {% endif %}
+    </div>
+  </div>
+  <script>
+    
+  </script>
+  <!-- 댓글 섹션 -->
+  <div id="commentsSection">
+    <h3>댓글</h3>
+    <form id="commentForm">
+      <span style='padding-top:15px;'>아이디 : aaa</span>
+      <input type="text" id="commentPw" placeholder="비밀번호" maxlength="20" />
+      <textarea id="commentText" placeholder="댓글을 입력하세요." maxlength="200"></textarea>
+      <button type="button" id='writeBtn'>등록</button>
+    </form>
+    <div id="commentsList">
+      <!-- 댓글리스트 반복 -->
+      {% if clist %}
+        {% for c in clist %}
+        <div class="comment" id='{{c.cno}}'>
+          <strong>{{request.session.session_name}}</strong> <span>({{c.cdate}})</span>
+          <p>{{c.ccontent}}</p>             
+          <div class="comment-buttons">
+            <button class="edit-btn">수정</button>
+            <button class="delete-btn">삭제</button>
+          </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div style='text-align:center;'> 댓글이 없습니다. </div>
+      {% endif %}
+      </div>
+    </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <p>삭제하시겠습니까?</p>
+      <div class="modal-buttons">
+        <button class="confirm" id="confirmDelete">삭제</button>
+        <button class="cancel" id="cancelDelete">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    Copyright © VLAST Shop. All rights reserved.
+  </footer>
+
+  <script>
+  //전역변수 선언
+  let frist_list = 1
+
+  //제이쿼리
+    $(function(){
+      // 1. 댓글추가부분 ---------------------------------------------------
+      $(document).on('click','#writeBtn',function(){
+        // 댓글입력확인 없으면 입력요청
+        if($("#commentText").val().length<1){
+          alert("댓글내용을 입력하셔야 저장 가능합니다.");
+          $("#commentText").focus();
+          return;
+        }
+
+        let id = '{{request.session.session_id}}';
+        let ccontent = $("#commentText").val();
+        let cpw = $("#commentPw").val();
+        alert("댓글을 추가합니다.");
+        
+        //db저장
+        $.ajax({
+          url:'/comment/cwrite/',
+          type:'post',
+          headers:{'X-CSRFToken':'{{csrf_token}}'},
+          data:{'bno':'{{board.bno}}','cpw':cpw,'ccontent':ccontent},
+          dataType:'json',
+          success:function(data){
+            alert('성공');
+
+            console.log("확인 : ",data);
+            console.log("확인 : ",data.comment);
+            
+            //댓글추가부분
+            let dataHtml = `
+            <div class="comment" id='${data.comment.cno}'>
+              <strong>${data.comment.member_id}</strong> <span>(${data.comment.cdate})</span>
+              <p>${data.comment.ccontent}</p>             
+              <div class="comment-buttons">
+                <button class="edit-btn">수정</button>
+                <button class="delete-btn">삭제</button>
+              </div>
+            </div>
+                `;
+            // 댓글저장
+            if(frist_list==0){
+              $("#commentsList").html(dataHtml);
+              frist_list = 1;
+            }else{
+              $("#commentsList").prepend(dataHtml);
+            }
+            //빈공백 처리
+            $("#commentText").val('');
+            $("#commentPw").val('');
+            
+          },
+          error:function(){ alert('실패');}
+        });//ajax
+    });//writeBtn
+    // 댓글추가부분 ---------------------------------------------------
+
+    // 2.댓글삭제부분 -------------------------------------------------
+    $(document).on('click','.delete-btn',function(){
+      if(confirm('댓글을 삭제하시겠습니까?')){
+        let cno = $(this).closest('.comment').attr('id');
+        console.log("cno : ",cno)
+        //ajax -> db삭제
+        $.ajax({
+          url:'/comment/cdelete/',
+          type:'post',
+            headers:{'X-CSRFToken':'{{csrf_token}}'},
+            dataType:'json',
+            data:{'cno':cno},
+            success:function(data){
+              alert('성공');
+              $('#'+cno).remove();
+            },
+            error:function(){ alert('실패');}
+          });//ajax
+        }
+    });
+    // 2.댓글삭제부분 end -------------------------------------------------
+    
+    //전역변수 선언
+    let txt;
+    let strong;
+    let span;
+
+    // 3.댓글수정화면
+    $(document).on('click','.edit-btn',function(){
+      alert('수정화면 나타남.');
+      let cno = $(this).closest('.comment').attr('id');
+      txt = $(this).closest('.comment').children('p').text();
+      strong = $(this).closest('.comment').children('strong').text();
+      span = $(this).closest('.comment').children('span').text();
+      console.log("cno : ",cno)
+      console.log("txt : ",txt)
+      console.log("strong : ",strong)
+      console.log("span : ",span)
+
+      // 수정화면 창으로 변경됨.
+      let dataHtml = `
+        <strong>${strong}</strong> <span>${span}</span>
+        <textarea style="width: 100%; min-height: 60px;">${txt}</textarea>           
+        <div class="comment-buttons">
+          <button class="save-btn">저장</button>
+          <button class="cancel-btn">취소</button>
+        </div>
+      `;
+
+      $('#'+cno).html(dataHtml);
+    });      
+    
+    // 4.댓글수정저장
+    $(document).on('click','.save-btn',function(){
+      alert('댓글을 수정저장합니다.');
+      let name = '{{request.session.session_name}}';
+      let cno = $(this).closest('.comment').attr('id');
+      console.log("댓글수정저장 : ",cno);
+      let ccontent = $(this).closest('.comment').children('textarea').val();
+      console.log("ccontent : ",ccontent);
+
+      //ajax -> db저장
+      $.ajax({
+          url:'/comment/cupdate/',
+          type:'post',
+            headers:{'X-CSRFToken':'{{csrf_token}}'},
+            dataType:'json',
+            data:{'cno':cno,'ccontent':ccontent},
+            success:function(data){
+              alert('성공');
+              let dataHtml = `
+                <strong>${name}</strong> <span>( ${data.comment.cdate} )</span>
+                <p>${ccontent}</p>             
+                <div class="comment-buttons">
+                  <button class="edit-btn">수정</button>
+                  <button class="delete-btn">삭제</button>
+                </div>
+              `;
+              $('#'+cno).html(dataHtml);
+            },
+            error:function(){ alert('실패');}
+      });
+    });
+
+    // 5.댓글수정취소
+    $(document).on('click','.cancel-btn',function(){
+      alert('댓글수정취소 화면전환');
+      let cno = $(this).closest('.comment').attr('id');
+      console.log("댓글수정취소 : ",cno);
+
+      let dataHtml = `
+        <strong>${strong}</strong> <span>${span}</span>
+        <p>${txt}</p>             
+        <div class="comment-buttons">
+          <button class="edit-btn">수정</button>
+          <button class="delete-btn">삭제</button>
+        </div>
+      `;
+      $('#'+cno).html(dataHtml);
+    });
+
+  });//jquery
+
+
+
+
+
+    const deleteBtn = document.getElementById('deleteBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const confirmDelete = document.getElementById('confirmDelete');
+    const cancelDelete = document.getElementById('cancelDelete');
+
+    deleteBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'flex';
+    });
+
+    cancelDelete.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+    });
+
+    confirmDelete.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      // 실제 삭제 로직 삽입 위치
+      alert('게시글이 삭제되었습니다.');
+      // 예: 목록 페이지로 이동
+      window.location.href = '/board/delete/{{board.bno}}/';
+    });
+
+    // 모달 바깥 클릭 시 닫기
+    modalOverlay.addEventListener('click', (e) => {
+      if(e.target === modalOverlay) {
+        modalOverlay.style.display = 'none';
+      }
+    });
+
+    // 댓글 -------------------------------------------------------
+    // 댓글 기능
+    const commentForm = document.getElementById('commentForm');
+    const commentsList = document.getElementById('commentsList');
+
+    
+
+    
+
+    // XSS 방지용 간단 함수
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

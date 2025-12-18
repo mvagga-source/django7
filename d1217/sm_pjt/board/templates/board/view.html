@@ -65,6 +65,23 @@
       <button type="button" id='writeBtn'>등록</button>
     </form>
     <div id="commentsList">
+    <!-- 댓글리스트 반복 -->
+
+    {% if clist %}
+    {% for c in clist %}
+            <div class="comment" id='${c.cno}'>
+              <strong>{{request.session.session_name}}</strong> <span>({{c.date}})</span>
+              <p>{{c.ccontent}}</p>
+              <div class="comment-buttons">
+                <button class="edit-btn">수정</button>
+                <button class="delete-btn">삭제</button>
+              </div>
+            </div>      
+    {% endfor %}
+    {% else %}
+      <div style='text-align:center;'>댓글이 없습니다.</div>
+    {% endif %}
+
     </div>
   </div>
   <!-- Modal -->
@@ -72,7 +89,7 @@
     <div class="modal">
       <p>삭제하시겠습니까?</p>
       <div class="modal-buttons">
-        <button class="confirm" id="confirmDelete">삭제</button>
+        <button class="confirm">삭제</button>
         <button class="cancel" id="cancelDelete">취소</button>
       </div>
     </div>
@@ -90,55 +107,22 @@
   //제이쿼리
   $(function(){
 
-      // 하단댓글리스트 함수호출
-      $.ajax({
-        url:'/comment/clist/',
-        type:'get',
-        data:{'bno':'{{board.bno}}'},
-        dataType:'json',
-        success:function(data){
-          console.log("확인 : ",data.result);
-          console.log("확인2 : ",data.list);
-          if(data.list.length==0){
-             $("#commentsList").html("<div style='text-align:center;'>하단댓글이 없습니다.</div>");
-             frist_list = 0;
-             return;
-          }
-          let dataHtml = ``;
-          //반복
-          for (let i=0;i<data.list.length;i++){
-            dataHtml += `
-            <div class="comment" id='${data.list[i].cno}'>
-              <strong>${data.list[i].member_id}</strong> <span>(${data.list[i].cdate})</span>
-              <p>${data.list[i].ccontent}</p>
-              <div class="comment-buttons">
-                <button class="edit-btn">수정</button>
-                <button class="delete-btn">삭제</button>
-              </div>
-            </div>
-            `;
-          }
-          // 하단댓글 파일 적용
-          $("#commentsList").html(dataHtml);
-        },
-        error:function(){
-          alert('실패');
-        }
-      });//ajax
-
-
-      // 댓글추가
+      // 1. 댓글추가
       $(document).on('click','#writeBtn',function(){
-        let id = '{{request.session.session_id}}';
-        let ccontent = $("#commentText").val();
-        let cpw = $("#commentPw").val();
-        // 데이터 입력확인
-        if(ccontent.length<1){
+
+        if($("#commentText").val().length<1){
           alert("댓글내용을 입력하셔야 저장 가능합니다.");
           $("#commentText").focus();
           return;
         }
+
+        let id = '{{request.session.session_id}}';
+        let ccontent = $("#commentText").val();
+        let cpw = $("#commentPw").val();
+
+        // 데이터 입력확인
         alert("댓글을 추가합니다.");
+
         //db저장
         $.ajax({
           url:'/comment/cwrite/',
@@ -148,12 +132,13 @@
           dataType:'json',
           success:function(data){
             alert('성공');
-            console.log("확인 : ",data.c_comment);
+
+            console.log("확인 : ",data.comment);
             //댓글추가부분
             let dataHtml = `
-            <div class="comment" id='${data.c_comment.cno}'>
-              <strong>${data.c_comment.member_id}</strong> <span>(${data.c_comment.cdate})</span>
-              <p>${data.c_comment.ccontent}</p>
+            <div class="comment" id='${data.comment.cno}'>
+              <strong>${data.comment.member_id}</strong> <span>(${data.comment.cdate})</span>
+              <p>${data.comment.ccontent}</p>
               <div class="comment-buttons">
                 <button class="edit-btn">수정</button>
                 <button class="delete-btn">삭제</button>
@@ -175,7 +160,117 @@
         });//ajax
       });//writeBtn
 
+      // 댓글삭제
+
+
+
     });//jquery
+
+
+ const deleteBtn = document.getElementById('deleteBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const confirmDelete = document.getElementById('confirmDelete');
+    const cancelDelete = document.getElementById('cancelDelete');
+    
+    deleteBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'flex';
+    });
+    cancelDelete.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+    });
+    confirmDelete.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      // 실제 삭제 로직 삽입 위치
+      alert('게시글이 삭제되었습니다.');
+      // 예: 목록 페이지로 이동
+      window.location.href = '/board/delete/{{board.bno}}/';
+    });
+    // 모달 바깥 클릭 시 닫기
+    modalOverlay.addEventListener('click', (e) => {
+      if(e.target === modalOverlay) {
+        modalOverlay.style.display = 'none';
+      }
+    });
+    // 댓글 기능
+    const commentForm = document.getElementById('commentForm');
+    const commentsList = document.getElementById('commentsList');
+    // 댓글 수정/삭제 이벤트 위임
+    commentsList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('delete-btn')) {
+        // 삭제 버튼 클릭
+        if (confirm('이 댓글을 삭제하시겠습니까?')) {
+          const commentDiv = e.target.closest('.comment');
+          if (commentDiv) commentDiv.remove();
+        }
+      } else if (e.target.classList.contains('edit-btn')) {
+        // 수정 버튼 클릭
+        const commentDiv = e.target.closest('.comment');
+        if (!commentDiv) return;
+        const p = commentDiv.querySelector('p');
+        if (!p) return;
+        // 이미 수정 중이면 종료
+        if (commentDiv.querySelector('textarea')) return;
+        const originalText = p.textContent;
+        // textarea 생성 후 기존 텍스트로 채움
+        const textarea = document.createElement('textarea');
+        textarea.value = originalText;
+        textarea.style.width = '100%';
+        textarea.style.minHeight = '60px';
+        // 수정 완료, 취소 버튼 생성
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = '저장';
+        saveBtn.style.marginRight = '8px';
+        saveBtn.style.padding = '4px 10px';
+        saveBtn.style.cursor = 'pointer';
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = '취소';
+        cancelBtn.style.padding = '4px 10px';
+        cancelBtn.style.cursor = 'pointer';
+        // 기존 p, 수정/삭제 버튼 숨기기
+        p.style.display = 'none';
+        e.target.style.display = 'none'; // 수정버튼 숨김
+        const deleteBtn = commentDiv.querySelector('.delete-btn');
+        if (deleteBtn) deleteBtn.style.display = 'none';
+        // 수정 버튼 영역에 저장/취소 버튼 추가
+        const btnContainer = commentDiv.querySelector('.comment-buttons');
+        btnContainer.appendChild(saveBtn);
+        btnContainer.appendChild(cancelBtn);
+        // 수정 영역에 textarea 추가
+        commentDiv.insertBefore(textarea, btnContainer);
+        // 저장 버튼 클릭 시
+        saveBtn.addEventListener('click', () => {
+          const newText = textarea.value.trim();
+          if (!newText) {
+            alert('댓글 내용을 입력해주세요.');
+            return;
+          }
+          p.textContent = newText;
+          cleanupEdit();
+        });
+        // 취소 버튼 클릭 시
+        cancelBtn.addEventListener('click', () => {
+          cleanupEdit();
+        });
+        // 편집 모드 종료 함수
+        function cleanupEdit() {
+          textarea.remove();
+          saveBtn.remove();
+          cancelBtn.remove();
+          p.style.display = '';
+          e.target.style.display = '';
+          if (deleteBtn) deleteBtn.style.display = '';
+        }
+      }
+    });
+    // XSS 방지용 간단 함수
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
   </script>
 </body>

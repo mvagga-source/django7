@@ -182,3 +182,7 @@ from django.conf.urls.static import static
 urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
 
 bfile = request.FILES.get('bfile')
+
+
+
+@ 차트JS

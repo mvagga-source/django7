@@ -40,7 +40,7 @@ def clist(request):
     print('bno :',bno)
     board = Board.objects.get(bno=bno)
     
-    qs = Comment.objects.filter(board=board)
+    qs = Comment.objects.filter(board=board).order_by('-cno')
     list_qs = list(qs.values())
     context = {'result':'success','list':list_qs}
     return JsonResponse(context)
