@@ -4,6 +4,9 @@ from comment.models import Comment
 from member.models import Member
 from django.db.models import F,Q
 from django.core.paginator import Paginator
+import requests
+import json
+import pprint
 
 
 # 차트 그리기
@@ -105,6 +108,47 @@ def list(request):
     
     context = {'list':list_qs,'page':page}
     return render(request,'board/list.html',context)
+
+# 공공데이터 리스트
+def list2(request):
+
+    public_key = 'bc215d8e4796a714b85a16e497b814711f7eb9528a81beafc8078486fa9b19cd'
+    # page_no = request.GET.get('page_no')
+    page_no = 1
+    # url = f'https://apis.data.go.kr/B551011/PhotoGalleryService1/galleryList1?serviceKey={public_key}&numOfRows=10&pageNo={page_no}&MobileOS=ETC&MobileApp=AppTest&arrange=A&_type=json'
+    url = f'https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo?serviceKey=bc215d8e4796a714b85a16e497b814711f7eb9528a81beafc8078486fa9b19cd&numOfRows=10&pageNo=1&resultType=json'
+    
+    # url  정보 태그 모두 가져옴
+    rel = requests.get(url)
+        
+    # 파일변환 : 문자열 -> json문자열
+    json_data = json.loads(rel.text)
+    p_list = json_data['response']['body']['items']['item']
+    print('json data...:',p_list[0])
+    context = {'result':'성공','list':p_list}
+    return render(request,'board/list3.html',context)
+
+# 공공데이터 리스트
+def list3(request):
+
+    public_key = 'bc215d8e4796a714b85a16e497b814711f7eb9528a81beafc8078486fa9b19cd'
+    # page_no = request.GET.get('page_no')
+    page_no = 1
+    url = f'https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo?serviceKey={public_key}&numOfRows=10&pageNo={page_no}&resultType=json'
+    
+    # url  정보 태그 모두 가져옴
+    rel = requests.get(url)
+    json_data = json.loads(rel.text)
+    p_list = json_data['response']['body']['items']['item']    
+    
+    
+
+    context = {'list':list_qs,'page':page}    
+        
+    # 파일변환 : 문자열 -> json문자열
+    # context = {'result':'성공','list':p_list}
+    return render(request,'board/list3.html',context)
+
 
 # 게시판 글쓰기
 def write(request):

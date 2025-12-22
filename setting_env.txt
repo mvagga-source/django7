@@ -1,3 +1,8 @@
+
+https://github.com/onulee
+
+
+
 1. ctrl + , ==> setting ==> setting.json 클릭
 
 "editor.fontLigatures":  False,
@@ -185,4 +190,54 @@ bfile = request.FILES.get('bfile')
 
 
 
-@ 차트JS
+@ 차트
+
+차트JS 사이트 : https://www.chartjs.org/
+
+
+
+# 탬플릿 경로
+TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [TEMPLATE_DIR],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+
+  {% block title-block %}
+  {% endblock title-block %}
+
+  {% block css-block %}
+  {% endblock css-block %}
+
+  {% block body-block %}
+  {% endblock body-block %}
+
+
+
+
+1. 기획의도
+2. 개발환경
+3. 프로젝트 계획
+- 메뉴구조도
+- DB구조도(ERD설계서)
+- 벤치마킹 사이트
+- 상세페이지(주요기능)
+4. 프로젝트 일정 및 업무분장
+
+
+@ 카카오 지도
+
+https://developers.kakao.com
+https://apis.map.kakao.com/web/guide/

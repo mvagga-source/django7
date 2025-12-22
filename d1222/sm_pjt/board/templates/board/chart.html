@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>차트그리기</title>
+    <style>
+        div{width:900px; height:700px; border:1px solid black;}
+    </style>
+    <script>
+        
+
+        function cBtn(){
+            alert("차트버튼 클릭");
+            
+
+            //차트 초기화
+            let chartStatus = Chart.getChart("myChart"); // <canvas> id
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }
+
+            // 변수 선언
+            let label_data = [];  // name
+            let datas = []; //total
+
+            //데이터 가져오기
+            $.ajax({
+                url:'/stuscore/slist/',
+                type:'post',
+                headers:{'X-CSRFToken':'{{csrf_token}}'},
+                dataType:'json',
+                data:{'no':$("#next").val()},
+                success:function(data){
+                    alert('성공');
+                    console.log(data);
+                    for(var i=0;i<data.list.length;i++){
+                        label_data.push(data.list[i].member_id);
+                        datas.push(data.list[i].total);
+                    }
+
+                    
+
+
+                    const ctx = document.getElementById('myChart');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                        labels: label_data,
+                        datasets: [{
+                            label: '2025년 매출 그래프',
+                            data: datas,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)', 
+                                'rgba(54, 162, 235, 0.7)', 
+                                'rgba(255, 206, 86, 0.7)', 
+                                'rgba(75, 192, 192, 0.7)', 
+                                'rgba(153, 102, 255, 0.7)', 
+                                'rgba(255, 159, 64, 0.7)' 
+                            ]
+                        }]
+                        },
+                        options: {
+                        scales: {
+                            y: {
+                            beginAtZero: true
+                            }
+                        }
+                        }
+                    });//Chart
+                },
+                error:function(){ alert('실패');}
+            });//ajax
+        }//cBtn    
+
+           
+    </script>
+</head>
+<body>
+    <select id='next'>
+        <option value='0'>1-6</option>
+        <option value='6'>7-12</option>
+        <option value='12'>13-18</option>
+    </select>
+    <button onclick='cBtn()'>데이터 가져오기</button>
+    <hr>
+    <h2>그래프</h2> 
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+    
+</body>
+</html>

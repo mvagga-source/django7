@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+  {% block title-block %}
+  <title>VLAST Shop - 게시판</title>
+  {% endblock title-block %}
+  
+  {% block css-block %}
+  <link href="/static/css/list.css" rel="stylesheet" type="text/css" >  
+  {% endblock css-block %}
+  
+
+{% block body-block %}
+
+  <!-- Board List -->
+  <div class="board-container">
+    <div class="board-title">공지사항</div>
+    <table class="board-table">
+      <colgroup>
+        <col width='10%'>
+        <col width='*'>
+        <col width='15%'>
+        <col width='20%'>
+        <col width='15%'>
+      </colgroup>
+      <thead>
+        <tr>
+          <th>번호</th>
+          <th>제목</th>
+          <th>작성자</th>
+          <th>작성일</th>
+          <th>조회수</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if list %}
+          {% for b in list  %}
+            <tr>
+              <td>{{b.bno}}</td>
+              <td class="title">
+                <a href="/board/view/{{b.bno}}/">
+                  {% for i in ''|rjust:b.bindent %}
+                  <img src='/static/images/icon_reply.292031fe.png' style='width:10px;margin-left:2px;' >
+                  {% endfor %}
+                  {{b.btitle}}
+                </a>
+              </td>
+              <td>{{b.member.name}}</td>
+              <td class="date">{{b.bdate|date:'Y-m-d H:i'}}</td>
+              <td class="views">{{b.bhit}}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan='5'>데이터가 없습니다.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    <!-- Write Button -->
+    <div class="write-box">
+      <a href="/board/write/" class="write-btn">글쓰기</a>
+    </div>
+
+    <!-- Pagination & Search -->
+    <div class="board-footer" >
+        <div class="pagination">
+            <!-- 처음페이지, 이전페이지 버튼 -->
+            {% if list.has_previous  %}
+              <a href="/board/list/?page=1">&laquo;</a>
+              <a href="/board/list/?page={{list.previous_page_number}}">&lt;</a>
+            {% else %}
+              <a>&laquo;</a>
+              <a>&lt;</a>
+            {% endif %}
+            <!-- 넘버링 시작 -->
+            {% for p in list.paginator.page_range  %}
+               {% if p >= list.number|add:'-3' and p <= list.number|add:'3' %}
+                  {% if p == list.number %}
+                      <a class="active">{{p}}</a>
+                  {% else %}
+                      <a href="/board/list/?page={{p}}">{{p}}</a>
+                  {% endif %}
+               {% endif %}
+            
+              {% comment %} 
+                {% if p == page %}
+                  <a class="active">{{p}}</a>
+                {% else %}
+                  <a href="/board/list/?page={{p}}">{{p}}</a>
+                {% endif %} 
+              {% endcomment %}
+            {% endfor %}
+            
+            <!-- 다음페이지, 마지막페이지 -->
+            {% if list.has_next  %}
+              <a href="/board/list/?page={{list.next_page_number}}">&gt;</a>
+              <a href="/board/list/?page={{list.paginator.num_pages}}">&raquo;</a>
+            {% else %}
+              <a>&gt;</a>
+              <a>&raquo;</a>
+            {% endif %}
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="검색어 입력">
+            <button>검색</button>
+        </div>
+    </div>
+    
+  </div>
+{% endblock body-block %}
