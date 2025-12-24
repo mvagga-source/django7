@@ -1,0 +1,260 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <meta name='csrf_token' content='{{csrf_token}}' >
+  <title>VLAST Shop - 게시글 상세보기</title>
+  <link rel='stylesheet' href='{% static "css/view.css" %}'>
+  <script>
+  </script>
+
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="top-menu">
+      <a href="#">회원가입</a> |
+      <a href="#">로그인</a> |
+      <a href="#">주문조회</a> |
+      <a href="#">최근본상품</a>
+    </div>
+    <div class="icons">
+      <i class="fas fa-search"></i>
+      <i class="fas fa-user"></i>
+      <i class="fas fa-shopping-bag"></i>
+    </div>
+  </div>
+
+  <!-- Detail View -->
+  <div class="detail-container">
+    <div class="detail-title">{{board.btitle}}</div>
+    <div class="detail-info">
+      <div>작성자: {{board.member.name}}</div>
+      <div>작성일: {{board.bdate|date:'Y-m-d H:i'}}</div>
+      <div>조회수: {{board.bhit}}</div>
+    </div>
+    <div class="detail-content">
+      {{board.bcontent}}
+      <br>
+      {% if board.bfile %}
+        <img src='/media/{{board.bfile}}' style='width:150px;'>
+      {% else %}
+        첨부된 파일이 없습니다.
+      {% endif %}
+    </div>
+    <div class="detail-buttons">
+      <a href="/board/list/?page={{page}}&search={{search}}">목록으로</a>
+      <a href="/board/reply/{{board.bno}}/page={{page}}&search={{search}}">답글달기</a>
+      {% if board.member.id == request.session.session_id  %}
+        <a href="/board/update/{{board.bno}}/page={{page}}&search={{search}}">수정</a>
+        <button id="deleteBtn">삭제</button>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- 댓글 섹션 -->
+  <div id="commentsSection">
+    <h3>댓글</h3>
+    <form id="commentForm">
+      <input type="text" id="commentName" placeholder="이름" maxlength="20" />
+      <textarea id="commentText" placeholder="댓글을 입력하세요." maxlength="200"></textarea>
+      <button type="submit">등록</button>
+    </form>
+    <div id="commentsList">
+      <div class="comment">
+        <strong>홍길동</strong> <span>(2025-09-08 14:32)</span>
+        <p>추석 연휴 배송 안내 감사합니다!</p>
+        <div class="comment-buttons">
+          <button class="edit-btn">수정</button>
+          <button class="delete-btn">삭제</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <p>삭제하시겠습니까?</p>
+      <div class="modal-buttons">
+        <button class="confirm" id="confirmDelete">삭제</button>
+        <button class="cancel" id="cancelDelete">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    Copyright © VLAST Shop. All rights reserved.
+  </footer>
+
+  <script>
+    const deleteBtn = document.getElementById('deleteBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const confirmDelete = document.getElementById('confirmDelete');
+    const cancelDelete = document.getElementById('cancelDelete');
+
+    deleteBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'flex';
+    });
+
+    cancelDelete.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+    });
+
+    confirmDelete.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      // 실제 삭제 로직 삽입 위치
+      alert('게시글이 삭제되었습니다.');
+      // 예: 목록 페이지로 이동
+      window.location.href = 'board.html';
+    });
+
+    // 모달 바깥 클릭 시 닫기
+    modalOverlay.addEventListener('click', (e) => {
+      if(e.target === modalOverlay) {
+        modalOverlay.style.display = 'none';
+      }
+    });
+
+    // 댓글 기능
+    const commentForm = document.getElementById('commentForm');
+    const commentsList = document.getElementById('commentsList');
+
+    commentForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const nameInput = document.getElementById('commentName');
+      const textInput = document.getElementById('commentText');
+      const name = nameInput.value.trim();
+      const text = textInput.value.trim();
+
+      if (!name || !text) {
+        alert('이름과 댓글 내용을 모두 입력해주세요.');
+        return;
+      }
+
+      const now = new Date();
+      const formattedDate = now.getFullYear() + '-' +
+                            String(now.getMonth()+1).padStart(2,'0') + '-' +
+                            String(now.getDate()).padStart(2,'0') + ' ' +
+                            String(now.getHours()).padStart(2,'0') + ':' +
+                            String(now.getMinutes()).padStart(2,'0');
+
+      const newComment = document.createElement('div');
+      newComment.classList.add('comment');
+      newComment.style.padding = '12px 15px';
+      newComment.style.borderBottom = '1px solid #e0e0e0';
+
+      newComment.innerHTML = `
+        <strong>${escapeHtml(name)}</strong> <span>(${formattedDate})</span>
+        <p>${escapeHtml(text)}</p>
+        <div class="comment-buttons">
+          <button class="edit-btn">수정</button>
+          <button class="delete-btn">삭제</button>
+        </div>
+      `;
+
+      commentsList.appendChild(newComment);
+
+      nameInput.value = '';
+      textInput.value = '';
+    });
+
+    // 댓글 수정/삭제 이벤트 위임
+    commentsList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('delete-btn')) {
+        // 삭제 버튼 클릭
+        if (confirm('이 댓글을 삭제하시겠습니까?')) {
+          const commentDiv = e.target.closest('.comment');
+          if (commentDiv) commentDiv.remove();
+        }
+      } else if (e.target.classList.contains('edit-btn')) {
+        // 수정 버튼 클릭
+        const commentDiv = e.target.closest('.comment');
+        if (!commentDiv) return;
+
+        const p = commentDiv.querySelector('p');
+        if (!p) return;
+
+        // 이미 수정 중이면 종료
+        if (commentDiv.querySelector('textarea')) return;
+
+        const originalText = p.textContent;
+
+        // textarea 생성 후 기존 텍스트로 채움
+        const textarea = document.createElement('textarea');
+        textarea.value = originalText;
+        textarea.style.width = '100%';
+        textarea.style.minHeight = '60px';
+
+        // 수정 완료, 취소 버튼 생성
+        const saveBtn = document.createElement('button');
+        saveBtn.textContent = '저장';
+        saveBtn.style.marginRight = '8px';
+        saveBtn.style.padding = '4px 10px';
+        saveBtn.style.cursor = 'pointer';
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = '취소';
+        cancelBtn.style.padding = '4px 10px';
+        cancelBtn.style.cursor = 'pointer';
+
+        // 기존 p, 수정/삭제 버튼 숨기기
+        p.style.display = 'none';
+        e.target.style.display = 'none'; // 수정버튼 숨김
+        const deleteBtn = commentDiv.querySelector('.delete-btn');
+        if (deleteBtn) deleteBtn.style.display = 'none';
+
+        // 수정 버튼 영역에 저장/취소 버튼 추가
+        const btnContainer = commentDiv.querySelector('.comment-buttons');
+        btnContainer.appendChild(saveBtn);
+        btnContainer.appendChild(cancelBtn);
+
+        // 수정 영역에 textarea 추가
+        commentDiv.insertBefore(textarea, btnContainer);
+
+        // 저장 버튼 클릭 시
+        saveBtn.addEventListener('click', () => {
+          const newText = textarea.value.trim();
+          if (!newText) {
+            alert('댓글 내용을 입력해주세요.');
+            return;
+          }
+          p.textContent = newText;
+          cleanupEdit();
+        });
+
+        // 취소 버튼 클릭 시
+        cancelBtn.addEventListener('click', () => {
+          cleanupEdit();
+        });
+
+        // 편집 모드 종료 함수
+        function cleanupEdit() {
+          textarea.remove();
+          saveBtn.remove();
+          cancelBtn.remove();
+          p.style.display = '';
+          e.target.style.display = '';
+          if (deleteBtn) deleteBtn.style.display = '';
+        }
+      }
+    });
+
+    // XSS 방지용 간단 함수
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

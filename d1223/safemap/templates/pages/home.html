@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}SafeMap | 홈{% endblock %}
+{% block head %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+
+<style>
+.main-split-container {
+  display: flex;
+  width: 100%;
+  min-height: 600px;
+  margin-top: 32px;
+}
+.main-split-left, .main-split-right {
+  flex: 1;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.main-split-divider {
+  width: 2px;
+  background: #e0e0e0;
+  min-height: 500px;
+  margin: 0 0;
+}
+@media (max-width: 900px) {
+  .main-split-container {
+    flex-direction: column;
+  }
+  .main-split-divider {
+    width: 100%;
+    height: 2px;
+    min-height: unset;
+    margin: 24px 0;
+  }
+}
+</style>
+<div class="main-split-container">
+  <div class="main-split-left">
+    <section class="hero">
+      <div class="badge">⚡ 요약·분류·위험도 → 지도 표시</div>
+      <h1 class="h1">우리 동네 사건·사고,<br>한 줄로 요약해서 지도에</h1>
+      <p class="sub">
+        제보 내용을 기반으로 1줄 요약, 유형 분류, 위험도(1~5)를 자동 산출해
+        누구나 빠르게 지역 안전 신호를 볼 수 있게 합니다.
+      </p>
+      <div class="btnrow">
+        <a class="btn primary" href="{% url 'reports:new' %}">+ 제보 등록</a>
+        <a class="btn" href="{% url 'reports:map' %}">🗺️ 지도 보기</a>
+        <a class="btn" href="{% url 'chatbot:chat' %}">💬 챗봇 상담</a>
+      </div>
+    </section>
+    <section class="grid grid-3" style="margin-top:18px;">
+      <div class="card kpi">
+        <div>
+          <div class="small">최근 7일 제보</div>
+          <div class="num">{{ last7 }}</div>
+        </div>
+        <div class="badge">📆 7 days</div>
+      </div>
+      <div class="card kpi">
+        <div>
+          <div class="small">최근 30일 제보</div>
+          <div class="num">{{ last30 }}</div>
+        </div>
+        <div class="badge">🗓️ 30 days</div>
+      </div>
+      <div class="card kpi">
+        <div>
+          <div class="small">최근 7일 평균 위험도</div>
+          <div class="num">{{ avg_risk_7 }}</div>
+        </div>
+        <div class="badge">⭐ 1~5</div>
+      </div>
+    </section>
+    <section class="grid grid-3" style="margin-top:16px;">
+      <div class="card">
+        <h3>🧠 AI 요약</h3>
+        <div class="small">긴 제보를 1줄로 압축해 “한 눈에” 보이게.</div>
+      </div>
+      <div class="card">
+        <h3>🏷️ 자동 분류</h3>
+        <div class="small">교통/폭력/분실/화재 등 유형을 자동 판단.</div>
+      </div>
+      <div class="card">
+        <h3>⚠️ 위험도 점수</h3>
+        <div class="small">1~5 점으로 우선 확인할 사건을 정리.</div>
+      </div>
+    </section>
+  </div>
+  <div class="main-split-divider"></div>
+  <div class="main-split-right">
+    <style>
+      .datepop-bg {
+        background: #f8fafd;
+        border-radius: 24px;
+        padding: 20px 12px 12px 12px;
+        min-height: 400px;
+        max-height: 550px;
+        position: relative;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .datepop-header {
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.3rem;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+        color: #111;
+      }
+      .datepop-nav {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        margin-bottom: 18px;
+        font-size: 1.1rem;
+        color: #111;
+      }
+      .datepop-nav .active {
+        border-bottom: 2px solid #222;
+        font-weight: bold;
+        color: #111;
+      }
+      .datepop-map {
+        width: 95%;
+        background: #fff;
+        border-radius: 20px;
+        padding: 16px 8px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-height: 420px;
+        overflow-y: auto;
+        color: #111;
+      }
+      .datepop-region {
+        width: 48%;
+        height: 70px;
+        background: #eaf7fa;
+        border-radius: 14px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #111;
+        cursor: pointer;
+      }
+    </style>
+    <div class="datepop-bg">
+      <div class="datepop-header">DATE POP</div>
+      <!-- 네비게이션 메뉴 제거됨 -->
+      <div class="datepop-map" id="region-list"></div>
+      <div id="subregion-list" style="width:95%;margin:0 auto 0 auto;"></div>
+
+      <script>
+      // DATE POP: 전국 시/도 → 시/군/구 → 읍/면/동 (동적 로딩)
+      const regionList = document.getElementById('region-list');
+      const subregionList = document.getElementById('subregion-list');
+      let currentSido = null;
+      let currentSigungu = null;
+
+      function renderRegions(items, levelLabel){
+        if(!regionList) return;
+        regionList.innerHTML = '';
+        if(levelLabel){
+          const hdr = document.createElement('div');
+          hdr.style.cssText = 'width:100%;font-weight:bold;margin:6px 4px 10px 4px;';
+          hdr.textContent = levelLabel;
+          regionList.appendChild(hdr);
+        }
+        const frag = document.createDocumentFragment();
+        items.forEach(name => {
+          const d = document.createElement('div');
+          d.className = 'datepop-region';
+          d.dataset.name = name;
+          d.textContent = name;
+          frag.appendChild(d);
+        });
+        regionList.appendChild(frag);
+      }
+
+      function renderBack(action, label){
+        const back = document.createElement('div');
+        back.className = 'datepop-region';
+        back.style.background = '#f1f3f5';
+        back.dataset.action = action;
+        back.textContent = label || '← 뒤로';
+        regionList.prepend(back);
+      }
+
+      async function fetchJSON(url){
+        const res = await fetch(url, {headers:{'Accept':'application/json'}});
+        return await res.json();
+      }
+
+      async function loadSido(){
+        currentSido = null; currentSigungu = null;
+        subregionList.innerHTML = '';
+        const j = await fetchJSON('/api/kr-admin/?level=sido');
+        const items = j.items || [];
+        // Reorder: 서울특별시 → 경기도 → 광역시들(인천/부산/대구/광주/대전/울산/세종) → 나머지
+        const FIRST = ['서울특별시','경기도'];
+        const METROS = ['인천광역시','부산광역시','대구광역시','광주광역시','대전광역시','울산광역시','세종특별자치시'];
+        const remain = new Set(items);
+        const ordered = [];
+        FIRST.forEach(n=>{ if(remain.has(n)){ ordered.push(n); remain.delete(n);} });
+        METROS.forEach(n=>{ if(remain.has(n)){ ordered.push(n); remain.delete(n);} });
+        ordered.push(...Array.from(remain));
+        renderRegions(ordered, '시/도 선택');
+      }
+
+      async function loadSigungu(sido){
+        currentSido = sido; currentSigungu = null;
+        subregionList.innerHTML = '';
+        const j = await fetchJSON(`/api/kr-admin/?sido=${encodeURIComponent(sido)}`);
+        renderRegions(j.items || [], `${sido} · 시/군/구 선택`);
+        renderBack('back-sido', '← 시/도 목록');
+      }
+
+      async function loadDong(sido, sigungu){
+        currentSigungu = sigungu;
+        subregionList.innerHTML = '';
+        const j = await fetchJSON(`/api/kr-admin/?sido=${encodeURIComponent(sido)}&sigungu=${encodeURIComponent(sigungu)}`);
+        const items = j.items || [];
+        // 동 목록을 바로 메인 영역(regionList)에 표시
+        renderRegions(items, `${sido} › ${sigungu} · 동 선택`);
+        renderBack('back-sigungu', '← 시/군/구 목록');
+        // 렌더된 타일을 동 선택으로 변경(name -> dong)
+        Array.from(regionList.querySelectorAll('.datepop-region')).forEach(el => {
+          if(el.dataset.name){
+            el.dataset.dong = el.dataset.name;
+            delete el.dataset.name;
+          }
+        });
+      }
+
+      function gotoMapWithRegion(sido, sigungu, dong){
+        const parts = [sido, sigungu, dong].filter(Boolean).join(' ');
+        const url = `/reports/map?region=${encodeURIComponent('대한민국 '+parts)}`;
+        window.location.href = url;
+      }
+
+      if(regionList){
+        regionList.addEventListener('click', async (e)=>{
+          const t = e.target;
+          if(!t.classList.contains('datepop-region')) return;
+          if(t.dataset.action === 'back-sido'){
+            await loadSido();
+            return;
+          }
+          if(t.dataset.action === 'back-sigungu'){
+            await loadSigungu(currentSido);
+            return;
+          }
+          // 동 타일 클릭 시 지도 이동
+          if(t.dataset.dong){
+            gotoMapWithRegion(currentSido, currentSigungu, t.dataset.dong);
+            return;
+          }
+          const name = t.dataset.name;
+          if(!currentSido){
+            await loadSigungu(name);
+          } else if(currentSido && !currentSigungu){
+            await loadDong(currentSido, name);
+          }
+        });
+
+
+        // init
+        loadSido();
+      }
+      </script>
+      <!-- 쿠폰 박스 제거됨 -->
+    </div>
+  </div>
+ </div>
+
+  <!-- 안전 그래프 섹션 -->
+  <div id="safety-graphs" class="grid grid-2" style="margin-top:32px;">
+    <div class="card">
+      <h3 style="margin:0 0 8px;">최근 30일 사건 추이</h3>
+      <div class="small">DB에 쌓인 제보 기준으로 자동 그래프.</div>
+      <canvas id="chartDaily" height="140"></canvas>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px;">유형 분포</h3>
+      <div class="small">사건/사고 큰틀 기준: 범죄 → 교통사고 → 자연재해 순</div>
+      <canvas id="chartCat" height="140"></canvas>
+    </div>
+  </div>
+
+  <script>
+  async function loadHomeCharts(){
+    try{
+      const res = await fetch('/reports/api/stats/?days=30');
+      const data = await res.json();
+
+      const dailyCtx = document.getElementById('chartDaily');
+      const catCtx = document.getElementById('chartCat');
+
+      if(!dailyCtx || !catCtx) return;
+
+      new Chart(dailyCtx, {
+        type: 'line',
+        data: {
+          labels: data.daily.labels,
+          datasets: [{ label: '건수', data: data.daily.counts, tension: 0.25 }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+
+      new Chart(catCtx, {
+        type: 'bar',
+        data: {
+          labels: data.categories.labels.map(cat => {
+            const MAP = {
+              'violence': '범죄',
+              'traffic': '교통사고',
+              'fire': '자연재해',
+              'lost': '분실/도난',
+              'etc': '기타'
+            };
+            return MAP[cat] || cat;
+          }),
+          datasets: [{ label: '건수', data: data.categories.counts }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }catch(e){
+      console.log('home chart error', e);
+    }
+  }
+  document.addEventListener('DOMContentLoaded', loadHomeCharts);
+  </script>
+
+{% endblock %}

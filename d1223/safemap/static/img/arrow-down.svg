@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .edge{stroke:#222;stroke-width:4;fill:#1e9bf0;stroke-linejoin:round}
+    </style>
+  </defs>
+  <path class="edge" d="M12 28h14V6h12v22h14L32 58 12 28z"/>
+</svg>

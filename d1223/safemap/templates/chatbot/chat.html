@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}SafeMap | 챗봇{% endblock %}
+{% block content %}
+<div class="grid grid-2">
+  <div class="card">
+    <h2 style="margin:0 0 8px;">안전 챗봇</h2>
+    <p class="small">기본은 안전 가이드, 추가로 “내 근처 약국/병원 영업시간”도 조회 가능(옵션).</p>
+    <div class="notice small">주의: 응급상황을 대신하지 않음. 생명/위협이면 즉시 112/119.</div>
+    <hr>
+    <div id="log" style="display:flex;flex-direction:column;gap:10px;max-height:420px;overflow:auto;"></div>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <input id="msg" placeholder="예: 내 근처 약국 몇시에 열고 닫아?">
+      <button class="btn primary" onclick="sendMsg()">전송</button>
+    </div>
+    <div class="small" style="margin-top:10px;color:#9aa4c6">
+      * 위치 권한을 허용해야 “내 근처” 기능이 동작합니다. (키 없으면 안내만 하고 끝남)
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 8px;">빠른 예시</h3>
+    <div class="grid" style="gap:10px;">
+      <button class="btn" onclick="quick('내 근처 약국 몇시에 열고 닫아?')">💊 내 근처 약국</button>
+      <button class="btn" onclick="quick('내 근처 병원 오픈시간 알려줘')">🏥 내 근처 병원</button>
+      <button class="btn" onclick="quick('연기 나고 불이 난 것 같아')">🔥 화재</button>
+      <button class="btn" onclick="quick('누가 흉기를 들고 위협해')">🚨 위협</button>
+      <button class="btn" onclick="quick('차 추돌 사고 났어')">🚗 교통</button>
+      <button class="btn" onclick="quick('지갑을 잃어버렸어')">🧳 분실</button>
+    </div>
+    <hr>
+    <div class="small">업그레이드 아이디어</div>
+    <ul class="small">
+      <li>챗봇 → 제보 폼 자동 채우기(시간/내용/위치)</li>
+      <li>대화 이력 저장(세션/DB)</li>
+      <li>검색 실패 시: “반경 늘리기” 버튼</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+let USER_LOC = {lat: null, lng: null};
+
+async function ensureLocation(){
+  if(USER_LOC.lat && USER_LOC.lng) return USER_LOC;
+  return new Promise((resolve)=>{
+    if(!navigator.geolocation) return resolve(USER_LOC);
+    navigator.geolocation.getCurrentPosition(
+      (pos)=>{ USER_LOC.lat = pos.coords.latitude; USER_LOC.lng = pos.coords.longitude; resolve(USER_LOC); },
+      ()=> resolve(USER_LOC),
+      {enableHighAccuracy:true, timeout:8000}
+    );
+  });
+}
+
+function addBubble(who, text){
+  const log = document.getElementById('log');
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.style.padding = '12px';
+  div.style.borderRadius = '16px';
+  div.style.borderColor = 'rgba(255,255,255,.12)';
+  div.innerHTML = `<div class="badge">${who}</div><div style="margin-top:8px;white-space:pre-wrap">${text}</div>`;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function sendMsg(){
+  const inp = document.getElementById('msg');
+  const message = inp.value.trim();
+  if(!message) return;
+  addBubble('나', message);
+  inp.value = '';
+
+  const loc = await ensureLocation();
+
+  let res;
+  try{
+    res = await fetch('/chat/api/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': window.CSRF_TOKEN,
+      },
+      body: JSON.stringify({message, lat: loc.lat, lng: loc.lng})
+    });
+  }catch(e){
+    addBubble('봇', '네트워크 오류... 잠깐만. (서버 켜져있는지 확인 ㄱㄱ)');
+    return;
+  }
+
+  let data;
+  try{
+    data = await res.json();
+  }catch(e){
+    addBubble('봇', '서버 응답 파싱 실패. 콘솔/서버 로그 확인 ㄱㄱ');
+    return;
+  }
+  addBubble('봇', data.reply);
+}
+
+function quick(t){
+  document.getElementById('msg').value = t;
+  sendMsg();
+}
+
+addBubble('봇', '안전 챗봇 준비완료.\n예: “내 근처 약국 몇시에 열고 닫아?” / “내 근처 병원 오픈시간 알려줘”');
+</script>
+{% endblock %}

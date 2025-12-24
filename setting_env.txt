@@ -241,3 +241,4 @@ TEMPLATES = [
 
 https://developers.kakao.com
 https://apis.map.kakao.com/web/guide/
+https://developers.kakaopay.com/

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}SafeMap | 내 프로필{% endblock %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 8px;">내 프로필</h2>
+  <div class="small">아이디: <b>{{ user.username }}</b></div>
+  <div class="small">이메일: {{ user.email|default:"(없음)" }}</div>
+  <hr>
+  <div class="btnrow">
+    <a class="btn" href="{% url 'reports:my' %}">내 제보 보기</a>
+    <a class="btn" href="{% url 'reports:new' %}">제보 등록</a>
+  </div>
+</div>
+{% endblock %}

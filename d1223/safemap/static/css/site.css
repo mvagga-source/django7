@@ -1,0 +1,44 @@
+:root{--bg:#0b1020;--card:#121a33;--muted:#9aa4c6;--text:#e8ecff;--brand:#7c5cff;--brand2:#00d4ff;}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,sans-serif;background:linear-gradient(180deg,var(--bg),#070a14);color:var(--text)}
+a{color:inherit;text-decoration:none}
+.container{max-width:1080px;margin:0 auto;padding:24px}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;position:sticky;top:0;background:rgba(11,16,32,.8);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.08);z-index:10}
+.brand{font-weight:800;letter-spacing:.3px;font-size:1.5rem}
+.brand b{background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.navlinks{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.pill{padding:8px 12px;border:1px solid rgba(255,255,255,.12);border-radius:999px}
+.pill:hover{border-color:rgba(255,255,255,.25)}
+.primary{background:linear-gradient(90deg,var(--brand),var(--brand2));border:0;color:#061021;font-weight:700}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
+.hero{padding:28px 0 8px}
+.h1{font-size:44px;line-height:1.05;margin:0 0 10px}
+.sub{color:var(--muted);max-width:66ch;margin:0 0 16px}
+.card{background:rgba(18,26,51,.7);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:16px;box-shadow:0 12px 30px rgba(0,0,0,.35)}
+.card h3{margin:0 0 6px}
+.small{color:var(--muted);font-size:14px;line-height:1.5}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12)}
+.btn:hover{border-color:rgba(255,255,255,.25)}
+.kpi{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.kpi .num{font-size:28px;font-weight:800}
+.footer{padding:36px 0;color:var(--muted);font-size:13px}
+input,textarea,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(7,10,20,.65);color:var(--text);outline:none}
+label{display:block;margin:10px 0 6px;color:var(--muted);font-size:13px}
+.formrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:900px){.formrow{grid-template-columns:1fr}}
+.notice{padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(124,92,255,.12)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted)}
+hr{border:none;border-top:1px solid rgba(255,255,255,.08);margin:16px 0}
+
+/* UX: clickable elements show pointer */
+button, .btn, a.btn, input[type=submit] { cursor: pointer; }
+
+/* Report status badges */
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;}
+.status-received{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);}
+.status-processing{background:rgba(255,215,0,.14);border:1px solid rgba(255,215,0,.28);}
+.status-done{background:rgba(0,255,153,.12);border:1px solid rgba(0,255,153,.25);}

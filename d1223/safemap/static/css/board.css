@@ -1,0 +1,97 @@
+body {
+    background: radial-gradient(circle at top, #0b1228, #05070f);
+    color: #e5e7eb;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+
+/* 레이아웃 */
+.board-wrapper {
+    max-width: 1100px;
+    margin: 140px auto;
+    padding: 0 20px;
+}
+
+/* ===== 제목 영역 ===== */
+.board-header h1 {
+    font-size: 42px;
+    font-weight: 800;
+    background: linear-gradient(90deg, #6aa9ff, #9dd1ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.board-header p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: #9fb3d1;
+}
+
+/* ===== 게시판 카드 ===== */
+.board-card {
+    margin-top: 48px;
+    padding: 28px;
+    border-radius: 20px;
+
+    /* 🔥 배경을 확실히 분리 */
+    background: linear-gradient(
+        180deg,
+        #141d3a,
+        #0c1228
+    );
+
+    /* 🔥 영역 강조 */
+    border: 1px solid rgba(106, 169, 255, 0.25);
+
+    /* 🔥 글로우 */
+    box-shadow:
+        0 0 0 1px rgba(106,169,255,0.15),
+        0 20px 60px rgba(0,0,0,0.8),
+        0 0 40px rgba(79,140,255,0.15);
+}
+
+/* ===== 테이블 ===== */
+.board-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.board-table thead {
+    background: rgba(79, 140, 255, 0.08);
+}
+
+.board-table th {
+    padding: 16px;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: #c7d6f8;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.board-table td {
+    padding: 18px 16px;
+    font-size: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* 제목 컬럼 */
+.board-table td.title {
+    font-weight: 600;
+    color: #eef2ff;
+}
+
+/* Hover 시 확실히 보이게 */
+.board-table tbody tr:hover {
+    background: linear-gradient(
+        90deg,
+        rgba(79,140,255,0.18),
+        rgba(79,140,255,0.05)
+    );
+}
+
+/* 빈 상태 */
+.empty {
+    text-align: center;
+    padding: 60px;
+    font-size: 15px;
+    color: #9fb3d1;
+}

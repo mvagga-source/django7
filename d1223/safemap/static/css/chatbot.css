@@ -1,0 +1,143 @@
+/* =========================
+   챗봇 버튼
+========================= */
+#chatbot-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #4f46e5;
+  color: #fff;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 99999;
+  box-shadow: 0 10px 25px rgba(0,0,0,.4);
+}
+
+/* =========================
+   챗봇 팝업
+========================= */
+#chatbot-popup {
+  position: fixed;
+  right: 24px;
+  bottom: 100px;
+  width: 340px;
+  height: 420px;
+
+  background: #0b1220;
+  border-radius: 14px;
+  overflow: hidden;
+  z-index: 99999;
+
+  display: none;
+  flex-direction: column;
+}
+
+#chatbot-popup.open {
+  display: flex;
+}
+
+/* =========================
+   헤더
+========================= */
+.chatbot-header {
+  height: 48px;
+  padding: 0 12px;
+  background: #111827;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+#chatbot-close {
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.7;
+}
+#chatbot-close:hover {
+  opacity: 1;
+}
+
+/* =========================
+   콘텐츠 래퍼 (⭐ 핵심)
+========================= */
+.chatbot-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* ⭐⭐⭐ 이게 핵심 */
+}
+
+/* =========================
+   메시지 영역
+========================= */
+.chatbot-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  font-size: 14px;
+  padding-bottom: 32px;
+  box-sizing: border-box;
+  min-height: 0; /* ⭐ 추가 */
+}
+
+/* =========================
+   입력 영역 (하단 고정)
+========================= */
+.chatbot-input {
+  height: 56px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  border-top: 1px solid #1f2937;
+  background: #020617;
+  flex-shrink: 0;
+}
+
+.chatbot-input input {
+  flex: 1;
+  height: 100%;
+  padding: 0 10px;
+  border: none;
+  background: transparent;
+  color: white;
+  outline: none;
+}
+
+.chatbot-input button {
+  height: 100%;
+  padding: 0 14px;
+  background: #4f46e5;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* =========================
+   메시지 말풍선
+========================= */
+.msg {
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  max-width: 80%;
+  line-height: 1.4;
+}
+
+.msg.bot {
+  background: #1f2937;
+}
+
+.msg.user {
+  background: #4f46e5;
+  margin-left: auto;
+}

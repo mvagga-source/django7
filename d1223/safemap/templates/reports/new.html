@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block title %}SafeMap | 제보 등록{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% endblock %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 8px;">제보 등록</h2>
+  <div class="small" style="opacity:.9">
+    위도/경도는 숨기고, <b>지도에서 위치를 찍으면</b> “무슨 시/구/동”까지 자동으로 채워집니다.
+  </div>
+</div>
+
+<div class="grid grid-2" style="margin-top:14px;">
+  <div class="card">
+    <h3 style="margin:0 0 10px;">위치 선택</h3>
+
+    <div class="btnrow" style="margin-bottom:10px;">
+      <input id="qAddr" placeholder="도시/구/동 검색 (예: 서울 강남구 역삼동)" style="flex:1;"/>
+      <button class="btn primary" type="button" onclick="searchAddress()">검색</button>
+    </div>
+
+    <div id="map" style="height:420px;border-radius:16px;overflow:hidden;"></div>
+
+    <div class="small" style="margin-top:10px;">
+      선택된 주소: <b id="pickedAddr">(아직 선택 안 됨)</b><br>
+      행정구역: <span id="pickedAdmin">(미정)</span>
+    </div>
+
+    <div class="notice small" style="margin-top:10px;">
+      지도 클릭 또는 검색으로 위치를 정하세요. (외부 API 실패해도 서버는 안 터짐)
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 10px;">내용</h3>
+
+    <form method="post">
+      {% csrf_token %}
+
+      {{ form.lat }}
+      {{ form.lng }}
+      {{ form.address_text }}
+      {{ form.sido }}
+      {{ form.sigungu }}
+      {{ form.dong }}
+
+      <label>제목</label>
+      {{ form.title }}{{ form.title.errors }}
+
+      <label style="margin-top:10px;">내용</label>
+      {{ form.content }}{{ form.content.errors }}
+
+      <label style="margin-top:10px;">발생 시각</label>
+      {{ form.happened_at }}{{ form.happened_at.errors }}
+
+      <div class="btnrow" style="margin-top:14px;">
+        <button class="btn primary" type="submit">저장</button>
+        <a class="btn" href="{% url 'reports:map' %}">지도</a>
+      </div>
+
+      <div class="small" style="margin-top:10px;opacity:.85">
+        자동 처리: 1줄 요약 / 유형 분류 / 위험도(1~5) — 저장 시 서버에서 계산됩니다.
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+let map = L.map('map').setView([37.5665, 126.9780], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap'
+}).addTo(map);
+
+let marker = null;
+
+function setMarker(lat, lng) {
+  if(marker) marker.remove();
+  marker = L.marker([lat, lng], {draggable:true}).addTo(map);
+  marker.on('dragend', async () => {
+    const p = marker.getLatLng();
+    await reverseGeocode(p.lat, p.lng);
+  });
+}
+
+async function reverseGeocode(lat, lng) {
+  // Nominatim reverse (no key). It can fail -> we just degrade gracefully.
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&addressdetails=1&lat=${lat}&lon=${lng}&accept-language=ko`;
+    const res = await fetch(url, { headers: { "Accept": "application/json" } });
+    const j = await res.json();
+
+    const display = j.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    document.getElementById('pickedAddr').textContent = display;
+
+    const addr = j.address || {};
+    const sido = addr.state || addr.region || '';
+    const sigungu = addr.city || addr.county || addr.borough || '';
+    const dong = addr.suburb || addr.neighbourhood || addr.quarter || addr.village || '';
+
+    document.getElementById('pickedAdmin').textContent = `${sido} ${sigungu} ${dong}`.trim() || '(미정)';
+
+    // Fill hidden form fields
+    const fLat = document.getElementById('id_lat');
+    const fLng = document.getElementById('id_lng');
+    const fAddr = document.getElementById('id_address_text');
+    const fSido = document.getElementById('id_sido');
+    const fSigungu = document.getElementById('id_sigungu');
+    const fDong = document.getElementById('id_dong');
+
+    if(fLat) fLat.value = lat;
+    if(fLng) fLng.value = lng;
+    if(fAddr) fAddr.value = display;
+    if(fSido) fSido.value = sido;
+    if(fSigungu) fSigungu.value = sigungu;
+    if(fDong) fDong.value = dong;
+  } catch(e) {
+    document.getElementById('pickedAddr').textContent = '(주소 조회 실패 — 그래도 저장은 가능)';
+    const fLat = document.getElementById('id_lat');
+    const fLng = document.getElementById('id_lng');
+    if(fLat) fLat.value = lat;
+    if(fLng) fLng.value = lng;
+  }
+}
+
+async function searchAddress(){
+  const q = document.getElementById('qAddr').value.trim();
+  if(!q) return;
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr&addressdetails=1&q=${encodeURIComponent(q)}`;
+    const res = await fetch(url, { headers: { "Accept": "application/json" } });
+    const j = await res.json();
+    if(!j || !j[0]) {
+      alert('검색 결과가 없어 😿 다른 키워드로!');
+      return;
+    }
+    const lat = parseFloat(j[0].lat);
+    const lng = parseFloat(j[0].lon);
+    map.flyTo([lat, lng], 15, {duration: 0.8});
+    setMarker(lat, lng);
+    await reverseGeocode(lat, lng);
+  } catch(e) {
+    alert('검색 실패(네트워크).');
+  }
+}
+
+map.on('click', async (e)=>{
+  const lat = e.latlng.lat;
+  const lng = e.latlng.lng;
+  setMarker(lat, lng);
+  await reverseGeocode(lat, lng);
+});
+
+// Try user location on load
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition((pos)=>{
+    const lat = pos.coords.latitude, lng = pos.coords.longitude;
+    map.setView([lat,lng], 14);
+    setMarker(lat,lng);
+    reverseGeocode(lat,lng);
+  }, ()=>{ /* ignore */ }, {enableHighAccuracy:true, timeout:5000});
+}
+</script>
+{% endblock %}

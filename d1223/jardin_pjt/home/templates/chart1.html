@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    <title>차트그리기</title>
+    <style>
+        #chart_back{width:800px; height:600px; border:1px solid black;}
+    </style>
+</head>
+<body>
+    <div>
+        <h2>차트그리기</h2>
+        <input type='text' name='m_data' id='m_data'>
+        <button type='button' onclick='chartBtn()'>가져오기</button>
+    </div>
+    <div id='chart_back'>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <script>
+        function chartBtn(){
+            alert("데이터를 가져와 차트를 그립니다.");
+            // 요청번호
+            let input_data = $("#m_data").val();
+            // chart그리기에 필요한 데이터
+            let d_data = [];
+            let label_data = [];
+            
+            //ajax으로 통신
+            $.ajax({
+                url:'/chart_json/',
+                type:'get',
+                dataType:'json',
+                headers:{'X-CSRFToken':'{{csrf_token}}'},
+                data:{'input_data':input_data},
+                success:function(data){
+                    alert('성공');
+                    d_data = data.dd_data;
+                    label_data = data.ll_data;
+
+                    // 비동기 방식으로 진행이 되어 ajax 데이터가 늦게 전달이 됨.
+                    // 차트 그리기 명령어도 ajax안에 입력이 되어야 함.
+                    // 차트 그리기
+                    const ctx = document.getElementById('myChart');
+
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                        labels: label_data,
+                        datasets: [{
+                            label: '# of Votes',
+                            data: d_data,
+                            borderWidth: 1
+                        }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                beginAtZero: true
+                                }
+                            }
+                            }
+                    });
+                },
+                error:function(){
+                    alert('실패');
+                }
+
+
+            });//ajax
+
+        }//chartBtn    
+           
+    </script>
+
+
+   
+</body>
+</html>

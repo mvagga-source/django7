@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}SafeMap | 서비스 소개{% endblock %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 8px;">서비스 소개</h2>
+  <p class="small">
+    SafeMap은 “지역 사건·사고 제보”를 모아 지도에 표시하는 안전 정보 서비스 MVP입니다.
+    제보가 들어오면 자동으로 요약/분류/위험도를 생성해 저장하고, 지도 화면에서 기간 필터(7일/30일)로 빠르게 확인할 수 있어요.
+  </p>
+  <hr>
+  <div class="grid grid-2">
+    <div>
+      <h3 style="margin:0 0 8px;">왜 이게 포폴에 강하냐</h3>
+      <ul class="small">
+        <li>지도 UI로 결과가 바로 “보이는” 서비스</li>
+        <li>AI는 요약/분류만 해도 임팩트 큼</li>
+        <li>API(JSON) + 프론트(Ajax) 구조를 자연스럽게 보여줌</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin:0 0 8px;">다음 확장</h3>
+      <ul class="small">
+        <li>OpenAI API 붙여서 진짜 AI 요약/분류</li>
+        <li>중복 제보 묶기(유사 사건)</li>
+        <li>행정동/구 단위 통계 페이지</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

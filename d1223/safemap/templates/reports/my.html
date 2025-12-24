@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}SafeMap | 내 제보{% endblock %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 8px;">내 제보</h2>
+  <p class="small">내가 올린 사건·사고들. (나 좀 열일했네)</p>
+  <hr>
+  {% if reports %}
+    <div class="grid grid-2">
+      {% for r in reports %}
+        <a class="card" href="{% url 'reports:detail' r.id %}">
+          <div class="badge">{{ r.get_category_display }} · 위험도 {{ r.risk }}</div>
+          <h3 style="margin:10px 0 6px;">{{ r.title }}</h3>
+          <div class="small">{{ r.summary }}</div>
+          <div class="small" style="margin-top:10px;color:#9aa4c6">등록: {{ r.created_at }}</div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="notice">아직 제보가 없음. 첫 제보는 네가 해라… 영광이다 😎</div>
+  {% endif %}
+</div>
+{% endblock %}

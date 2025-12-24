@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}SafeMap | 제보 상세{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="badge">ID #{{ r.id }} · {{ r.get_category_display }} · 위험도 {{ r.risk }}</div>
+  <h2 style="margin:10px 0 6px;">{{ r.title }}</h2>
+<div class=\"status-badge status-{{ report.status }}\">{{ report.get_status_display }}</div>
+  <div class="small">발생: {{ r.happened_at }} · 등록: {{ r.created_at }}</div>
+  <hr>
+  <h3 style="margin:0 0 6px;">AI 요약(저장됨)</h3>
+  <div class="notice">{{ r.summary }}</div>
+  <hr>
+  <h3 style="margin:0 0 6px;">원문</h3>
+  <div class="small" style="white-space:pre-wrap">{{ r.content }}</div>
+  <hr>
+  <div class="small">좌표: {{ r.lat }}, {{ r.lng }}</div>
+  <div class="btnrow" style="margin-top:12px;">
+    <a class="btn" href="{% url 'reports:map' %}">지도 돌아가기</a>
+    {% if user.is_authenticated and r.user_id == user.id %}
+      <a class="btn" href="{% url 'reports:my' %}">내 제보</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

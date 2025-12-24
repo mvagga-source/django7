@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block title %}SafeMap | 지도{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% endblock %}
+{% block content %}
+<div class="grid grid-2">
+  <div class="card">
+    <h2 style="margin:0 0 8px;">안전 지도</h2>
+    <div class="small">
+      우리 동네 사건·사고,<b> 한 줄로 요약해서 지도에</b>.<br>전국 <b>시/도 전체</b> 선택 가능 + (선택) 시/군/구는 검색으로 이동합니다.<br>
+      제보 내용을 기반으로 1줄 요약, 유형 분류, 위험도(1~5)를 자동 산출해 누구나 빠르게 지역 안전 신호를 볼 수 있게 합니다.
+    </div>
+
+    <div class="btnrow" style="margin-top:12px;">
+      <button class="btn" onclick="setDays(7)">최근 7일</button>
+      <button class="btn" onclick="setDays(30)">최근 30일</button>
+      <a class="btn primary" href="{% url 'reports:new' %}">+ 제보</a>
+    </div>
+
+    <hr>
+
+    <div class="small" style="margin-bottom:8px;">지역 선택</div>
+
+    <label>시/도</label>
+    <select id="selSido"></select>
+
+    <label style="margin-top:10px;">시/군/구 검색(선택)</label>
+    <input id="qSigungu" type="text" placeholder="예: 강남구 / 수원시 / 서귀포시" />
+
+    <div class="btnrow" style="margin-top:12px;">
+      <button class="btn primary" onclick="applyRegion()">이동 + 로딩</button>
+      <button class="btn" onclick="resetRegion()">전체 보기</button>
+    </div>
+
+    <hr>
+
+    <div class="badge" id="regionLabel">전체</div>
+    <div class="small" id="stat" style="margin-top:10px;"></div>
+    <div id="miniList" class="small" style="margin-top:10px;display:flex;flex-direction:column;gap:8px;"></div>
+
+    <div class="small" style="margin-top:10px; opacity:.8">
+      * 시/군/구를 “전부 드릴다운 리스트”로 넣는 건 데이터가 커서 JSON(행정구역 데이터)로 로딩하는 방식이 정석이에요.
+      지금 버전은 서버 안 터지게 “검색+bbox”로 안전하게 가는 MVP 루트 😼
+    </div>
+  </div>
+
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div id="map" style="height:520px;"></div>
+  </div>
+</div>
+
+<script>
+let DAYS = 7;
+const SIDO = [
+  "서울특별시","부산광역시","대구광역시","인천광역시","광주광역시","대전광역시","울산광역시",
+  "세종특별자치시","경기도","강원특별자치도","충청북도","충청남도","전북특별자치도","전라남도",
+  "경상북도","경상남도","제주특별자치도"
+];
+
+let map = L.map('map').setView([36.5, 127.8], 7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+
+let layer = L.layerGroup().addTo(map);
+let ACTIVE_BBOX = null; // [minLng,minLat,maxLng,maxLat] or null
+
+function iconFor(item){
+  let emoji = "⚠️";
+  if(item.category === "violence") emoji = "🚨";
+  else if(item.category === "fire") emoji = "🔥";
+  else if(item.category === "traffic") emoji = "🚗";
+  else if(item.category === "lost") emoji = "🧳";
+  return L.divIcon({html: `<div style="font-size:22px;transform:translate(-8px,-12px)">${emoji}</div>`, className: '', iconSize: [20,20]});
+}
+
+function boundsToBbox(bounds){
+  const sw = bounds.getSouthWest();
+  const ne = bounds.getNorthEast();
+  return [sw.lng, sw.lat, ne.lng, ne.lat];
+}
+
+function renderMiniList(items){
+  const box = document.getElementById("miniList");
+  if(!box) return;
+  box.innerHTML = "";
+  const top = (items || []).slice(0, 8);
+  if(top.length === 0){
+    box.innerHTML = `<div class="small" style="opacity:.8">표시할 제보가 아직 없어.</div>`;
+    return;
+  }
+  top.forEach((it) => {
+    const line = document.createElement("div");
+    line.className = "card";
+    line.style.padding = "10px";
+    line.style.borderRadius = "14px";
+    line.style.borderColor = "rgba(255,255,255,.12)";
+    const summary = (it.summary || "").replace(/\n/g, " ");
+    line.innerHTML = `<b style="display:block;margin-bottom:4px">• ${summary || (it.title||'제보')}</b>
+                      <a href="${it.detail_url}" class="small">상세 →</a>`;
+    box.appendChild(line);
+  });
+}
+
+async function loadMarkers(){
+
+  layer.clearLayers();
+  const params = new URLSearchParams();
+  params.set("days", String(DAYS));
+  if(ACTIVE_BBOX){ params.set("bbox", ACTIVE_BBOX.join(",")); }
+  const url = `/reports/api/list/?` + params.toString();
+  const res = await fetch(url);
+  const data = await res.json();
+
+  document.getElementById("stat").innerText =
+    `표시중: ${data.count}건 (최근 ${DAYS}일)` + (ACTIVE_BBOX ? " · 지역 필터 ON" : " · 전체");
+
+  renderMiniList(data.items || []);
+
+  (data.items || []).forEach(item => {
+    const m = L.marker([item.lat, item.lng], {icon: iconFor(item)}).addTo(layer);
+    m.bindPopup(`<div style="max-width:260px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;"><b>${item.title}</b><span class=\"status-badge ${'status-' + (item.status || 'received')}\">${item.status_label || ''}</span></div>
+        <div style="font-size:12px;opacity:.85;margin-top:4px">${item.summary}</div>
+        <div style="font-size:12px;opacity:.75;margin-top:6px">📍 ${item.address_text || ''} ${item.sido || ''} ${item.sigungu || ''} ${item.dong || ''}</div>
+        <div style="margin-top:8px"><a href="${item.detail_url}">상세 보기 →</a></div>
+      </div>`);
+  });
+}
+
+function setDays(d){ DAYS = d; loadMarkers(); }
+
+function initSido(){
+  const sel = document.getElementById("selSido");
+  sel.innerHTML = "";
+  SIDO.forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+  sel.value = "서울특별시";
+}
+
+async function geocodeKorea(query){
+  const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=kr&q=" + encodeURIComponent(query);
+  const res = await fetch(url, { headers: { "Accept": "application/json" } });
+  const j = await res.json();
+  if(!j || !j[0]) return null;
+  return { lat: parseFloat(j[0].lat), lng: parseFloat(j[0].lon) };
+}
+
+async function applyRegion(){
+  const sido = document.getElementById("selSido").value;
+  const sigungu = document.getElementById("qSigungu").value.trim();
+  let label = sido;
+
+  if(sigungu){
+    const loc = await geocodeKorea(`대한민국 ${sido} ${sigungu}`);
+    if(loc){
+      map.flyTo([loc.lat, loc.lng], 12, {animate:true, duration:0.9});
+      label = `${sido} · ${sigungu}`;
+    }else{
+      const loc2 = await geocodeKorea(`대한민국 ${sido}`);
+      if(loc2) map.flyTo([loc2.lat, loc2.lng], 9, {animate:true, duration:0.9});
+    }
+  }else{
+    const loc = await geocodeKorea(`대한민국 ${sido}`);
+    if(loc) map.flyTo([loc.lat, loc.lng], 9, {animate:true, duration:0.9});
+  }
+
+  ACTIVE_BBOX = boundsToBbox(map.getBounds());
+  document.getElementById("regionLabel").innerText = label;
+  loadMarkers();
+}
+
+function resetRegion(){
+  ACTIVE_BBOX = null;
+  document.getElementById("regionLabel").innerText = "전체";
+  map.flyTo([36.5, 127.8], 7, {animate:true, duration:0.9});
+  loadMarkers();
+}
+
+initSido();
+loadMarkers();
+
+// Deep-link support: ?region=대한민국 서울특별시 강남구 역삼동
+(async function(){
+  try{
+    const params = new URLSearchParams(location.search);
+    const region = params.get('region');
+    if(region){
+      const loc = await geocodeKorea(region);
+      if(loc){
+        map.flyTo([loc.lat, loc.lng], 12, {animate:true, duration:0.9});
+        ACTIVE_BBOX = boundsToBbox(map.getBounds());
+        document.getElementById('regionLabel').innerText = region.replace(/^대한민국\s*/, '');
+        loadMarkers();
+      }
+    }
+  }catch(e){/* ignore */}
+})();
+</script>
+{% endblock %}

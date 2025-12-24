@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}SafeMap | 비밀번호 확인{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>프로필 접근을 위해 비밀번호를 입력하세요</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">확인</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+...existing code...
+{% extends 'base.html' %}
+{% block title %}SafeMap | 로그인{% endblock %}
+{% block content %}
+<div class="card" style="max-width:560px;margin:0 auto;">
+  <h2 style="margin:0 0 8px;">로그인</h2>
+  <p class="small">다시 왔네. 들어오자 😼</p>
+  <form method="post">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div style="padding:10px;margin-bottom:10px;border-radius:10px;background:rgba(255,80,80,.15);border:1px solid rgba(255,80,80,.3);color:#ffb3b3;">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+    
+    <label>아이디</label>
+    {{ form.username }}
+    {% if form.username.errors %}
+      <div class="small" style="color:#ffb3b3;margin-top:4px;">{{ form.username.errors.0 }}</div>
+    {% endif %}
+    
+    <label>비밀번호</label>
+    {{ form.password }}
+    {% if form.password.errors %}
+      <div class="small" style="color:#ffb3b3;margin-top:4px;">{{ form.password.errors.0 }}</div>
+    {% endif %}
+    
+    <div style="margin-top:20px" class="btnrow">
+      <button class="btn primary" type="submit">로그인</button>
+      <a class="btn" href="{% url 'accounts:signup' %}">회원가입</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
