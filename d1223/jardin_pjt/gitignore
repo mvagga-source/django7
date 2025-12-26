@@ -1,0 +1,5 @@
+# git파일 업로드 방지(깃허브 올리고 싶지 않은 파일 추가)
+# list2.html
+/logs/*
+/board/func_api.py
+# DB나 필요없는 다운로드 media파일들도 제외가능
