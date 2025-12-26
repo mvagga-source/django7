@@ -1,4 +1,7 @@
 
+1차
+1월14일 까지 개발완료,  15일 발표
+
 https://github.com/onulee
 
 
@@ -242,3 +245,14 @@ TEMPLATES = [
 https://developers.kakao.com
 https://apis.map.kakao.com/web/guide/
 https://developers.kakaopay.com/
+
+
+
+[ 유튜브 게시판에 연결방법 ]
+1. 유튜브 원하는 영상 > 공유
+2. 퍼가기 옵션 > iframe 복사
+3. 게시판 > 코드 넣고 글쓰기 저장
+-----
+4. html 코드에서
+{{c.bcontent|safe}}
+safe 함수를 넣어야 html코드로 인식이 되어 표시가 됨
