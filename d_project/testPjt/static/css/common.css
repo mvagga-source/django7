@@ -1,0 +1,5 @@
+
+#magazine_bg{
+    height:244px;width:100%;background:url('/static/images/common/back_magazine.jpg') no-repeat;
+    background-size: cover;
+}
