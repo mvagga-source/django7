@@ -1,3 +1,12 @@
+
+# [카카오페이 애플리케이션 등록 및 키 발급 안내]
+# 1. https://developers.kakaopay.com/로 이동
+# 2. 애플리케이션 등록: 카카오페이 개발자 센터 로그인 후 내 애플리케이션 메뉴에서 앱 등록 클릭 후 앱 아이콘과 이름(예: 디장고페이)을 입력하여 생성합니다.
+# - 비밀키 발급: 등록된 애플리케이션 상세 페이지(애플리케이션 목록 > 애플리케이션 정보)의 발급 정보에서 Secret Key(dev)를 발급받아 복사한 뒤, HTML 스크립트 경로에 적용합니다.
+# 3. 플랫폼 설정: 좌측 메뉴의 애플리케이션 정보 > 기본 정보 를 플랫폼선택으로 선택하여 이동
+# - 도메인 등록: 플랫폼 설정 항목에서 Web을 선택하고 사이트 도메인(http://127.0.0.1:8000)을 등록합니다.
+
+
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 import requests

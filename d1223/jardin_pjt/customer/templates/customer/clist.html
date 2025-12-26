@@ -226,7 +226,7 @@ $(document).ready(function() {
 								<th scope="col" class="tnone">조회수</th>
 							</thead>
 							<tbody>
-								<tr>
+								{% comment %} <tr>
 									<td class="tnone">1</td>
 									<td class="left">
 										<a href="#">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
@@ -234,88 +234,18 @@ $(document).ready(function() {
 									</td>
 									<td>14-01-28</td>
 									<td class="tnone right">9999</td>
-								</tr>
+								</tr> {% endcomment %}
 
-								<tr>
-									<td class="tnone">2</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
-
-								<tr>
-									<td class="tnone">3</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
-
-								<tr>
-									<td class="tnone">4</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
-
-								<tr>
-									<td class="tnone">5</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
-
-								<tr>
-									<td class="tnone">6</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
-
-								<tr>
-									<td class="tnone">7</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
-
-								<tr>
-									<td class="tnone">8</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
-
-								<tr>
-									<td class="tnone">9</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
-
-								<tr>
-									<td class="tnone">10</td>
-									<td class="left">
-										<a href="#" class="lightgray">쟈뎅 전문 쇼핑몰 쟈뎅샵이 리뉴얼 오픈합니다.</a>
-									</td>
-									<td>14-01-28</td>
-									<td class="tnone right">9999</td>
-								</tr>
+								{% for c in list %}
+                                <tr id="{{c.bno}}">
+                                    <td class="tnone">{{c.bno}}</td>
+                                    <td class="left">
+                                        <a href="/customer/cview/{{c.bno}}/" class="lightgray">{{c.btitle}}</a>
+                                    </td>
+                                    <td>{{c.bdate|date:'Y-m-d H:i'}}</td>
+                                    <td class="tnone right">{{c.bhit}}</td>
+                                </tr>
+                                {% endfor %}
 							</tbody>
 						</table>
 					</div>
@@ -323,16 +253,51 @@ $(document).ready(function() {
 
 
 					<div class="btnAreaList">
+
+						<div class="bwright">
+							<ul>
+								<li><a href="/customer/cwrite/" class="sbtnMini">글쓰기</a></li>
+							</ul>
+						</div>						
+
 						<!-- 페이징이동1 -->
 						<div class="allPageMoving1">
+							
+						<!-- 이전 페이지 -->
+						{% if list.has_previous %}
+						<a href="/customer/clist/?page=1&category={{category}}&search={{search}}" class="n"><img src="/static/images/btn/btn_pre2.gif" alt="처음으로"/></a>
+						<a href="/customer/clist/?page={{list.previous_page_number}}&category={{category}}&search={{search}}" class="pre"><img src="/static/images/btn/btn_pre1.gif" alt="앞페이지로"/></a>
+						{% else %}
+						<a class="n"><img src="/static/images/btn/btn_pre2.gif" alt="처음으로"/></a>
+						<a class="pre"><img src="/static/images/btn/btn_pre1.gif" alt="앞페이지로"/></a>
+						{% endif %}
+						
 
-						<a href="#" class="n"><img src="/static/images/btn/btn_pre2.gif" alt="처음으로"/></a><a href="#" class="pre"><img src="/static/images/btn/btn_pre1.gif" alt="앞페이지로"/></a>
-						<strong>1</strong>
-						<a href="#">2</a>
-						<a href="#">3</a>
-						<a href="#">4</a>
-						<a href="#">5</a>
-						<a href="#" class="next"><img src="/static/images/btn/btn_next1.gif" alt="뒤페이지로"/></a><a href="#" class="n"><img src="/static/images/btn/btn_next2.gif" alt="마지막페이지로"/></a>
+
+						<!-- 순차 페이지 -->
+						{% for p in list.paginator.page_range %}
+
+							{% if p >= list.number|add:'-3' and p <= list.number|add:'3' %}
+
+								{% if p == page %}
+									<strong>{{p}}</strong>
+								{% else %}
+									<a href='/customer/clist/?page={{p}}&category={{category}}&search={{search}}'>{{p}}</a>
+								{% endif %}
+
+							{% endif %}
+						{% endfor %}
+						
+
+
+						<!-- 다음 페이지 -->
+						{% if list.has_next %}
+						<a href="/customer/clist/?page={{list.next_page_number}}&category={{category}}&search={{search}}" class="next"><img src="/static/images/btn/btn_next1.gif" alt="뒤페이지로"/></a>
+						<a href="/customer/clist/?page={{list.paginator.num_pages}}&category={{category}}&search={{search}}" class="n"><img src="/static/images/btn/btn_next2.gif" alt="마지막페이지로"/></a>
+						{% else %}
+						<a class="next"><img src="/static/images/btn/btn_next1.gif" alt="뒤페이지로"/></a>
+						<a class="n"><img src="/static/images/btn/btn_next2.gif" alt="마지막페이지로"/></a
+						{% endif %}
 
 						</div>
 						<!-- //페이징이동1 -->
@@ -340,17 +305,31 @@ $(document).ready(function() {
 
 					<div class="searchWrap">
 						<div class="search">
-							<ul>
-								<li class="web"><img src="/static/images/txt/txt_search.gif" alt="search" /></li>
-								<li class="se">
-									<select>
-										<option value="" />제목</option>
-									</select>
-								</li>
-								<li><input type="text" class="searchInput" /></li>
-								<li class="web"><a href="#"><img src="/static/images/btn/btn_search.gif" alt="검색" /></a></li>
-								<li class="mobile"><a href="#"><img src="/static/images/btn/btn_search_m.gif" alt="검색" /></a></li>
-							</ul>
+							<script>
+								function searchBtn(){
+									alert('검색 시작!')
+									searchFrm.submit();
+								}
+							</script>
+
+							<form action='/customer/clist/' method='get' name='searchFrm'>
+								{% csrf_token %}
+
+								<ul>
+									<li class="web"><img src="/static/images/txt/txt_search.gif" alt="search" /></li>
+									<li class="se">
+										<select name='category'>
+											<option value="btitle" />제목</option>
+											<option value="bcontent" />내용</option>
+											<option value="all" />전체</option>
+										</select>
+									</li>
+									<li><input type="text" name='search' class="searchInput" /></li>
+									<li class="web"><a onclick='searchBtn()'><img src="/static/images/btn/btn_search.gif" alt="검색" /></a></li>
+									<li class="mobile"><a><img src="/static/images/btn/btn_search_m.gif" alt="검색" /></a></li>
+								</ul>
+							</form>
+							
 						</div>
 					</div>
 					<!-- //포토 구매후기 -->

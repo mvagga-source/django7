@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<!-- container -->
+<div id="container">
+
+	<div id="location">
+		<ol>
+			<li><a href="#">HOME</a></li>
+			<li><a href="#">CUSTOMER</a></li>
+			<li class="last">NOTICE</li>
+		</ol>
+	</div>
+	
+	<div id="outbox">		
+		<div id="left">
+			<div id="title2">CUSTOMER<span>고객센터</span></div>
+			<ul>	
+				<li><a href="#" id="leftNavi1">NOTICE</a></li>
+				<li><a href="#" id="leftNavi2">1:1문의</a></li>
+				<li><a href="#" id="leftNavi3">FAQ</span></a></li>
+				<li class="last"><a href="#" id="leftNavi4">이용안내</a></li>
+			</ul>			
+		</div><script type="text/javascript">initSubmenu(1,0);</script>
+
+
+		<!-- contents -->
+		<div id="contents">
+			<div id="customer">
+				<h2><strong>NOTICE</strong><span>쟈뎅샵 소식을 전해드립니다.</span></h2>
+
+				<div class="viewDivMt">
+					<div class="viewHead">
+						<div class="subject">
+							<ul>
+								<li>{{c.btitle}}</li>
+							</ul>
+						</div>
+						<div class="day">
+							<p class="txt">작성일<span>{{c.bdate|date:'Y-m-d H:i'}}</span></p>
+						</div>
+					</div>
+
+					<div class="viewContents">
+						{{c.bcontent|safe}}
+					</div>
+				</div>
+
+
+				<!-- 이전다음글 -->
+				<div class="pnDiv web">
+					<table summary="이전다음글을 선택하여 보실 수 있습니다." class="preNext" border="1" cellspacing="0">
+						<caption>이전다음글</caption>
+						<colgroup>
+						<col width="100px" />
+						<col width="*" />
+						</colgroup>
+						<tbody>
+							<tr>
+								<th class="pre">PREV</th>
+								{% if pre_c %}
+									<td><a href="/customer/cview/{{pre_c.bno}}">{{pre_c.btitle}}</a></td>
+								{% else %}
+									<td>이전글이 없습니다.</td>
+								{% endif %}
+							</tr>
+							<tr>
+								<th class="next">NEXT</th>
+								{% if next_c %}
+									<td><a href="/customer/cview/{{next_c.bno}}">{{next_c.btitle}}</a></td>
+								{% else %}
+									<td>다음글이 없습니다.</td>
+								{% endif %}
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //이전다음글 -->
+
+				<script>
+
+					//하단 댓글 추가부분 ---
+					
+					$(function(){
+
+						// 동적
+						$(document).on('click','.deleteBtn',function(){
+
+							let cno = $(this).closest('ul').attr('id');
+							console.log('삭제번호 :',cno)
+							if(confirm('데이터를 삭제하시겠습니까?')){
+
+								//ajax
+								$.ajax({
+									url:'/comment/codelete/',
+									type:'post',
+									headers:{'X-CSRFToken':'{{csrf_token}}'},
+									data:{'cno':cno},
+									dataType:'json',
+									success:function(data){
+
+										console.log("결과 : ",data.result);
+
+										$('#'+cno).remove();										
+
+										// 댓글개수 1감소
+										let co_count = Number($(".co_count").text());
+										co_count -= 1;
+										$(".co_count").text(co_count);
+
+									},
+									error:function(){
+										alert('실패');
+									}
+
+								});//ajax
+							}//if				
+
+						}); //deleteBtn											
+
+						$(document).on('click','.replyBtn',function(){
+
+							alert('하단 댓글을 추가합니다.')
+							let cpw = $(".replynum").val()
+							let ccontent = $(".replyType").val()
+
+							console.log(cpw)
+							console.log(ccontent)
+
+							//ajax
+
+							$.ajax({
+								url:'/comment/cowrite/',
+								type:'post',
+								headers:{'X-CSRFToken':'{{csrf_token}}'},
+								data:{'cpw':cpw,'ccontent':ccontent,'bno':'{{c.bno}}'},
+								dataType:'json',
+								success:function(data){
+									console.log(data);
+									console.log('co : ',data.co[0]);
+
+									var dataHtml = `
+										<ul id='${data.co[0].cno}'>
+											<li class="name">{{request.session.session_name}} 
+												<span> [ `+ moment(data.co[0].cdate).format('YYYY-MM-DD HH:mm:ss')+` ] </span></li>
+											<li class="txt">${data.co[0].ccontent}</li>
+											<li class="btn">
+												<a class="rebtn updateBtn">수정</a>
+												<a class="rebtn deleteBtn">삭제</a>
+											</li>
+										</ul>
+									`;
+
+									//하단 댓글 리스트 위치에 추가
+									$('.replyBox').prepend(dataHtml);
+
+									// 댓글개수 1증가
+									let co_count = Number($(".co_count").text());
+									co_count += 1;
+									$(".co_count").text(co_count);
+
+									$(".replynum").val('');
+									$(".replyType").val('');
+
+								},
+								error:function(){
+									alert('실패');
+								}
+
+							});//ajax
+
+
+						});//replyBtn
+					});
+				</script>
+
+				<!-- 댓글-->
+				<div class="replyWrite">
+					<ul>
+						<li class="in">
+							<p class="txt">총 <span class="orange co_count">{{comment_qs.count}}</span> 개의 댓글이 달려있습니다.</p>
+							<p class="password">비밀번호&nbsp;&nbsp;<input type="password" class="replynum" /></p>
+							<textarea class="replyType"></textarea>
+						</li>
+						<li class="btn"><a class="replyBtn">등록</a></li>
+					</ul>
+					<p class="ntic">※ 비밀번호를 입력하시면 댓글이 비밀글로 등록 됩니다.</p>
+				</div>
+
+				<div class="replyBox">
+
+					<!--	하단댓글 추가 위치		-->
+
+
+					{% for co in comment_qs %}
+					<ul id='{{co.cno}}'>
+						<li class="name">{{co.member.name}} <span>{{co.cdate|date:'Y-m-d H:i'}}</span></li>
+						<li class="txt">{{co.ccontent}}</li>
+						<li class="btn">
+							<a class="rebtn updateBtn">수정</a>
+							<a class="rebtn deleteBtn">삭제</a>
+						</li>
+					</ul>
+					{% endfor %}
+
+					<!--
+					<ul>
+						<li class="name">jjabcde <span>[2014-03-04&nbsp;&nbsp;15:01:59]</span></li>
+						<li class="txt"><textarea class="replyType"></textarea></li>
+						<li class="btn">
+							<a href="#" class="rebtn">수정</a>
+							<a href="#" class="rebtn">삭제</a>
+						</li>
+					</ul>					
+					-->
+
+					<ul>
+						<li class="name">jjabcde <span>[2014-03-04&nbsp;&nbsp;15:01:59]</span></li>
+						<li class="txt">
+							<a href="password.html" class="passwordBtn"><span class="orange">※ 비밀글입니다.</span></a>
+						</li>
+					</ul>
+				</div>
+				<!-- //댓글 -->
+
+
+				<!-- Btn Area -->
+				<div class="btnArea btline">
+					<div class="bRight">
+						<ul>
+							<li><a href="#" class="sbtnMini mw">목록</a></li>
+							<li><a href="#" class="sbtnMini mw">답글</a></li>
+							<li><a href="#" class="sbtnMini mw">수정</a></li>
+							<li><a href="#" class="sbtnMini mw">삭제</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- //Btn Area -->
+				
+			</div>
+		</div>
+		<!-- //contents -->
+
+
+	</div>
+</div>
+<!-- //container -->
+
+{% endblock body %}
+

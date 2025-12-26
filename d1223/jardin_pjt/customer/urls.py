@@ -5,6 +5,8 @@ app_name='customer'
 urlpatterns = [
     # html리턴
     path('clist/', views.clist, name='clist'),
+    path('cview/<int:bno>/', views.cview, name='cview'),
+    path('cwrite/', views.cwrite, name='cwrite'),
     
 ]
 
