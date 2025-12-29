@@ -24,17 +24,48 @@
 			</ul>			
 		</div><script type="text/javascript">initSubmenu(1,0);</script>
 
-
 		<!-- contents -->
 		<div id="contents">
 			<div id="customer">
 				<h2><strong>NOTICE</strong><span>쟈뎅샵 소식을 전해드립니다.</span></h2>
-
+				<script>
+					$(function(){
+						$("#likes_icon").click(function(){
+							//alert('aa');
+							$.ajax({
+								url:'/customer/clikes/',
+								type:'post',
+								headers:{'X-CSRFToken':'{{csrf_token}}'},
+								data:{'bno':'{{c.bno}}'},
+								dataType:'json',
+								success:function(data){
+									console.log('data result : ',data.result);
+									if(data.likes_chk == "1"){ //추가
+										dataHtml = `<i class="fa-solid fa-heart"></i> (${data.count})`;
+									}else{
+										dataHtml = `<i class="fa-regular fa-heart"></i> (${data.count})`;
+									}
+									$('#likes_icon').html(dataHtml);
+								},
+								error:function(){alert('실패');}
+							});
+						});
+					});//jquery
+				</script>
 				<div class="viewDivMt">
 					<div class="viewHead">
 						<div class="subject">
 							<ul>
 								<li>{{c.btitle}}</li>
+								<li style='padding-left:450px;'>좋아요 :
+									<a style='color:black;' id='likes_icon'>
+										{% if c.member in c.likes.all %}
+										<i class="fa-solid fa-heart"></i> ({{c.likes.count}})
+										{% else %}
+										<i class="fa-regular fa-heart"></i> ({{c.likes.count}})
+										{% endif %}
+									</a>
+								</li>
 							</ul>
 						</div>
 						<div class="day">

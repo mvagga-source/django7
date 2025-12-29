@@ -10,8 +10,12 @@ class Board(models.Model):
     bgroup = models.IntegerField(default=0)
     bstep = models.IntegerField(default=0)
     bindent = models.IntegerField(default=0)
+    
     bhit = models.IntegerField(default=0) #조회수
     bfile = models.FileField(default='',null=True)
     bdate = models.DateTimeField(auto_now=True)
+    
+    likes = models.ManyToManyField(Member, related_name='likes_member', null=True, blank=True)
+    
     def __str__(self):
-        return f'{self.bno},{self.btitle},{self.member.id},{self.bgroup},{self.bdate}'
+        return f'{self.bno},{self.btitle},{self.member.id},{self.bgroup},{self.bdate},{self.likes}'

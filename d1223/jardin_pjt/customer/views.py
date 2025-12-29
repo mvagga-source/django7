@@ -4,6 +4,35 @@ from member.models import Member
 from django.core.paginator import Paginator
 from django.db.models import F,Q,Sum,Count
 from comment.models import Comment
+from django.http import JsonResponse
+
+def clikes(request):
+    
+    
+    if request.method == 'POST':
+        bno = request.POST.get('bno')
+        board = Board.objects.get(bno=bno)
+        id = request.session['session_id']
+        member = Member.objects.get(id=id)
+        
+        # board.likes.all() : 게시글에 좋아요를 클릭한 전체회원
+        # member.likes_member.all() : 현재회원이 좋아요를 클릭한 게시글 전체목록
+
+        # db에 좋아요 추가,삭제
+        # Board 테이블에 likes컬럼에 데이터 추가, 삭제
+        
+        if board.likes.filter(pk=member.id).exists():
+            board.likes.remove(member) # likes 안에 member를 제거
+            likes_chk = 0
+        else:
+            board.likes.add(member) # likes 안에 member를 추가
+            likes_chk = 1
+        count = board.likes.count()
+        
+    print('좋아요 개수 확인 : ',board.likes.count())
+    context = {'result':'성공','likes_chk':likes_chk,'count':count}
+    return JsonResponse(context)
+
 
 def cwrite(request):
     if request.method == 'GET':
@@ -24,7 +53,7 @@ def cwrite(request):
         
         return redirect('/customer/clist/') # 관련 함수로 이동
 
-
+# board : 좋아요도 포함되어 전달됨
 def cview(request, bno):
     
     # 1개 게시글
