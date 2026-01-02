@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel='stylesheet' href="/static/css/restaurants.css">
+<style>
+/* HEADER */
+/*.r_header {
+    background: #fff;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.r_logo {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.r_search-box {
+    display: flex;
+    gap: 10px;
+}
+
+.r_search-box input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.r_search-box button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #111;
+    color: #fff;
+}*/
+.r_search-box {
+    display: flex;
+    gap: 10px;
+    position: relative; /* 자식 요소인 아이콘의 기준점이 됩니다 */
+    align-items: center; /* 세로 중앙 정렬 보조 */
+}
+
+/* 2. 아이콘 위치 최적화 */
+.filter-icon-button {
+    position: absolute;
+    /* 버튼(검색) 너비와 간격을 고려하여 오른쪽에서 띄움 */
+    /* 보통 검색 버튼의 너비가 70~80px이므로 그 앞에 위치시킵니다 */
+    right: 85px; 
+    top: 50%; /* 정확히 세로 중앙 */
+    transform: translateY(-50%); /* 정확히 세로 중앙 */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 10;
+    display: flex; /* 아이콘 이미지 정렬 */
+    align-items: center;
+}
+
+.filter-icon-button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* 3. 입력창이 아이콘과 겹치지 않게 여백 주기 */
+.r_search-box input {
+    flex: 1;
+    padding: 12px;
+    padding-right: 45px; /* 아이콘이 들어갈 공간 확보 (중요) */
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+</style>
+{% endblock css %}
+{% block script %}
+{% endblock script %}
+{% block body %}
+<div id='header_bg'>
+    <div clss='main-header-area'>
+    </div>
+</div>
+<header class="r_header">
+    <h1 class="r_logo">🍽️ 미식 가이드</h1>
+
+    <div class="r_search-box">
+        <a class="filter-icon-button" data-toggle="modal" data-target="#modal-filter" onclick="SearchFilterModal('modal-filter');">
+            <img src="/static/images/home/icon_filter_off.png" alt="필터 아이콘">
+        </a>
+        <input type="text" placeholder="음식점 이름을 검색해보세요">
+        <button>검색</button>
+    </div>
+</header>
+<!-- Modal Body -->
+<div id="modal-filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"></div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+{% endblock body %}

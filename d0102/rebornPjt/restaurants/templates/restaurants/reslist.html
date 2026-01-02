@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% comment %} css 작업은 여기서 하세요!! {% endcomment %}
+{% block css %}
+<link rel='stylesheet' href="/static/css/restaurants.css">
+{% endblock css %}
+
+{% comment %} script 작업은 여기서 하세요!! {% endcomment %}
+{% block script %}
+<link rel='stylesheet' href="/static/js/restaurants.js">
+{% endblock script %}
+
+{% comment %} body 작업은 여기서 하세요!! {% endcomment %}
+{% block body %}
+
+<body>
+
+<header class="r_header">
+    <h1 class="r_logo">🍽️ 미식 가이드</h1>
+
+    <div class="r_search-box">
+        <input type="text" placeholder="음식점 이름을 검색해보세요">
+        <button>검색</button>
+    </div>
+</header>
+
+<main class="r_container">
+
+    <!-- 카드 리스트 -->
+    <section class="r_card-grid">
+        <!-- 카드 20개 예시 -->
+        <!-- 실제 Django에서는 for문으로 처리 -->
+        <!-- START -->
+        <div class="r_card">
+            <img src="https://picsum.photos/400/300?1">
+            <div class="r_card-body">
+                <h3>이가네</h3>
+                <p class="r_category">한식 · 회</p>
+                <p class="r_location">📍 서울 강남구</p>
+            </div>
+        </div>
+
+        <!-- 복사해서 총 20개 -->
+        <!-- 예시용으로 숫자만 변경 -->
+        <!-- END -->
+
+        <!-- ↓↓↓ 예시로 빠르게 20개 생성 -->
+        <!-- 실제 사용 시 Django 템플릿으로 대체 -->
+        <script>
+            const grid = document.querySelector('.card-grid');
+            for(let i=2; i<=20; i++){
+                grid.innerHTML += `
+                <div class="r_card">
+                    <img src="https://picsum.photos/400/300?${i}">
+                    <div class="r_card-body">
+                        <h3>음식점 ${i}</h3>
+                        <p class="r_category">카테고리</p>
+                        <p class="r_location">📍 서울 어딘가</p>
+                    </div>
+                </div>`;
+            }
+        </script>
+    </section>
+
+    <!-- 페이징 -->
+    <nav class="pagination">
+        <button class="page-btn">« 이전</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">다음 »</button>
+    </nav>
+
+</main>
+
+</body>
+
+{% endblock body %}

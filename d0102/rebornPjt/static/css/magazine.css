@@ -1,0 +1,61 @@
+
+#mz-body{width:100%}
+
+/* HEADER */
+#mz-header {width:100%;height:244px;background:url('/static/images/common/back_magazine.jpg') center/cover no-repeat;display: flex;align-items: flex-end;justify-content: center;}
+#mz-header-bg {width: 1095px;max-width: 1095px;height: 107px;background: #ffffff;display: flex;align-items: center;padding: 0 28px;border-top-left-radius: 24px;border-top-right-radius: 24px;}
+#mz-htitle {font-size:30px; font-weight: 450;text-align: center; width:300px;margin-right: 100px;color:#3e404e;}
+#mz-hsearch {width: 100%;max-width: 600px; display: flex;align-items: center;background: #fff;border-radius: 999px;padding: 6px;box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);}
+.mz-hsearch-box {flex: 1;display: flex;align-items: center;padding: 0 14px;}
+.mz-hsearch-box input {border: none;outline: none;width: 100%;font-size: 14px;color: #111827;}
+.mz-hsearch-box input::placeholder {color: #9ca3af;}
+.mz-hsearch-icon {font-size: 16px;color: #9ca3af;margin-right: 8px;}
+.mz-hsearch-icon img {height:28px;}
+.mz-hsearch-btn {border: none;padding: 10px 20px;border-radius: 999px;background: #2563eb;color: #fff;font-size: 14px;font-weight: 600;cursor: pointer;}
+.mz-hsearch-btn:hover {background: #1e40af;}
+
+/* LIST */
+#mz-list {padding-top:20px;width:1250px;margin:0 auto;}
+#mz-lcategory{margin:0 auto;width:1250px;padding-bottom:20px;text-align: right;}
+#mz-lcategory select {width: 150px;border: 1px solid #C4C4C4;box-sizing: border-box;border-radius: 10px;padding: 5px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 10px;}
+#mz-lcategory select:hover{border: 1px solid #8a8a8a;box-sizing: border-box;border-radius: 10px;outline: 3px solid #cecece;border-radius: 10px;}
+/* #mz-lcategory span {display:inline-block;text-align:center;width: 120px;border: 1px solid #C4C4C4;box-sizing: border-box;border-radius: 10px;padding: 5px;font-weight: 400;font-size: 13px;line-height: 16px;} */
+/* #mz-lcategory span:hover{border: 1px solid #8a8a8a;box-sizing: border-box;border-radius: 10px;outline: 3px solid #cecece;border-radius: 10px;} */
+
+#mz-lcategory span{
+
+    padding: 4px 8px;
+    color: #019dad;
+    border-radius: 100px;
+    border: 1px solid #019DAD;
+    font-family: SUIT, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+    text-align: center;
+    margin-right: 4px;
+}
+
+
+#mz-list ul{display: flex;flex-flow: row wrap;justify-content: space-between;}
+.mz_litem {width:300px;margin-bottom: 30px;}
+.mz_litem img{width:300px;height:200px; border-top-left-radius: 15px;border-top-right-radius: 15px;object-fit: cover; /* 또는 contain, fill, scale-down, none */}
+.mz_litem figure{border-bottom: 1px solid #d3d3d3;}
+.mz_litem figcaption{padding:15px 8px 12px;}
+.mz_litem-category{font-family: SUIT, sans-serif;font-size: 14px;font-weight: 400;line-height: normal;line-height: 150%;color: #3e404e;margin-bottom: 0;}
+.mz_litem-title{overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;text-decoration: none;font-family: SUIT, sans-serif;font-size: 18px;font-weight: 600;line-height: normal;height: 24px;color: #3e404e;margin: 12px 0px;}
+.mz_litem-thumbnail{height: 66px;overflow: hidden;text-overflow: ellipsis;line-height: 150%;color: #585a74;font-family: SUIT, sans-serif;font-size: 14px;font-weight: 400;margin: 0 0 17px;}
+.mz_litem-date{display: block;color: #9d9d9d;font-size: 12px;line-height: 1.5;}
+
+/* VIEW */
+#mz-view {padding:30px 20px;width:1095px;margin:0 auto;}
+#mz-vtitle {padding-bottom: 25px;margin-bottom:30px;border-bottom:1px solid #1b47b3;}
+#mz-vtitle h1{font-size: 24px;font-weight: 500;color:#1b47b3}
+#mz-vtitle ul {color:#9d9d9d;line-height: 1.5;display: flex;flex-flow: row nowrap;justify-content: space-between;}
+.mz-vtitle-date{font-size: 12px;}
+.mz-vtitle-list{font-size: 16px;}
+#mz-vcontent {padding-bottom: 30px;margin-bottom: 30px; font-size: 14px;font-weight: 400;border-bottom: 1px solid #d3d3d3;}
+#mz-vmove {display: flex;flex-flow: row nowrap;justify-content: space-between;}
+#mz-vmove li{color:#1B47B3;font-size:20px;}
+
+#n-list {padding-top:20px;width:1250px;margin:0 auto;}

@@ -1,0 +1,227 @@
+{% extends "ST__base.html" %}
+
+
+{% block store__style %}
+    /* [메인 컨테이너] */
+    .container {
+        max-width: 1100px; /* 65%보다 픽셀로 잡는 게 책장처럼 안정감이 있어요 */
+        margin: 30px auto; 
+        padding: 50px 20px;
+        background-color: white; /* 배경을 하얗게 해서 깔끔하게 */
+    }
+
+    /* 1. 상단: 상품 상세 정보 영역 (이미지 vs 정보) */
+    .product-top {
+        display: flex;       /* 자식들을 옆으로 나란히 배치 */
+        align-items: flex-start; /* 위쪽 라인 맞추기 */
+        gap: 50px;           /* 사이 간격 */
+        margin-bottom: 60px;
+        border-bottom: 1px solid #eee; /* 하단 구분선 추가 */
+        padding-bottom: 40px;
+    }
+
+    /* 왼쪽: 이미지 영역 */
+    .img-area {
+        width: 40%; /* 40% 정도 차지 */
+        display: flex; 
+        justify-content: center; 
+        background-color: #f8f9fa; /* 이미지 배경 살짝 회색 */
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .img-area img { 
+        width: 100%; 
+        box-shadow: 5px 5px 15px rgba(0,0,0,0.2); /* 그림자 조금 더 진하게 */
+    }
+
+    /* 오른쪽: 텍스트 정보 영역 */
+    /* 중요: display:grid는 지웠습니다! */
+    .info-area { 
+        width: 60%; /* 나머지를 차지 */
+    }
+    
+    .info-title {
+        color: #004680; 
+        font-size: 22px; /* 제목 조금 더 크게 */
+        font-weight: bold; 
+        margin-bottom: 30px; 
+        border-bottom: 2px solid #004680; /* 제목 아래 파란 줄 */
+        padding-bottom: 15px;
+    }
+
+    .info-table { width: 100%; margin-bottom: 30px; border-collapse: collapse; }
+    .info-table th { 
+        text-align: left; 
+        width: 100px; 
+        font-weight: bold; 
+        color: #333; 
+        padding: 12px 0; 
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .info-table td { 
+        color: #666; 
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+
+    /* 가격 및 버튼 박스 */
+    .purchase-box {
+        margin-top: 30px;
+        background: #fdfdfd;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #eee;
+    }
+
+    .price-info { margin-bottom: 20px; }
+    .price-final { font-size: 26px; color: #d32f2f; font-weight: bold; } /* 가격 빨간색 강조 */
+    
+    /* 찜하기 버튼 (작게 수정) */
+    .btn-heart {
+        display: inline-block; /* 글자 크기만큼만 차지하게 변경 */
+        background-color: #004680; 
+        color: white; 
+        text-align: center; 
+        padding: 10px 25px;    /* 안쪽 여백 조절 */
+        margin-left:450px;
+        font-size: 16px; 
+        font-weight: bold; 
+        border-radius: 30px;   /* 둥글게 */
+        cursor: pointer; 
+        transition: 0.3s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn-heart:hover { 
+        background-color: #003366; 
+        transform: translateY(-2px); /* 마우스 올리면 살짝 떠오름 */
+    }
+
+
+    /* 2. 하단: 탭 메뉴와 상세 내용 */
+    .detail-section { margin-top: 50px; }
+    
+    .detail-tabs {
+        display: flex; 
+        border-bottom: 2px solid #004680; 
+        margin-bottom: 30px;
+    }
+    
+    /* 탭 모양 만들기 */
+    .tab-item {
+        padding: 15px 30px;
+        font-weight: bold;
+        color: #004680;
+        background: white;
+        border: 1px solid #004680;
+        border-bottom: none; /* 아래 선은 뚫어줌 */
+        border-radius: 10px 10px 0 0; /* 위쪽만 둥글게 */
+        margin-right: 5px;
+    }
+
+    .detail-content {
+        font-size: 16px; 
+        color: #444; 
+        line-height: 2.0; /* 줄간격 넓게 */
+        text-align: justify; /* 양쪽 정렬 */
+        padding:65px;
+    }
+
+    /* --- [추가된 부분] 하단 버튼 영역 --- */
+    .button-area {
+        margin-top: 40px;      /* 본문 내용과 간격 띄우기 */
+        text-align: right;     /* 내용물을 오른쪽으로 정렬! 핵심 포인트 */
+        padding-top: 20px;
+        border-top: 1px solid #eee; /* 본문과 구분선 살짝 추가 */
+    }
+
+    /* 목록으로 돌아가기 버튼 스타일 */
+    .btn-back {
+        display: inline-block;
+        padding: 12px 30px;
+        background-color: #fff;    /* 배경은 하얗게 */
+        color: #555;               /* 글자는 회색으로 차분하게 */
+        border: 1px solid #ddd;    /* 테두리 추가 */
+        border-radius: 5px;        /* 모서리 둥글게 */
+        font-weight: bold;
+        font-size: 14px;
+        transition: all 0.3s ease; /* 부드러운 애니메이션 */
+    }
+
+    /* 마우스 올렸을 때 효과 */
+    .btn-back:hover {
+        background-color: #f9f9f9; /* 배경색 살짝 변경 */
+        border-color: #333;        /* 테두리 진하게 */
+        color: #333;               /* 글자색 진하게 */
+    }
+{% endblock store__style %}
+
+
+
+{% block store__html %}
+<div class="container">
+    
+    <div class="product-top">
+        <div class="img-area">
+            {% if sbook.bimage %}
+                <img src="{{sbook.bimage}}" alt="{{sbook.btitle}}">
+            {% else %}
+                <div style="height:300px; display:flex; align-items:center; color:#ccc;">이미지 없음</div>
+            {% endif %}
+        </div>
+
+        <div class="info-area">
+            <p style="color: #888; font-size: 14px;">
+                👀 조회수: {{ sbook.bhit }}회
+            </p>
+            <h2 class="info-title">도서 정보</h2>
+            
+            <table class="info-table">
+                <tr>
+                    <th>도서명</th>
+                    <td>{{sbook.btitle}}</td>
+                </tr>
+                <tr>
+                    <th>출판일</th>
+                    <td>{{sbook.bpubdate}}</td>
+                </tr>
+                <tr>
+                    <th>지은이</th>
+                    <td>{{sbook.bauthor}}</td>
+                </tr>
+                <tr>
+                    <th>출판사</th>
+                    <td>{{sbook.bpublisher}}</td>
+                </tr>
+                <tr>
+                    <th>도서가격</th>
+                    <td>{{sbook.bprice}} 원</td>
+                </tr>
+            </table>
+
+            
+
+            <div class="btn-heart" onclick="alert('마이페이지에 찜한 도서를 담았습니다!')">
+                ♥ 찜하기
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="detail-section">
+        <div class="detail-tabs">
+            <div class="tab-item">도서 소개</div>
+        </div>
+
+        <div class="detail-content">
+            {{ sbook.bdescription | safe }}
+        </div>
+
+        <div class="button-area">
+                <a href="/store/slist/" class="btn-back">
+                    < 목록으로 돌아가기
+                </a>
+            </div>
+    </div>
+
+</div>
+{% endblock store__html %}

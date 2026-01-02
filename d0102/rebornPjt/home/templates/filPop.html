@@ -1,0 +1,234 @@
+<link rel="stylesheet" href="/static/css/searchFilterPop.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+<script>
+$(document).ready(function() {
+    // 1. X 버튼 클릭 시 팝업 닫기
+    $('.btn-popup-close').on('click', function() {
+        $(this).closest('.modal').hide();
+        // 2. 바디 클래스 제거해서 배경 복구
+        $('body').removeClass('modal-open');
+    });
+});
+function toggleDetailView(clickedCheckbox) {
+    const mainCheckboxes = document.querySelectorAll('input[name="main_category"]'); 
+    const checkedRegions = Array.from(mainCheckboxes).filter(cb => cb.checked);
+    
+    // 1. 체크 해제 시 하위 체크박스 초기화
+    if (!clickedCheckbox.checked) {
+        const detailGroupId = `details_${clickedCheckbox.value}`;
+        const detailGroup = document.getElementById(detailGroupId);
+        if (detailGroup) {
+            // 해당 하위 그룹 내의 모든 체크박스 체크 해제
+            const subCheckboxes = detailGroup.querySelectorAll('input[type="checkbox"]');
+            subCheckboxes.forEach(subCb => subCb.checked = false);
+        }
+    }
+
+    // 2. 모든 상세 그룹 숨기기
+    const allDetailGroups = document.querySelectorAll('.detail-group');
+    allDetailGroups.forEach(group => group.classList.add('hidden'));
+
+    // 3. 정확히 1개의 지역만 선택된 경우, 해당 상세 그룹 표시
+    if (checkedRegions.length === 1) {
+        const uniqueCheckedValue = checkedRegions[0].value;
+        const targetDetailGroupId = `details_${uniqueCheckedValue}`;
+        const targetDetailGroup = document.getElementById(targetDetailGroupId);
+        
+        if (targetDetailGroup) {
+            targetDetailGroup.classList.remove('hidden');
+            targetDetailGroup.classList.add('visible'); // CSS visible 클래스 사용 가정
+        }
+    }
+    // 4. 0개 또는 2개 이상 선택 시 (else 경우), 모든 상세 그룹이 숨겨진 상태 유지
+}
+</script>
+{% comment %} <div id="modal-filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"> {% endcomment %}
+  <div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <!-- 팝업 닫기 버튼 -->
+        <h4 class="modal-title" id="modalTitle">고급 검색</h4>
+        <button type="button" class="btn btn-popup-close pull-right" data-dismiss="modal" aria-label="Close">
+          <span>&times;</span>
+        </button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <!--<div class="filter-desc">
+          프리미엄 회원 서비스입니다. <a href="/premium-products"><u>프리미엄 회원 가입</u></a>
+        </div>-->
+        
+        <!-- 검색어 입력 그룹 -->
+        <div class="filter-group">
+          <div class="title-bar">
+            <div class="title">다음 단어를 포함</div>
+          </div>
+          <div class="filters">
+            <div class="r_search-box">
+                <input type="text" placeholder="음식점 이름을 검색해보세요">
+            </div>
+          </div>
+        </div>
+        <hr>
+
+        <!-- 지역 선택 그룹 -->
+        <div class="filter-group">
+            <div class="title-bar"><div class="title">지역선택</div></div>
+            <div class="filters">
+                <div class="multiple-buttons">
+                    <!-- 지역 버튼들 -->
+                    <div class="checkbox-button"><input type="checkbox" id="zone_gn" name="main_category" value="seoul_gangnam" onchange="toggleDetailView(this)" /><label for="zone_gn">서울 강남</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="zone_gb" name="main_category" value="seoul_gangbuk" onchange="toggleDetailView(this)" /><label for="zone_gb">서울 강북</label></div>
+                    <!-- ...나머지 지역 버튼들... -->
+
+                    <!-- 2. 하위 상세 지역 체크박스 그룹 (기본 숨김) -->
+                    <div class="detail-checkbox-container">
+                        <!-- 'seoul_gangnam' 지역에 해당하는 체크박스 그룹 -->
+                        <!-- ID는 value 속성과 동일하게 매칭되어야 합니다. (details_ + value) -->
+                        <div id="details_seoul_gangnam" class="detail-group hidden">
+                            <label><input type="checkbox" checked> 서울 강남 전체</label>
+                            <label><input type="checkbox"> 가로수길/신사역</label>
+                            <label><input type="checkbox"> 압구정동/도산공원</label>
+                            <label><input type="checkbox"> 청담동/강남구청역</label>
+                            <label><input type="checkbox"> 논현동/영동시장</label>
+                            <label><input type="checkbox"> 삼성동/대치동</label>
+                            <label><input type="checkbox"> 선릉역/선정릉역</label>
+                            <label><input type="checkbox"> 역삼동</label>
+                            <label><input type="checkbox"> 도곡/양재/매봉</label>
+                            <label><input type="checkbox"> 강남역</label>
+                            <label><input type="checkbox"> 고속터미널/반포</label>
+                            <label><input type="checkbox"> 교대/남부터미널/서초</label>
+                            <label><input type="checkbox"> 동작구/대림/대방</label>
+                            <label><input type="checkbox"> 방배/사당/이수</label>
+                            <label><input type="checkbox"> 서래마을</label>
+                            <label><input type="checkbox"> 서울대/관악구</label>
+                            <label><input type="checkbox"> 가산디지털단지/구로</label>
+                            <label><input type="checkbox"> 영등포</label>
+                            <label><input type="checkbox"> 여의도</label>
+                            <label><input type="checkbox"> 김포/마곡</label>
+                            <label><input type="checkbox"> 목동/화곡</label>
+                            <label><input type="checkbox"> 개포/일원/수서</label>
+                            <label><input type="checkbox"> 가락/문정/오금/위례</label>
+                            <label><input type="checkbox"> 잠실/방이/올림픽공원</label>
+                            <label><input type="checkbox"> 석촌호수</label>
+                            <label><input type="checkbox"> 강동구</label>
+                        </div>
+
+                        <!-- 'seoul_gangbuk' 지역에 해당하는 체크박스 그룹 -->
+                        <div id="details_seoul_gangbuk" class="detail-group hidden">
+                            <label><input type="checkbox"> 서울 강북 전체</label>
+                            <label><input type="checkbox"> 노원/강북</label>
+                            <label><input type="checkbox"> 동대문/성동</label>
+                            <!-- ... 강북 하위 지역들 ... -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- 음식종류 -->
+        <!-- 음식 종류 그룹 (새로 추가된 내용) -->
+        <div class="filter-group">
+            <div class="title-bar"><div class="title">음식 종류</div></div>
+            <div class="filters">
+                <div class="multiple-buttons">
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_pasta" value="137" /><label for="foodtype_pasta">파스타</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_pizza" value="140" /><label for="foodtype_pizza">피자</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_ramen" value="149" /><label for="foodtype_ramen">라멘</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_jangeo" value="289" /><label for="foodtype_jangeo">장어</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_hanjeongsik" value="466" /><label for="foodtype_hanjeongsik">한정식</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_hanuomakase" value="520" /><label for="foodtype_hanuomakase">한우오마카세</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_bangeo" value="626" /><label for="foodtype_bangeo">방어</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_vietnamese" value="98" /><label for="foodtype_vietnamese">베트남식</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_cake" value="60" /><label for="foodtype_cake">케이크</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_sushi" value="152" /><label for="foodtype_sushi">스시</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_coffee" value="58" /><label for="foodtype_coffee">커피전문점</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_steak" value="13" /><label for="foodtype_steak">스테이크</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_dwaeigalb" value="386" /><label for="foodtype_dwaeigalb">돼지갈비</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_kalguksu" value="267" /><label for="foodtype_kalguksu">칼국수</label></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- 평균 가격대 그룹 -->
+        <div class="filter-group">
+            <div class="title-bar">
+                <div class="title">평균 가격대</div>
+            </div>
+            <div class="filters">
+                <div class="price-range-inputs" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div style="flex: 1;">
+                        <label for="price-min" style="display: block; font-size: 12px; color: #999;">최저</label>
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 12px; top: 18px; color: #555;">₩</span>
+                            <input type="number" id="price-min" class="form-control" value="0" style="padding-left: 25px;">
+                        </div>
+                    </div>
+                    <span style="margin: 0 10px; line-height: 40px; color: #999;">-</span>
+                    <div style="flex: 1;">
+                        <label for="price-max" style="display: block; font-size: 12px; color: #999; text-align: right;">최고</label>
+                        <div style="position: relative;">
+                            <span style="position: absolute; left: 12px; top: 18px; color: #555;">₩</span>
+                            <input type="number" id="price-max" class="form-control" value="1000000" style="padding-left: 25px;">
+                        </div>
+                    </div>
+                </div>
+                <!-- 가격 슬라이더 위치 (JavaScript로 구현 필요) -->
+                <div id="price-slider-range" class="noUi-target"></div>
+            </div>
+        </div>
+        <hr>
+
+        <!-- 영업 시간 그룹 -->
+        <div class="filter-group">
+            <div class="title-bar">
+                <div class="title">영업시간</div>
+            </div>
+            <div class="filters">
+                <!-- 요일 선택 버튼 -->
+                <div class="multiple-buttons weekdays" style="margin-bottom: 20px;">
+                    <div class="checkbox-button"><input type="checkbox" id="day_mon" checked /><label for="day_mon">월</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_tue" checked /><label for="day_tue">화</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_wed" checked /><label for="day_wed">수</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_thu" checked /><label for="day_thu">목</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_fri" checked /><label for="day_fri">금</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_sat" checked /><label for="day_sat">토</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_sun" checked /><label for="day_sun">일</label></div>
+                </div>
+
+                <!-- 시간 입력 및 슬라이더 -->
+                <div class="time-range-inputs" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center;">
+                        <span style="margin-right: 5px; color: #f7b733; font-size: 18px;">☀</span>
+                        <input type="text" id="time-open" class="form-control" value="06:00" style="width: 80px;">
+                    </div>
+                    <span style="margin: 0 10px; line-height: 40px; color: #999;">-</span>
+                    <div style="display: flex; align-items: center;">
+                         <input type="text" id="time-close" class="form-control" value="06:00" style="width: 80px;">
+                         <span style="margin-left: 5px; color: #f7b733; font-size: 18px;">☀</span>
+                    </div>
+                </div>
+                
+                <!-- 시간 슬라이더 위치 (JavaScript로 구현 필요) -->
+                <div id="time-slider-range" class="noUi-target"></div>
+                <div style="text-align: center; margin-top: 10px; color: #999;">
+                    <span style="margin-right: 5px; color: #555;">&copy;</span> 24:00
+                </div>
+            </div>
+        </div>
+        <hr>
+
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="btn-clear-all" type="button">전체 해제</button>
+        <button class="btn-apply-filter" type="button">필터 적용</button>
+      </div>
+    </div>
+  </div>
+{% comment %} </div> {% endcomment %}

@@ -1,0 +1,171 @@
+{% extends "ST__base.html" %}
+{% load humanize %} 
+
+
+{% block store__style %}
+
+        .container { width: 1100px; margin: 50px auto 50px; \
+            background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+        .filter-bar { display: flex; justify-content: space-between;\
+            align-items: center; border-bottom: 2px solid #eee; \
+            padding-bottom: 20px; margin-bottom: 30px;\
+            width:1100px; height:50px;}
+
+        .filter-tabs{ display:flex; gap:25px; padding-left:18px; width:220px; height:47px;}
+        
+        .filter-tabs button { background: none; border: none; 
+            margin-right: 20px; cursor: pointer; color: #999; transition: 0.3s; }
+        .filter-tabs button.active { color: #004680; font-size: 16px; font-weight: bold;}
+        
+        /* 마우스를 올렸을 때(hover) 글자색을 파랗게 바꾸고 밑줄을 만듭니다 */
+        .filter-tabs button:hover {border-bottom: 3px solid #004680;}
+
+
+        /* 검색창 폼 스타일 */
+        .search-box { display: flex; border: 3px solid #ddd; border-radius: 25px;
+             width: 470px; height:47px; }
+        .search-box input { border: none; outline: none; flex: 1; background:#f9f9f9;
+            margin-left:20px; margin-top:4px; width:360px; height:35px;}
+        .search-box button { background: #004680; color: white; 
+            border: none; border-radius: 20px; padding: 5px 15px; cursor: pointer; }
+        
+
+        .book-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 20px; }
+        
+
+        /* 링크 스타일 제거 (카드 전체를 링크로 감쌀 경우) */
+        a.book-link { text-decoration: none; color: inherit; display: block; }
+        
+        .book-item { display: flex; align-items: flex-start; gap: 20px; padding: 10px; \
+            transition: transform 0.2s; }
+        .book-item:hover { transform: translateY(-5px); background-color: #f8f9fa; border-radius: 10px;}
+        
+        .book-image { width: 140px; height: 200px; background: #eee; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); flex-shrink: 0; overflow: hidden; }
+        .book-image img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .book-info { flex-grow: 1; }
+        .book-info h3 { font-size: 18px; margin-bottom: 10px; color: #222; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .book-info p { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 15px; }
+        .price-area { text-align: right; }
+        .original-price { font-size: 13px; color: #999; text-decoration: line-through; } /* API에서 정가를 안 줄 경우 숨김 처리 필요할 수 있음 */
+        .discount-price { font-size: 16px; color: #d32f2f; font-weight: bold; }
+
+
+        /* 이전페이지,다음페이지 클릭버튼 */
+        .page-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #004680;
+        color: white;
+        text-decoration: none;
+        border-radius: 20px;
+        transition: 0.3s;
+    }
+    .page-btn:hover {
+        background-color: #003366;
+    }
+{% endblock store__style %}
+</head>
+
+
+
+
+
+<body>
+<!-- 메인페이지 바디블록 -->
+{% block store__html %}
+
+<!-- 1. 필터링 버튼 부분 -->
+<div class="container">
+    <div class="filter-bar">
+        <div class="filter-tabs">
+            <button class="active" name='popular' onclick="filterBooks('popular')">인기순</button>
+            <button class="active" name='new' onclick="filterBooks('new')">신상품순</button>
+        </div>
+
+        <form action="" method="get" class="search-box">
+           <input type="text" name="query" placeholder="찾고 싶은 레시피나 식재료를 입력하세요 (예: 파스타, 김치)"\
+           value="{{ search_query }}">
+            <button type="submit">검색</button>
+        </form>
+    </div>
+
+
+    <!-- 2. 도서 카드형식으로 나열부분 -->
+    <div class="book-grid" id="bookGrid">
+        {% if books %}
+
+            {% for b in books %}
+            <a href="/store/sview/{{b.bisbn}}" class="book-link">
+                <div class="book-item">
+                    <div class="book-image">
+                        {% if b.bimage %}
+                            <img src="{{ b.bimage }}" alt="{{ b.btitle|striptags }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/140x200?text=No+Image" alt="이미지 없음">
+                        {% endif %}
+                    </div>
+                    <div class="book-info">
+                        <h3>{{ b.btitle|striptags }}</h3>
+                        <p>
+                            저자: {{ b.bauthor }}<br>
+                            출판사: {{ b.bpublisher }}<br>
+                            출간일: {{ b.bpubdate }}
+                        </p>
+                        <div class="price-area">
+                            <div class="discount-price">{{ b.bprice|intcomma }}원</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p style="text-align: center; grid-column: span 2; padding: 50px;">검색 결과가 없습니다.</p>
+        {% endif %}
+        </div>
+</div>
+
+</div> 
+    <!-- 3. 이전페이지 다음페이지 넘기기 버튼 -->
+    <div style="text-align: center; margin-top: 40px; margin-bottom: 40px;">
+        
+        {% if current_page > 1 %}
+            <a href="?query={{ search_query }}&page={{ current_page|add:-1 }}" class="page-btn">
+                &lt; 이전 페이지
+            </a>
+        {% endif %}
+
+        <span style="margin: 0 15px; font-weight: bold;">
+            {{ current_page }} 페이지
+        </span>
+
+        <a href="?query={{ search_query }}&page={{ current_page|add:1 }}" class="page-btn">
+            다음 페이지 &gt;
+        </a>
+
+    </div>
+</div>
+{% endblock store__html %} 
+
+{% block store__js %}
+<script>
+    function filterBooks(type) {
+        // type에는 'popular' 또는 'new'가 들어옵니다.
+        
+        // 1. 버튼 색상 바꾸기 (시각적 효과)
+        const buttons = document.querySelectorAll('.filter-tabs button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // 2. [핵심] alert를 지우고, 주소창(URL)을 변경해서 서버에 신호를 보냅니다!
+        // 물음표(?) 뒤에 오는 것을 '쿼리 스트링'이라고 부르는데, 
+        // 여기에 sort라는 이름표로 type 값을 담아 보냅니다.
+        
+        location.href = '?sort=' + type;
+    }
+</script>
+{% endblock store__js %}
+
+</body>
+</html>

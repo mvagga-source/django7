@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}식당추천사이트{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common_media.css">
+    <!--https://ko.wix.com/website/templates-->
+    {% block css %}{% endblock %}
+    {% block style %}
+    
+    {% endblock %}
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <!-- 날짜 포맷함수 -->
+    {% comment %} <script type="text/javascript" src="/static/js/moment.min.js"></script> {% endcomment %}
+    <script src="/static/js/common.js"></script>
+    {% block script %}{% endblock %}
+</head>
+<!-- JavaScript 추가 -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const hamburgerToggle = document.getElementById('hamburger-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        const mainContent = document.querySelector('main.content');
+
+        // 메뉴를 닫고 상태를 초기화하는 함수
+        const closeMenu = () => {
+            navMenu.classList.remove('active');
+            hamburgerToggle.classList.remove('active');
+            document.body.style.overflow = ''; // 스크롤 잠금 해제
+        };
+
+        const toggleMenu = () => {
+            const isActive = navMenu.classList.toggle('active');
+            hamburgerToggle.classList.toggle('active');
+            
+            // 메뉴가 열려있을 때만 스크롤 방지
+            document.body.style.overflow = isActive ? 'hidden' : '';
+        };
+
+        // 햄버거 버튼 클릭
+        hamburgerToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleMenu();
+        });
+
+        // 창 크기가 변하면(Resize) 즉시 메뉴 초기화
+        // 리솜 사이트처럼 사용자가 창을 드래그하여 크기를 조절하는 순간 닫힙니다.
+        window.addEventListener('resize', () => {
+            closeMenu();
+        });
+
+        // 메인 콘텐츠 클릭 시 닫기
+        mainContent.addEventListener('click', () => {
+            if (navMenu.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+        
+        // 메뉴 링크 클릭 시 닫기
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    });
+</script>
+<body>
+    <!-- 헤더 메뉴 -->
+    {% include "header.html" %}
+
+    <!-- 메인 콘텐츠 영역 (푸터를 하단에 고정하기 위해 필요) -->
+    <main class="content">
+        {% block body %}{% endblock %}
+    </main>
+
+    <!-- 푸터 -->
+     {% include "footer.html" %}
+</body>
+</html>

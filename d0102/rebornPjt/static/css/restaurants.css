@@ -1,0 +1,113 @@
+
+
+/* HEADER */
+.r_header {
+    background: #fff;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.r_logo {
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.r_search-box {
+    display: flex;
+    gap: 10px;
+}
+
+.r_search-box input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.r_search-box button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #111;
+    color: #fff;
+}
+
+/* LAYOUT */
+.r_container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* 4 x 5 카드 그리드 */
+.r_card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4열 고정 */
+    grid-template-rows: repeat(5, auto);   /* 5행 */
+    gap: 20px;
+}
+
+/* CARD */
+.r_card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.r_card:hover {
+    transform: translateY(-4px);
+}
+
+.r_card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
+
+.r_card-body {
+    padding: 14px;
+}
+
+.r_card-body h3 {
+    font-size: 17px;
+    margin-bottom: 6px;
+}
+
+.r_category {
+    font-size: 13px;
+    color: #888;
+}
+
+.r_location {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+}
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 40px 0 60px;
+}
+
+.page-btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+}
+
+.page-btn.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+.page-btn:hover {
+    background: #f0f0f0;
+}

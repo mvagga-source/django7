@@ -104,7 +104,7 @@ def clist(request):
     
     paginator = Paginator(qs,10)
     
-    list_qs = paginator.get_page(page)    
+    list_qs = paginator.get_page(page)
     
     context = {'list':list_qs,'page':page, 'category':category,'search':search}
     return render(request,'customer/clist.html', context)
