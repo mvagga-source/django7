@@ -12,8 +12,8 @@ class MagazineCode(models.Model):
 class Magazine(models.Model):
     mno = models.AutoField(primary_key=True)
     mtitle = models.CharField(max_length=1000)
-    mcontent = models.TextField(null=True)
-    mthumbnail = models.TextField(null=True)
+    mcontent = models.TextField(null=True,blank=True)
+    mthumbnail = models.TextField(null=True,blank=True)
     magazinecode = models.ForeignKey(MagazineCode,on_delete=models.SET_NULL,null=True)
     mfile = models.FileField(default='',null=True,blank=True)
     mhit = models.IntegerField(default=0)
