@@ -15,9 +15,9 @@ class Magazine(models.Model):
     mcontent = models.TextField(null=True,blank=True)
     mthumbnail = models.TextField(null=True,blank=True)
     magazinecode = models.ForeignKey(MagazineCode,on_delete=models.SET_NULL,null=True)
-    mfile = models.FileField(default='',null=True,blank=True)
+    mfile = models.FileField(default='',null=True,blank=True,upload_to='magazine/')
     mhit = models.IntegerField(default=0)
-    mdate = models.DateTimeField(auto_now=True)
+    mdate = models.DateTimeField(auto_now_add=True)
     
     # mlike = models.ManyToManyField(MyUser,related_name='like_myuser',null=True,blank=True)
     

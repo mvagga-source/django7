@@ -9,13 +9,23 @@ from member.models import MyUser
 import json
 import urllib.request
 
+def mtest(request):
+    return render(request,'magazine/1.html')
 
 def mnaver(request):
     
+    page = int(request.GET.get('page',1))
+    sort = request.GET.get('sort','sim')
+    
     client_id = "j7KaOMGirpd_EoxbjKDB"
     client_secret = "98WTnc2agN"
-    encText = urllib.parse.quote("음식점매거진")
-    url = "https://openapi.naver.com/v1/search/blog.json?query=" + encText # JSON 결과
+    
+    encText = urllib.parse.quote("음식매거진")
+    display = 10
+    start = (page - 1) * display + 1
+    
+    url = f'https://openapi.naver.com/v1/search/blog.json?query={encText}&display={display}&start={start}&sort={sort}'
+    # url = "https://openapi.naver.com/v1/search/blog.json?query=" + encText  # JSON 결과
     # url = "https://openapi.naver.com/v1/search/blog.xml?query=" + encText # XML 결과
     requestUr = urllib.request.Request(url)
     requestUr.add_header("X-Naver-Client-Id",client_id)
@@ -24,14 +34,18 @@ def mnaver(request):
     rescode = response.getcode()
     if(rescode==200):
         response_body = response.read()
-        print(response_body.decode('utf-8'))
+
+        dData = json.loads(response_body)
+        nlist = dData['items']
+        
+        result = '1'        
+        context = {'result':result,'page':page,'sort':sort,'nlist':nlist}
+
     else:
         print("Error Code:" + rescode)
-    
-    dData = json.loads(response_body)
-    nlist = dData['items']
-    nlist.title.strip("<b>""</b>")
-    context = {'nlist':nlist}
+        result = '0'
+        context = {'result':result,'page':page,'sort':sort}
+
     return render(request,'magazine/mnaver.html', context)
 
 
@@ -92,7 +106,7 @@ def mlist(request):
 
     # 패이징
     page = int(request.GET.get('page',1))
-    paginator = Paginator(qs,20)
+    paginator = Paginator(qs,12)
     qs_list = paginator.get_page(page)
     
     # 남은 화면 출력
@@ -100,6 +114,8 @@ def mlist(request):
         etc = 4 - paginator.count
     else:
         etc = 4 - (paginator.count % 4)
+        
+    print('paginator.count :',paginator.count, 'etc : ',etc)
         
     context = {'qs_code':qs_code,'list':qs_list,'page':page,'etc_count':etc,'category':category,'search':search}
     return render(request,'magazine/mlist.html',context)

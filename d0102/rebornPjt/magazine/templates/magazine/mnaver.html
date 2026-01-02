@@ -21,7 +21,7 @@
         {% csrf_token %}
         <div id='mz-header-bg'>
             <div id='mz-htitle'>
-                NAVER 매거진
+                NAVER <i class="fa-solid fa-utensils"></i> 매거진
             </div>
         </div>
         </form>
@@ -29,19 +29,58 @@
 
     <div id='n-list'>
 
-        <div id='mz-lcategory'>
-            <a href='/magazine/mlist/'><span>Reborn 매거진</span></a>
+        <div id='nlcategory'>
+            {% if sort == 'sim' %}
+                <a href='?sort=sim' class='org rev'>정확도순</a>
+                <a href='?sort=date' class='org'>날짜순</a>
+            {% else %}
+                <a href='?sort=sim' class='org'>정확도순</a>
+                <a href='?sort=date' class='org rev'>날짜순</a>
+            {% endif %}
+            <a href='/magazine/mlist/'><span>REBORN 매거진</span></a>
         </div>
-
-        <!-- 매거진 출력 start -->
-        <!-- 탬플릿 필터 -->
-        <ul>
+        
+        {% if result == '1' %}
+        <!-- 매거진 출력 start (탬플릿 함수) -->
+        <ul class='nlist2'>
             {% for n in nlist %}
-            {% comment %} <li>{{n.title|cut:'<b>'|cut:'</b>'|cut:'&lt;'|cut:'&gt;'}}</li> {% endcomment %}
-            <li>{{n.title}}</li>
+            <li>
+                <a href="{{n.link}}" target="_blank" rel="noopener noreferrer">
+                    <div class='nbl'>
+                        <span class='nblname'>{{n.bloggername}}</span>
+                        <span class='nblname'>{{n.bloggerlink}}</span>
+                    </div>
+                    {% comment %} <h3 class='ntitle'>{{n.title|cut:'<b>'|cut:'</b>'|cut:'&lt;'|cut:'&gt;'|cut:'&quot;'}}</h3>{% endcomment %}
+                    <h3 class='ntitle'>{{n.title|striptags|cut:'&lt;'|cut:'&gt;'|cut:'&amp;'}}</h3>
+                    <p class='ndesc'>{{n.description|striptags|cut:'&lt;'|cut:'&gt;'|cut:'&amp;'}}</p>                    
+                    <p class='ninfo'>{{n.postdate}} </p>
+                </a>
+            </li>
             {% endfor %}
         </ul>         
         <!-- 매거진 출력 end -->
+        {% else %}
+            <div class='mz-noinfo'><i class="fa-solid fa-circle-info"></i> 매거진 정보가 더이상 없습니다.</div>
+        {% endif %}        
+
+        <div id='m-move'> 
+            <ul>
+                {% if page > 1 %}
+                    <li><a href='?page={{page|add:'-1'}}&sort={{sort}}'><i class="fa-solid fa-backward"></i></a></li>
+                {% else %}
+                    <li style='color:#c7c7c7'><i class="fa-solid fa-backward"></i></a></li>
+                {% endif %}
+
+                <li>{{page}} 페이지</li>
+
+                {% if result == '1' %}
+                <li><a href='?page={{page|add:'1'}}&sort={{sort}}'><i class="fa-solid fa-forward"></i></a></li>
+                {% else %}
+                <li></li>
+                {% endif %}
+            </ul>
+        </div>
+
 
     </div>
 

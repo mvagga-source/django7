@@ -21,9 +21,9 @@
         {% csrf_token %}
         <div id='mz-header-bg'>
             <div id='mz-htitle'>
-                Reborn 매거진
+                Reborn <i class="fa-solid fa-utensils"></i> 매거진
             </div>
-            <div id='mz-hsearch'>
+            <div class='mz-hsearch'>
                 <div class='mz-hsearch-box'>
                     <span class='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
                     <input type='text' name='search' placeholder="매거진 내에서 검색해보세요."/>
@@ -32,6 +32,13 @@
             </div>
         </div>
         </form>
+    </div>
+
+    <div class='mz-hsearch2'>
+        <div class='mz-hsearch-box'>
+            <span class='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
+            <input type='text' name='search' onclick='searchBtn()' placeholder="매거진 내에서 검색해보세요."/>
+        </div>
     </div>
 
     <div id='mz-list'>
@@ -48,13 +55,13 @@
                 {% endfor %}
             </select>
 
-            <a href='/magazine/mnaver/'><span>NAVER 매거진</span></a>
+            <a href='/magazine/mnaver/'><span>NAVER 음식 매거진</span></a>
 
         </div>
 
         <!-- 매거진 출력 start -->
+        {% if list %}
         <ul>
-
             {% for l in list %}
             <li class='mz_litem'>
                 <a href='/magazine/mview/{{l.mno}}/'>
@@ -81,13 +88,17 @@
 
             <!-- 나머지 빈공란 출력 -->
             {% if etc_count > 0 %}
-            {% for l in "x"|rjust:etc_count %}
-                <li class='mz_litem'></li>
-            {% endfor %}
+                {% for l in "x"|rjust:etc_count %}
+                    <li class='mz_litem'></li>
+                {% endfor %}
             {% endif %}
          </ul>         
         <!-- 매거진 출력 end -->
-
+        {% else %}
+        <div class='mz-noinfo'>
+            <i class="fa-solid fa-circle-info"></i> 매거진 정보가 없습니다.
+        </div>
+        {% endif %}
     </div>
 
     <!-- 페이징 start -->

@@ -7,4 +7,5 @@ urlpatterns = [
     path('mview/<int:mno>/', views.mview, name='mview'),
     # path('mlike/', views.mlike, name='mlike'),
     path('mnaver/', views.mnaver, name='mnaver'),
+    path('mtest/', views.mtest, name='mtest'),
 ]
