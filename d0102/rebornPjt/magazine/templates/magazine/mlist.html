@@ -23,22 +23,15 @@
             <div id='mz-htitle'>
                 Reborn <i class="fa-solid fa-utensils"></i> 매거진
             </div>
-            <div class='mz-hsearch'>
-                <div class='mz-hsearch-box'>
-                    <span class='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
+            <div id='mz-hsearch'>
+                <div id='mz-hsearch-box'>
+                    <span id='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
                     <input type='text' name='search' placeholder="매거진 내에서 검색해보세요."/>
                 </div>
-                <button class='mz-hsearch-btn' name='search-btn' onclick='searchBtn()'>검색</button>
+                <button id='mz-hsearch-btn' name='search-btn' onclick='searchBtn()'>검색</button>
             </div>
         </div>
         </form>
-    </div>
-
-    <div class='mz-hsearch2'>
-        <div class='mz-hsearch-box'>
-            <span class='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
-            <input type='text' name='search' onclick='searchBtn()' placeholder="매거진 내에서 검색해보세요."/>
-        </div>
     </div>
 
     <div id='mz-list'>
@@ -99,46 +92,49 @@
             <i class="fa-solid fa-circle-info"></i> 매거진 정보가 없습니다.
         </div>
         {% endif %}
-    </div>
-
-    <!-- 페이징 start -->
-    {% if list.has_other_pages %}
-    <div class="btnAreaList">
-        <div class="allPageMoving1">
-            {% if list.has_previous %}
-                <a href="/magazine/mlist/?page=1&category={{category}}&search={{search}}" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
-                <a href="/magazine/mlist/?page={{list.previous_page_number}}&category={{category}}&search={{search}}" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
-            {% else %}
-                <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
-                <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
-            {% endif %}
 
 
-            {% for p in list.paginator.page_range %}
-
-                {% if p >= list.number|add:'-3' and p <= list.number|add:'3' %}
-
-                    {% if p == page %}
-                        <strong>{{p}}</strong>
-                    {% else %}
-                        <a href="/magazine/mlist/?page={{p}}&category={{category}}&search={{search}}">{{p}}</a>
-                    {% endif %}
-
+        <!-- 페이징 start -->
+        {% if list.has_other_pages %}
+        <div class="btnAreaList">
+            <div class="allPageMoving1">
+                {% if list.has_previous %}
+                    <a href="/magazine/mlist/?page=1&category={{category}}&search={{search}}" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                    <a href="/magazine/mlist/?page={{list.previous_page_number}}&category={{category}}&search={{search}}" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+                {% else %}
+                    <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                    <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
                 {% endif %}
-            {% endfor %}
+    
+    
+                {% for p in list.paginator.page_range %}
+    
+                    {% if p >= list.number|add:'-3' and p <= list.number|add:'3' %}
+    
+                        {% if p == page %}
+                            <strong>{{p}}</strong>
+                        {% else %}
+                            <a href="/magazine/mlist/?page={{p}}&category={{category}}&search={{search}}">{{p}}</a>
+                        {% endif %}
+    
+                    {% endif %}
+                {% endfor %}
+    
+    
+                {% if list.has_next %}
+                    <a href="/magazine/mlist/?page={{list.next_page_number}}&category={{category}}&search={{search}}" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                    <a href="/magazine/mlist/?page={{list.paginator.num_pages}}&category={{category}}&search={{search}}" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+                {% else %}
+                    <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                    <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+                {% endif %}
+    
+            </div> <!-- 페이징 end -->
+        </div>  
+        {% endif %}    
 
-
-            {% if list.has_next %}
-                <a href="/magazine/mlist/?page={{list.next_page_number}}&category={{category}}&search={{search}}" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
-                <a href="/magazine/mlist/?page={{list.paginator.num_pages}}&category={{category}}&search={{search}}" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
-            {% else %}
-                <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
-                <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
-            {% endif %}
-
-        </div> <!-- 페이징 end -->
-    </div>  
-    {% endif %}    
+    </div>
+    
 
 </div> <!-- mz-body -->
 

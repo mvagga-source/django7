@@ -24,11 +24,11 @@
                 Reborn 매거진
             </div>
             <div id='mz-hsearch'>
-                <div class='mz-hsearch-box'>
-                    <span class='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
+                <div id='mz-hsearch-box'>
+                    <span id='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
                     <input type='text' name='search' placeholder="매거진 내에서 검색해보세요."/>
                 </div>
-                <button class='mz-hsearch-btn' name='search-btn' onclick='searchBtn()'>검색</button>
+                <button id='mz-hsearch-btn' name='search-btn' onclick='searchBtn()'>검색</button>
             </div>
         </div>
         </form>
@@ -60,7 +60,7 @@
             {% if pre %}
             <li><a href='/magazine/mview/{{pre.mno}}/'>← Prev</a></li>
             {% else %}
-            <li>← Prev</li>
+            <li class='nodata'>← Prev</li>
             {% endif %}
 
             <li><a href='/magazine/mlist/'><i class="fa-duotone fa-solid fa-bars"></i></i></a></li>
@@ -68,7 +68,7 @@
             {% if next %}
             <li><a href='/magazine/mview/{{next.mno}}/'>Next →</a></li>
             {% else %}
-            <li>Next →</li>
+            <li class='nodata'>Next →</li>
             {% endif %}
         </ul>
     </div>
