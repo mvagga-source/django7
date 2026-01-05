@@ -47,6 +47,10 @@
 #mz-vmove li.nodata{color:#bebebe;}
 
 /* NAVER LIST */
+#nz-header {width:100%;height:244px;background:url('/static/images/common/back_magazine.jpg') center/cover no-repeat;display: flex;align-items: flex-end;justify-content: center;}
+#nz-header-bg {width: 1095px;max-width: 1095px;height: 107px;background: #ffffff;display: flex;align-items: center;padding: 0 28px;border-top-left-radius: 24px;border-top-right-radius: 24px;}
+#nz-htitle {font-size:30px; font-weight: 450;text-align: center; width:350px;margin-right: 50px;color:#3e404e;}
+
 #n-list {padding:10px 20px;width:1095px;margin:0 auto;}
 #nlcategory{margin:0 auto;width:100%;text-align: right;}
 #nlcategory span{padding: 4px 8px;color: #013dad;border-radius: 10px;border: 1px solid #013dad;font-family: SUIT, sans-serif;font-size: 12px;font-weight: 500;line-height: normal;text-align: center;margin-right: 4px;}
@@ -86,7 +90,14 @@
 /* view */
 #mz-view{width:100%;}
 
-
+/* NAVER */
+#nz-header{margin:0;}
+#nz-header-bg {width: 100%;}
+#nz-header{position:relative;width: 100%;left:0;top:0;height:45px;background: none;}
+#nz-htitle{position:absolute;top:10px; left:20px;font-size:24px;text-align:left;}
+#n-list {width:100%}
+#nlcategory{margin-bottom: 10px;}
+#m-move{width:100%;}
 
 
 .footer{position:static;width:100%;}
@@ -109,7 +120,7 @@
 
 #mz-list {position:static;width:100%;margin:0;padding:0 10px;}
 #mz-lcategory{width:100%;}
-.mz_litem{width:100%;}
+.mz_litem{width:100%;margin-bottom: 20px;}
 .mz_litem img{width:100%; height:300px;}
 
 .btnAreaList{position:static;margin:0;top:100px;}
