@@ -17,12 +17,12 @@
 /* LIST */
 #mz-list {padding-top:20px;width:1250px;margin:0 auto;}
 #mz-lcategory{margin:0 auto;width:1250px;padding-bottom:20px;text-align: right;}
-#mz-lcategory select {width: 150px;border: 1px solid #C4C4C4;box-sizing: border-box;border-radius: 10px;padding: 5px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 10px;}
+#mz-lcategory select {width: 130px;border: 1px solid #C4C4C4;box-sizing: border-box;border-radius: 10px;padding: 5px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 10px;}
 #mz-lcategory select:hover{border: 1px solid #8a8a8a;box-sizing: border-box;border-radius: 10px;outline: 3px solid #cecece;border-radius: 10px;}
 #mz-lcategory span{padding: 4px 8px;color: #01ad1e;border-radius: 10px;border: 1px solid #01ad1e;font-family: SUIT, sans-serif;font-size: 12px;font-weight: 500;line-height: normal;text-align: center;margin-right: 4px;}
 
 #mz-list ul{display: flex;flex-flow: row wrap;justify-content: space-between;}
-.mz_litem {width:300px;margin-bottom: 5px;}
+.mz_litem {width:300px;margin-bottom: 20px;}
 .mz_litem img{width:300px;height:200px; border-top-left-radius: 15px;border-top-right-radius: 15px;object-fit: cover; /* 또는 contain, fill, scale-down, none */}
 .mz_litem figure{border-bottom: 1px solid #d3d3d3;}
 .mz_litem figcaption{padding:15px 8px 12px;}
@@ -71,55 +71,47 @@
 
 
 /* media query */
-@media all and (max-width: 1440px){
-
-.navbar{display:none;}
-#mz-header{margin:0;}
-#mz-header-bg {width: 1440px;}
-#mz-header{position:relative;width: 1440px;left:0;top:0;height:140px;background: none;}
-#mz-htitle{position:absolute;top:10px; left:20px;font-size:24px;text-align:left;}
-#mz-hsearch{position:absolute;top:60px;left:0px;right:0px;width:95%;margin:0 auto;}
-#mz-hsearch-btn{display:none;}
-
-#mz-list {position:static;width:1200px;padding:0 10px;margin: 0 auto;}
-#mz-lcategory{width:100%;
-    background-color: yellow;}
-/* .mz_litem img{width:350px} */
-
-.btnAreaList{position:static;margin:0;}
-
-
-/* view */
-#mz-view{width:100%;}
-
-/* NAVER */
-#nz-header{margin:0;}
-#nz-header-bg {width: 100%;}
-#nz-header{position:relative;width: 100%;left:0;top:0;height:45px;background: none;}
-#nz-htitle{position:absolute;top:10px; left:20px;font-size:24px;text-align:left;}
-#n-list {width:100%}
-#nlcategory{margin-bottom: 10px;}
-#m-move{width:100%;}
-
-
-.footer{position:static;width:100%;}
-}
-
-@media all and (max-width: 1180px){
+/* 1180 */
+@media all and (max-width: 1251px){
 
 .navbar{display:none;}
 #mz-header{margin:0;}
 #mz-header-bg {width: 100%;}
-#mz-header{position:relative;width: 100%;left:0;top:0;height:140px;background: none;}
+#mz-header{position:relative;width: 100%;left:0;top:0;height:140px;background: none;margin:0 auto;}
 #mz-htitle{position:absolute;top:10px; left:20px;font-size:24px;text-align:left;}
 #mz-hsearch{position:absolute;top:60px;left:0px;right:0px;width:95%;margin:0 auto;}
 #mz-hsearch-btn{display:none;}
 
-#mz-list {position:static;width:100%;margin:0;padding:0 10px;}
+#mz-list {position:static;width:100%;padding:0 10px;margin: 0 auto;}
 #mz-lcategory{width:100%;}
+.mz_litem{width:380px;}
+.mz_litem img{width:380px;}
 
 .btnAreaList{position:static;margin:0;}
 
+/* view */
+#mz-view{width:100%;}
+
+/* NAVER */
+#nz-header{margin:0;}
+#nz-header-bg {width: 100%;}
+#nz-header{position:relative;width: 100%;left:0;top:0;height:45px;background: none;}
+#nz-htitle{position:absolute;top:10px; left:20px;font-size:24px;text-align:left;}
+#n-list {width:100%}
+#nlcategory{margin-bottom: 10px;}
+#m-move{width:100%;}
+
+.footer{position:static;width:100%;}
+}
+
+/* ////////////////// 1024 */
+@media all and (max-width: 1175px){
+
+/* list */
+.navbar{display:none;}
+/* #mz-lcategory{background-color: blue;} */
+.mz_litem{width:480px;}
+.mz_litem img{width:480px;}
 
 /* view */
 #mz-view{width:100%;}
@@ -137,8 +129,9 @@
 .footer{position:static;width:100%;}
 }
 
-@media all and (max-width: 768px){
+@media all and (max-width: 1000px){
 
+/* list */    
 .mz_litem{width:100%;margin-bottom: 20px;}
 .mz_litem img{width:100%; height:300px;}
 
