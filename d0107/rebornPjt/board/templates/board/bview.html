@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/blist.css' %}">
+<link rel='stylesheet' href="{% static 'css/bview.css' %}">
+{% endblock css %}
+
+{% block script %}
+<script src="{% static 'js/blist.js' %}" defer></script>
+{% endblock script %}
+
+{% block body %}
+<div class="board-wrapper">
+    <div class="top-hero"></div>
+
+    <div class="main-container">
+        <div class="view-container">
+            
+            <div class="view-header">
+                <h1>{{ post.title }}</h1>
+                <div class="view-meta">
+                    <span class="author">by {{ post.author }}</span>
+                    <div class="divider"></div>
+                    <span class="date">{{ post.created_at|date:"Y.m.d" }}</span>
+                    <div class="divider"></div>
+                    <span class="views">조회수 {{ post.views }}</span>
+                    
+                    <div class="divider"></div>
+                    <form action="{% url 'board:post_like' post.id %}" method="POST" class="like-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-like-icon">
+                            {% if post.likes > 0 %}
+                                <span class="heart-red">❤️</span>
+                            {% else %}
+                                <span class="heart-empty">♡</span>
+                            {% endif %}
+                            <span class="like-count">{{ post.likes }}</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="view-content-box">
+                <div class="post-text">
+                    {{ post.content|linebreaks }}
+                </div>
+
+                <div class="comment-container">
+                    <span class="comment-count">댓글 {{ comments.count }}개</span>
+                    
+                    <form action="{% url 'board:comment_write' post.id %}" method="POST" class="comment-form">
+                        {% csrf_token %}
+                        <textarea name="content" placeholder="따뜻한 댓글을 남겨주세요." required></textarea>
+                        <button type="submit" class="btn-comment-submit">댓글등록</button>
+                    </form>
+
+                    <ul class="comment-list">
+                        {% for comment in comments %}
+                        <li class="comment-item">
+                            <div class="comment-info">
+                                <span class="comment-author">{{ comment.author }}</span>
+                                <span class="comment-date">{{ comment.created_at|date:"Y.m.d H:i" }}</span>
+                                
+                                {% if request.session.user_nm == comment.author %}
+                                <div class="comment-util">
+                                    <a href="#" class="btn-edit">수정</a>
+                                    <span class="util-divider">|</span>
+                                    <form action="{% url 'board:comment_delete' post.id comment.id %}" method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-del" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                                    </form>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <p class="comment-text">{{ comment.content }}</p>
+                        </li>
+                        {% empty %}
+                        <li class="no-comment">첫 번째 댓글을 남겨보세요!</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="view-nav">
+                <a href="#" class="nav-btn" title="이전글">
+                    <span class="nav-icon">&lt;</span>
+                </a>
+
+                <a href="{% url 'board:blist' %}" class="nav-btn list-icon" title="목록으로">
+                    <span class="nav-icon">⋮</span>
+                </a>
+
+                <a href="#" class="nav-btn" title="다음글">
+                    <span class="nav-icon">&gt;</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock body %}

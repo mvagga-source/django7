@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link rel='stylesheet' type="text/css" href="/static/css/magazine.css">
+{% endblock css %}
+
+{% block script %}
+<script src="/static/js/magazine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock script %}
+
+
+{% block body %}
+
+    <h2 id='mmtitle'>// 매거진 관리자 페이지 //</h2>
+    <div id='mmcontents'>
+        <ul id='mmmenu'>
+            <li><a href="#" onClick='chartBtn()'># 카테고리별 등록 현황(차트)</a></li>
+            <li><a href="#"># 수정</a></li>
+            <li><a href="#"># 삭제</a></li>
+        </ul>
+        <div id='mmview'>
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+
+        function chartBtn(){
+            //alert('chartBtn');
+            
+            
+
+        }
+
+
+        /*
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: 'Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
+        */
+    </script>    
+
+{% endblock body %}

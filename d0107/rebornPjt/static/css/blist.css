@@ -1,0 +1,173 @@
+/* ============================================================
+   1. 기본 초기화 및 폰트 설정
+   ============================================================ */
+body { 
+    margin: 0; 
+    padding: 0;
+    background-color: #f5f5f5; /* 페이지 전체 배경 (연회색) */
+    font-family: 'Pretendard', -apple-system, sans-serif; 
+    color: #333;
+}
+
+/* ============================================================
+   2. 상단 배너 영역 (이미지 포함)
+   ============================================================ */
+.top-hero {
+    /* 배경 이미지와 어두운 그라데이션 중첩 */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                      url('../images/common/back_community.jpg'); 
+    
+    background-size: cover;      /* 이미지가 꽉 차게 */
+    background-position: center; /* 정중앙 기준 */
+    background-repeat: no-repeat;
+    height: 245px;               /* 배너의 고정 높이 */
+    width: 100%;
+}
+
+/* ============================================================
+   3. 메인 컨테이너 (흰색 게시판 박스)
+   ============================================================ */
+.main-container {
+    max-width: 1100px;           /* 게시판의 최대 너비 */
+    margin: -100px auto 50px;    /* 위로 100px 끌어올려 배너와 겹치게 함 */
+    background: #ffffff;         /* 박스 배경색 */
+    border-radius: 20px;         /* 모서리 둥글게 */
+    padding: 40px 50px;          /* 안쪽 여백 */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* 부드러운 그림자 효과 */
+    position: relative;          /* 위치 기준점 */
+    z-index: 10;                 /* 배너보다 위에 보이게 설정 */
+}
+.header-left .title strong{
+    color:#042e5c;
+}
+/* ============================================================
+   4. 헤더 및 탭 메뉴
+   ============================================================ */
+/* 상단 제목과 검색창 가로 배치 */
+.board-header { 
+    display: flex; 
+    justify-content: space-between; 
+    border-bottom: 1px solid #eee; 
+    padding-bottom: 20px; 
+}
+
+/* 탭 메뉴 스타일 */
+.tab-menu { 
+    display: flex; 
+    gap: 20px; 
+    margin-top: 20px; 
+}
+
+.tab-menu a { 
+    text-decoration: none; 
+    color: #999; 
+    font-weight: bold; 
+    padding-bottom: 10px; 
+}
+
+/* 선택된 탭 강조 (블루리본 시그니처 컬러) */
+.tab-menu a.active { 
+    color: #003366; 
+    border-bottom: 3px solid #003366; 
+}
+
+/* ============================================================
+   5. 검색창 및 버튼
+   ============================================================ */
+.search-box { 
+    border: 1px solid #ddd; 
+    border-radius: 30px; 
+    padding: 8px 20px; 
+    width: 350px; 
+    display: flex; 
+}
+
+.search-box input { 
+    border: none; 
+    flex: 1; 
+    outline: none; 
+}
+
+.search-box button { 
+    background: none; 
+    border: none; 
+    color: #003366; 
+    font-weight: bold; 
+    cursor: pointer; 
+}
+
+/* 글쓰기 버튼 */
+.btn-write { 
+    background: #000; 
+    color: #fff; 
+    padding: 8px 20px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    float: right; 
+    margin-bottom: 20px; 
+    border: none; 
+}
+
+/* ============================================================
+   6. 게시글 리스트 아이템
+   ============================================================ */
+.post-item { 
+    padding: 10px 0; 
+    border-bottom: 1px solid #f0f0f0; 
+}
+
+.post-title { 
+    display: block; 
+    font-size: 18px; 
+    color: #333; 
+    text-decoration: none; 
+    margin: 8px 0; 
+}
+
+/* 공지사항 텍스트 강조 */
+.notice .post-title { 
+    color: #022950; 
+    font-size: 18px; 
+}
+
+.post-meta { 
+    font-size: 13px; 
+    color: #aaa; 
+}
+
+/* 태그 스타일 */
+.tag { 
+    color: #00acc1; 
+    border: 1px solid #00acc1; 
+    padding: 2px 8px; 
+    border-radius: 15px; 
+    font-size: 11px; 
+    margin-right: 5px; 
+}
+
+/* ============================================================
+   7. 페이지네이션 (하단 숫자)
+   ============================================================ */
+.pagination { 
+    display: flex; 
+    justify-content: center; 
+    gap: 8px; 
+    margin-top: 40px; 
+}
+
+.num, .arrow { 
+    text-decoration: none; 
+    width: 35px; 
+    height: 35px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: 1px solid #eee; 
+    color: #666; 
+}
+
+/* 현재 페이지 강조 */
+.num.active { 
+    background: #003366; 
+    color: #fff; 
+}

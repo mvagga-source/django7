@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/css/common.css">
+    <link rel='stylesheet' href='/static/css/join3.css'>
+    {% load static %} <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/join2.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/join3.css' %}">
+    <!--https://ko.wix.com/website/templates-->
+    {% block css %}{% endblock %}
+    {% block style %}{% endblock %}
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="/static/js/join3.js"></script>
+    <!-- 날짜 포맷함수 -->
+    {% comment %} <script type="text/javascript" src="/static/js/moment.min.js"></script> {% endcomment %}
+    {% block script %}
+
+    <script>
+    
+
+    </script>
+
+    {% endblock script %}
+</head>
+<body>
+    <!-- 헤더 메뉴 -->
+    <header class="navbar">
+       <div class="logo"><a href="/">Reborn</a></div>
+    </header>
+
+    <!-- 메인 콘텐츠 영역 (푸터를 하단에 고정하기 위해 필요) -->
+    <main class="content">
+        {% block body %}{% endblock %}
+        
+        <div class="join-container">
+            <form id="join-form-final" method="POST" action="{% url 'member:join3' %}">
+                {% csrf_token %}
+
+                {% comment %} 
+                <input type="hidden" name="mem_id" value="{{ mid }}">
+                <input type="hidden" name="mem_pw" value="{{ mpw }}">
+                <input type="hidden" name="mem_nm" value="{{ mnm }}">
+                <input type="hidden" name="nick_nm" value="{{ nnm }}">
+                <input type="hidden" name="email" value="{{ eml }}">
+                <input type="hidden" name="phone_number" value="{{ phn }}"> 
+                {% endcomment %}
+
+                <div class="join-content">
+                    <div class="step-indicator">
+                        <span class="step">01</span>
+                        <span class="step-line"></span>
+                        <span class="step">02</span>
+                        <span class="step-line"></span>
+                        <span class="step active">03</span>
+                    </div>
+
+                    <h2 class="main-title">상세 정보 입력</h2>
+                    <p class="sub-title"><ps>Reborn</ps> 서비스를 위한<br>마지막 단계입니다.</p>
+
+                    <div class="join-form">
+                        <div class="form-group">
+                            <label class="group-label">주소</label>
+                            <div class="input-with-btn"> <input type="text" name="zip_code" id="zip_code" class="input-field" placeholder="우편번호" readonly>
+                                <button type="button" class="check-btn" onclick="execDaumPostcode()">주소 검색</button> 
+                            </div>
+                            <input type="text" name="base_addr" id="base_addr" class="input-field mt-8" placeholder="기본 주소" readonly>
+                            <input type="text" name="detail_addr" id="detail_addr" class="input-field mt-8" placeholder="상세 주소를 입력해 주세요.">
+                        </div>
+
+                        <div class="form-group mt-24">
+                            <label class="group-label">선호 음식 카테고리 (복수 선택)</label>
+                            <div class="food-grid">
+                                <label class="check-box"><input type="checkbox" name="food_cat" value="한식"><span>한식</span></label>
+                                <label class="check-box"><input type="checkbox" name="food_cat" value="중식"><span>중식</span></label>
+                                <label class="check-box"><input type="checkbox" name="food_cat" value="일식"><span>일식</span></label>
+                                <label class="check-box"><input type="checkbox" name="food_cat" value="양식"><span>양식</span></label>
+                                <label class="check-box"><input type="checkbox" name="food_cat" value="디저트"><span>디저트</span></label>
+                                <label class="check-box"><input type="checkbox" name="food_cat" value="카페"><span>카페</span></label>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-24">
+                            <label class="group-label">Reborn을 어떻게 알게 되셨나요?</label>
+                            <select name="join_path" id="join_path" class="input-field">
+                                <option value="" disabled selected>경로를 선택해 주세요</option>
+                                <option value="web">웹서핑 중에</option>
+                                <option value="friend">지인 추천</option>
+                                <option value="ad">신문이나 잡지 광고</option>
+                                <option value="sns">SNS</option>
+                                <option value="etc">기타</option>
+                            </select>
+                            <input type="text" name="join_path_etc" id="join_path_etc" class="input-field mt-8" placeholder="경로를 직접 입력해 주세요" style="display:none;">
+                        </div>
+
+                        <button type="submit" class="btn-next">회원가입 완료</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+{% include "footer.html" %}
+</html>

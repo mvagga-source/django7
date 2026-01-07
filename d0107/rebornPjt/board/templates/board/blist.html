@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %} {% block css %}
+<link rel='stylesheet' href="{% static 'css/blist.css' %}">
+{% endblock css %}
+
+{% block script %}
+<script src="{% static 'js/blist.js' %}" defer></script>
+{% endblock script %}
+
+{% block body %}
+<div class="board-wrapper">
+    <div class="top-hero"></div>
+
+    <div class="main-container">
+        <div class="board-header">
+            <div class="header-left">
+                <h1 class="title"><strong>Reborn</strong> 커뮤니티</h1>
+                <nav class="tab-menu">
+                    <a href="/board/notice/">공지사항 및 문의</a>
+                    <a href="/board/blist/" class="active">게시판</a>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <input type="text" placeholder="독자 게시판 내에서 검색해보세요.">
+                    <button type="button">검색</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-row" style="text-align: right; margin-top: 20px;">
+            {% if request.session.login_user %}
+                <button type="button" class="btn-write" onclick="location.href='/board/bwrite/'">
+                    글쓰기
+                </button>
+            {% else %}
+                <p style="font-size: 14px; color: #999;">로그인 후 게시글을 작성하실 수 있습니다.</p>
+            {% endif %}
+        </div>
+
+        <div class="post-list">
+            {% for post in posts %}
+            <div class="post-item {% if forloop.counter <= 2 %}notice{% endif %}">
+                {% if forloop.counter > 2 %}
+                <div class="tags">
+                    <span class="tag">서초동맛집</span><span class="tag">블루리본</span>
+                </div>
+                {% endif %}
+                <a href="{% url 'board:bview' post.id %}" class="post-title">{{ post.title }}</a>
+                <div class="post-meta">
+                    by {{ post.author }} | {{ post.created_at|date:"Y.m.d" }} | 조회수 {{ post.views }}
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-post">등록된 게시글이 없습니다.</div>
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}" class="arrow">&lt;</a>
+            {% endif %}
+            
+            {% for num in posts.paginator.page_range %}
+                <a href="?page={{ num }}" class="num {% if posts.number == num %}active{% endif %}">{{ num }}</a>
+            {% endfor %}
+
+            {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}" class="arrow">&gt;</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}

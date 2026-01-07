@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% comment %} css 작업은 여기서 하세요!! {% endcomment %}
+{% block css %}
+<link rel='stylesheet' href="/static/css/bwrite.css">
+{% endblock css %}
+
+{% comment %} script 작업은 여기서 하세요!! {% endcomment %}
+{% block script %}
+<link rel='stylesheet' href="/static/js/bwrite.js">
+{% endblock script %}
+
+{% comment %} body 작업은 여기서 하세요!! {% endcomment %}
+{% block body %}
+<div class="inquiry-container">
+    <header class="inquiry-header">
+        <h1 class="title">게시글 작성</h1>
+        <p class="subtitle">자유롭게 소중한 의견을 남겨주세요.</p>
+    </header>
+
+    <form id="inquiry-form" class="inquiry-form" method="POST">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="user_name">성명 <span class="required">*</span></label>
+                <input type="text" id="user_name" name="user_name" 
+                    class="input-field readonly-field" 
+                    value="{{ request.session.user_nm }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="category">주제 선택 <span class="required">*</span></label>
+                <select id="category" name="category" class="input-field select-field" required>
+                    <option value="" disabled selected>주제를 선택해주세요</option>
+                    <option value="free">자유게시판 💬 </option>
+                    <option value="hidden_gem">나만 알고 싶은 숨은 맛집 💎 </option>
+                    <option value="report">위생 및 불친절 식당 🚫 </option>
+                    <option value="honey_tip">이용 꿀팁 공유 💡 </option>
+                </select>
+            </div>
+            
+            </div>
+
+            <div class="form-group full-width">
+                <label for="subject">제목 <span class="required">*</span></label>
+                <input type="text" id="subject" name="title" class="input-field" placeholder="제목을 입력해주세요." required>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="content">내용 <span class="required">*</span></label>
+                <textarea id="content" name="content" class="textarea-field" placeholder="게시글 내용을 작성해주세요." required></textarea>
+            </div>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit" class="btn-submit">등록하기</button>
+            <button type="button" class="btn-cancel" onclick="history.back();">취소</button>
+        </div>
+    </form>
+    <br>
+            <br>
+            <br>
+</div>
+{% endblock body %}
+

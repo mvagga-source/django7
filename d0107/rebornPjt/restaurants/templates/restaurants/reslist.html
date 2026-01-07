@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% comment %} css 작업은 여기서 하세요!! {% endcomment %}
+{% block css %}
+<link rel='stylesheet' href="/static/css/restaurants.css">
+{% endblock css %}
+
+{% comment %} script 작업은 여기서 하세요!! {% endcomment %}
+{% block script %}
+<link rel='stylesheet' href="/static/js/restaurants.js">
+<script>
+    function searchBtn(){
+        alert('검색버튼 클릭됨');
+        searchFrm.submit();
+    }//searchBtn()
+</script>
+{% endblock script %}
+
+{% comment %} body 작업은 여기서 하세요!! {% endcomment %}
+{% block body %}
+
+
+
+<form action="/restaurants/reslist/" method="get" name="searchFrm">
+<div class='rest-header_bg'>
+    <div class='rest-header'>
+        <div class="search-container">
+            <div class="search-box">
+                <span class="search-icon"><img src='/static/images/restaurants/search_icon.png'></span>
+                <input type="text" name="search" placeholder="검색어를 입력하세요."/>
+            </div>
+            <button class="search-btn" onclick="searchBtn()">검색</button>
+        </div>
+    </div>
+</div>
+</form>
+<main class="rest_container">
+
+    <!-- 카드 리스트 -->
+    <section class="rest_card-grid">
+        {% for r in list %}
+        <!-- START -->
+        <div class="rest_card" name='{{r.resno}}'><a href="/restaurants/resview/{{r.resno}}/">
+            <img src="https://picsum.photos/400/300?{{r.resno}}">
+            <div class="rest_card-body">
+                <h3>{{r.res_name}}</h3>
+                <p class="rest_category">카테고리</p>
+                <p class="rest_location">📍 {{r.addr}}</p>
+                <p class="rest_desc">{{r.desc}}</p>
+            </div></a>
+        </div>
+        {% endfor %}
+        <!-- END -->
+    </section>
+
+</main>
+<!-- 페이징 -->
+<div class="btnAreaList">
+    <div class="allPageMoving1">
+        <!-- 이전페이지 -->
+        {% if list.has_previous %}
+        <a href="/restaurants/reslist/?page=1" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+        <a href="/restaurants/reslist/?page={{list.previous_page_number}}" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+        {% else %}
+        <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+        <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+        {% endif %}
+        
+        <!-- 페이지넘버링-->
+        {% for p in list.paginator.page_range %}
+            {% if p >= list.number|add:'-3' and p <= list.number|add:'3' %}<!-- 앞뒤 페이지표시 -->
+                {% if p == page %}
+                <strong>{{p}}</strong>
+                {% else %}
+                <a href="/restaurants/reslist/?page={{p}}">{{p}}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        
+        <!-- 다음페이지-->
+        {% if list.has_next %}
+        <a href="/restaurants/reslist/?page={{list.next_page_number}}" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+        <a href="/restaurants/reslist/?page={{list.paginator.num_pages}}" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+        {% else %}
+        <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+        <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock body %}

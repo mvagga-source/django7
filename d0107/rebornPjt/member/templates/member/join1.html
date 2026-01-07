@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/css/common.css">
+    <link rel='stylesheet' href='/static/css/join1.css'>
+    <!--https://ko.wix.com/website/templates-->
+    {% block css %}{% endblock %}
+    {% block style %}{% endblock %}
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/join1.js"></script>
+    <!-- 날짜 포맷함수 -->
+    {% comment %} <script type="text/javascript" src="/static/js/moment.min.js"></script> {% endcomment %}
+    {% block script %}
+
+    <script>
+    
+
+    </script>
+
+    {% endblock script %}
+</head>
+<body>
+    <!-- 헤더 메뉴 -->
+    <header class="navbar">
+       <div class="logo"><a href="/">Reborn</a></div>
+    </header>
+
+    <!-- 메인 콘텐츠 영역 (푸터를 하단에 고정하기 위해 필요) -->
+    <main class="content">
+        {% block body %}{% endblock %}
+            <main class="join-container">
+                <div class="join-content">
+                    <div class="step-indicator">
+                        <span class="step active">01</span>
+                        <span class="step-line"></span>
+                        <span class="step">02</span>
+                        <span class="step-line"></span>
+                        <span class="step">03</span>
+                    </div>
+
+                    <h2 class="main-title">서비스 이용 동의</h2>
+                    <p class="sub-title"><ps>Reborn</ps>의 서비스를 이용하기 위해<br>이용약관 동의가 필요합니다.</p>
+
+                    <div class="terms-wrapper">
+                        <div class="all-agree-box">
+                            <label class="custom-checkbox">
+                                <input type="checkbox" id="check-all">
+                                <span class="checkmark"></span>
+                                <span class="text">약관 전체 동의</span>
+                            </label>
+                        </div>
+
+                        <ul class="terms-list">
+                            <li>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="chk required">
+                                    <span class="checkmark"></span>
+                                    <span class="text">만 14세 이상입니다 <em class="point">(필수)</em></span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="chk required">
+                                    <span class="checkmark"></span>
+                                    <span class="text">이용약관 동의 <em class="point">(필수)</em></span>
+                                </label>
+                                <a href="#" class="btn-link">보기</a>
+                            </li>
+                            <li>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="chk required">
+                                    <span class="checkmark"></span>
+                                    <span class="text">개인정보 수집 및 이용 동의 <em class="point">(필수)</em></span>
+                                </label>
+                                <a href="#" class="btn-link">보기</a>
+                            </li>
+                            <li>
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" class="chk">
+                                    <span class="checkmark"></span>
+                                    <span class="text">마케팅 정보 수신 동의 (선택)</span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button class="btn-next" id="next-step-btn">다음 단계로</button>
+                </div>
+            </main>
+    </main>
+    <script>
+    // 1. [전체 동의] 클릭 시 -> 모든 개별 체크박스 조절
+    $('#check-all').click(function() { // 아이디가 check-all인 '전체동의' 박스를 클릭하면
+        $('.chk').prop('checked', this.checked); // 모든 개별 체크박스(.chk)의 상태를 '전체동의'와 똑같이 만들어라
+        // '전체동의'가 체크되면 나머지도 다 체크하고, '전체동의'를 해제하면 나머지도 다 해제
+    });
+
+    // 2. [개별 체크박스] 클릭 시 -> 전체 동의 상태 업데이트
+    $('.chk').click(function() { // 개별 체크박스(.chk) 중 아무거나 클릭하면
+        // 전체 개별 체크박스의 개수
+        var total = $('.chk').length;// 화면에 있는 모든 개별 체크박스의 개수를 세서 total에 저장
+        // 현재 체크된 개별 체크박스의 개수
+        var checked = $('.chk:checked').length;// 그중에서 현재 체크가 된 것만 세서 checked에 저장
+
+        // 개수가 같으면 전체 동의 체크, 하나라도 다르면 해제
+        if (total != checked) { // 만약 '전체 개수'와 '체크된 개수'가 다르면 (즉, 하나라도 체크를 안 했으면)
+            $('#check-all').prop('checked', false); // '전체동의' 박스를 빈칸으로 만들어라
+        } else { // 그게 아니라 개수가 똑같으면 (즉, 모두 다 체크했으면)
+            $('#check-all').prop('checked', true); // '전체동의' 박스도 자동으로 체크해라
+        }
+    });
+    // [다음 단계로] 버튼 클릭 시 체크 로직
+    $('#next-step-btn').click(function() { // '다음 단계로' 버튼을 클릭하는 순간
+        // 'required' 클래스가 붙은 체크박스 총 개수
+        var requiredTotal = $('.chk.required').length;// '필수(required)'라고 적힌 체크박스가 총 몇 개인지 세라
+        // 'required' 클래스가 붙은 체크박스 중 체크된 개수
+        var requiredChecked = $('.chk.required:checked').length;// 필수 항목 중 체크된 게 몇 개인지 세라
+
+        if (requiredTotal !== requiredChecked) {// 필수 개수와 체크된 개수가 서로 다르면 (안 한 게 있다면)
+            // 필수 항목이 다 체크되지 않았을 때
+            alert('필수 약관에 모두 동의하셔야 다음 단계로 진행이 가능합니다.');
+            return false; // 페이지 이동을 막음
+        } else {
+            // 모두 체크되었을 때 페이지 이동
+            location.href = "{% url 'member:join2' %}";
+        }
+    });
+    </script>
+    <!-- 푸터 -->
+     {% include "footer.html" %}
+</body>
+</html>
+

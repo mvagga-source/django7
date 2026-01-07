@@ -1,0 +1,165 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+body {
+    background-color: #f7f7f7;
+}
+
+.container {
+    width: 1200px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 20px;
+}
+
+/* 이미지 영역 */
+.image-section {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.image-main img {
+    width: 600px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.image-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.image-sub img {
+    width: 200px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* 콘텐츠 영역 */
+.content-section {
+    display: flex;
+    gap: 30px;
+}
+
+/* 왼쪽 */
+.left {
+    width: 75%;
+}
+
+.restaurant-name {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.description {
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.left h2 {
+    margin: 25px 0 10px;
+    font-size: 20px;
+}
+
+/* 메뉴 */
+.menu-list {
+    list-style: none;
+    border-top: 1px solid #ddd;
+}
+
+.menu-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+/* 지도 */
+.map {
+    width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* 오른쪽 스크롤메뉴 */
+.right {
+    width: 25%;
+}
+
+.info-box {
+    position: sticky;
+    top: 100px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.info-box p {
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.button-group {
+    display: flex;
+    gap: 5px;
+}
+
+.reserve-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2f7af8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.reserve-btn:hover {
+    background: #1f5edb;
+}
+
+.review-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2f7af8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.review-btn:hover {
+    background: #1f5edb;
+}
+
+/* 뒤로가기 버튼 */
+.back-button-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 50px 0 20px;
+}
+
+.back-btn {
+    padding: 12px 40px;
+    font-size: 15px;
+    background: #e5e7eb;
+    color: #333;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background: #d1d5db;
+}

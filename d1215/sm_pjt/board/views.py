@@ -55,7 +55,7 @@ def update(request,bno):
         qs.bcontent = bcontent
         qs.save()
 
-        return redirect(f'/board/view/{bno}/')
+        return redirect(f'/board/view/{bno}/'`)`
 
 # 게시글 삭제
 def delete(request,bno):
