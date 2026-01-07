@@ -106,7 +106,7 @@ def mlist(request):
 
     # 패이징
     page = int(request.GET.get('page',1))
-    paginator = Paginator(qs,12)
+    paginator = Paginator(qs,20)
     qs_list = paginator.get_page(page)
     
     # 남은 화면 출력
