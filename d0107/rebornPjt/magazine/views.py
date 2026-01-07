@@ -55,21 +55,37 @@ def mlike(request):
     
     if request.method == 'POST':
         
+        # mno = request.POST.get('mno')
+        # qs_magazine = Magazine.objects.get(mno=mno)
+        
+        # print('0')
+        
+        # id = request.session['user_id']
+        # qs_myuser = MyUser.objects.get(mem_id=id)
+
+        # print('1')
+
+        # if qs_magazine.mlike.filter(pk=qs_myuser.mem_id):
+        #     print('2')
+        #     qs_magazine.mlike.remove(qs_myuser)
+        #     like_chk = 0
+        # else:
+        #     print('3')
+        #     qs_magazine.mlike.add(qs_myuser)
+        #     like_chk = 1
+        
         mno = request.POST.get('mno')
-        qs_magazine = Magazine.objects.get(mno=mno)
+        qs_magazine = Magazine.objects.get(mno=mno)        
         
         id = request.session['user_id']
         qs_myuser = MyUser.objects.get(mem_id=id)
 
-        print("magazine", qs_magazine)
-        print("session id", id)
-        
-        if qs_magazine.mlike.filter(pk=qs_myuser.mem_id).exists():
+        if Magazine.objects.filter(Q(mno=mno) & Q(mlike=qs_myuser)).exists():
             qs_magazine.mlike.remove(qs_myuser)
             like_chk = 0
         else:
             qs_magazine.mlike.add(qs_myuser)
-            like_chk = 1
+            like_chk = 1        
         
         like_count = qs_magazine.mlike.count()
     

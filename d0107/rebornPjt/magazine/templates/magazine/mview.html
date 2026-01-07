@@ -21,7 +21,7 @@ $(function(){
             data:{'mno':'{{mz.mno}}'},
             dataType:'json',
             success:function(data){
-                alert('성공');
+                //alert('성공');
                 console.log('result : ',data.result);
 
                 if(data.like_chk == '1'){
@@ -33,7 +33,7 @@ $(function(){
                 $('#mz-like').html(dataHtml);
             },
             error:function(){
-                alert('실패1');
+                alert('실패');
             }
         });//ajax
 
@@ -73,10 +73,11 @@ $(function(){
             <ul>
                 <li class='mz-vtitle-date'>{{mz.mdate|date:'Y-m-d H:i:s'}}</li>
                 <li class='mz-vtitle-list'>
+                    {% if request.session.user_id %}
                     <a href='#' id='mz-like'>
-                        {% comment %} <i class="fa-solid fa-heart"></i> {% endcomment %}
-                        <i class="fa-regular fa-heart"></i>
+                        <i class="fa-regular fa-heart"></i> ({{mz.mlike.count}})
                     </a>
+                    {% endif %}
                 </li>
             </ul>
             
