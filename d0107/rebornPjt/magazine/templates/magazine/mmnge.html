@@ -12,12 +12,11 @@
 
 {% block body %}
 
-    <h2 id='mmtitle'>// 매거진 관리자 페이지 //</h2>
+    <h2 id='mmtitle'></h2>
     <div id='mmcontents'>
         <ul id='mmmenu'>
-            <li><a href="#" onClick='chartBtn()'># 카테고리별 등록 현황(차트)</a></li>
-            <li><a href="#"># 수정</a></li>
-            <li><a href="#"># 삭제</a></li>
+            <li><a href="#" onClick='categorytBtn()'># 카테고리별 전체등록 현황(차트)</a></li>
+            <li><a href="#" onClick='yearBtn()'># 연도별 전체등록 현황(차트)</a></li>
         </ul>
         <div id='mmview'>
             <canvas id="myChart"></canvas>
@@ -26,36 +25,114 @@
 
     <script>
 
-        function chartBtn(){
-            //alert('chartBtn');
+        function yearBtn(){
             
-            
+            label_data = []; // category
+            datas = []; // count
 
+            $.ajax({
+                url:'/magazine/myearChart/',
+                type:'post',
+                headers:{'X-CSRFToken':'{{csrf_token}}'},
+                data:{},
+                dataType:'json',
+                success:function(data){
+                    //alert('성공');
+                    //console.log(data);
+
+                    for(var i=0;i<data.list.length;i++){
+                        label_data.push(data.list[i].magazinecode__mtype_desc);
+                        datas.push(data.list[i].max_cnt);
+                    }                    
+
+                    const ctx = document.getElementById('myChart');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                        labels: label_data,
+                        datasets: [{
+                            label: '2026년 등록현황',
+                            data: datas,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)', 
+                                'rgba(54, 162, 235, 0.7)', 
+                                'rgba(255, 206, 86, 0.7)', 
+                                'rgba(75, 192, 192, 0.7)', 
+                                'rgba(153, 102, 255, 0.7)', 
+                                'rgba(255, 159, 64, 0.7)' 
+                            ]
+                        }]
+                        },
+                        options: {
+                        scales: {
+                            y: {
+                            beginAtZero: true
+                            }
+                        }
+                        }
+                    }); // Chart                    
+                },
+                error:function(){
+                    alert('실패');
+                }
+            });//ajax        
         }
 
+        function categorytBtn(){
+            
+            label_data = []; // category
+            datas = []; // count
 
-        /*
-        const ctx = document.getElementById('myChart');
+            $.ajax({
+                url:'/magazine/mcategoryChart/',
+                type:'post',
+                headers:{'X-CSRFToken':'{{csrf_token}}'},
+                data:{},
+                dataType:'json',
+                success:function(data){
+                    //alert('성공');
+                    //console.log(data);
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: 'Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                borderWidth: 1
-            }]
-            },
-            options: {
-            scales: {
-                y: {
-                beginAtZero: true
+                    for(var i=0;i<data.list.length;i++){
+                        label_data.push(data.list[i].magazinecode__mtype_desc);
+                        datas.push(data.list[i].max_cnt);
+                    }                    
+
+                    const ctx = document.getElementById('myChart');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                        labels: label_data,
+                        datasets: [{
+                            label: '2026년 등록현황',
+                            data: datas,
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.7)', 
+                                'rgba(54, 162, 235, 0.7)', 
+                                'rgba(255, 206, 86, 0.7)', 
+                                'rgba(75, 192, 192, 0.7)', 
+                                'rgba(153, 102, 255, 0.7)', 
+                                'rgba(255, 159, 64, 0.7)' 
+                            ]
+                        }]
+                        },
+                        options: {
+                        scales: {
+                            y: {
+                            beginAtZero: true
+                            }
+                        }
+                        }
+                    }); // Chart                    
+                },
+                error:function(){
+                    alert('실패');
                 }
-            }
-            }
-        });
-        */
+            });//ajax        
+        }
+
     </script>    
 
 {% endblock body %}

@@ -6,8 +6,10 @@ urlpatterns = [
     path('mlist/', views.mlist, name='mlist'),
     path('mview/<int:mno>/', views.mview, name='mview'),
     path('mlike/', views.mlike, name='mlike'),
+    path('mhit/<int:mno>/', views.mhit, name='mhit'),
     path('mnaver/', views.mnaver, name='mnaver'),
     path('mtest/', views.mtest, name='mtest'),
     path('mmnge/', views.mmnge, name='mmnge'),
-    path('mhit/<int:mno>/', views.mhit, name='mhit'),
+    path('mcategoryChart/', views.mcategoryChart, name='mcategoryChart'),
+    path('myearChart/', views.myearChart, name='myearChart'),
 ]

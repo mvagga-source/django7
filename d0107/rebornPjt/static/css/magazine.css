@@ -1,6 +1,8 @@
 
 #mz-body{width:100%}
 .mz-red{color:red;}
+.mz-blue{color:blue;}
+.mz-between{display: flex;flex-flow: row nowrap;justify-content: space-between;}
 
 /* HEADER */
 #mz-header {width:100%;height:244px;background:url('/static/images/common/back_magazine.jpg') center/cover no-repeat;display: flex;align-items: flex-end;justify-content: center;}
@@ -18,20 +20,29 @@
 /* LIST */
 #mz-contents{width:1250px;margin:0 auto;}
 
-#mz-best{margin:15px 0;}
+#mz-best{margin:20px 0;background-color: #F8F8F8;}
+#mz-best h2{margin:20px 0;padding-top:20px;text-align: center;width:100%;}
+#mz-best ul{width:100%;display: flex;flex-flow: row nowrap;justify-content: space-around;}
+#mz-best .mz_litem{width:500px;} 
+#mz-best .mz_litem img{width:500px;}
+#mz-best .mz_litem figure{border-bottom: 1px solid #F8F8F8;}
+#mz-best .mz_litem figcaption{padding:15px 8px 0px;}
+#mz-best .mz-bgood{width:180px;padding: 4px 8px;color: #E41E2A;border-radius: 10px;border: 1px solid #E41E2A;font-family: SUIT, sans-serif;font-size: 14px;font-weight: 500;line-height: normal;text-align: center;margin: 20px 0 10px;}
+#mz-best .mz-bview{width:180px;padding: 4px 8px;color: #003FAB;border-radius: 10px;border: 1px solid #003FAB;font-family: SUIT, sans-serif;font-size: 14px;font-weight: 500;line-height: normal;text-align: center;margin: 20px 0 10px;}
 
 #mz-list {padding-top:20px;}
 #mz-lcategory{margin:0 auto;padding-bottom:20px;text-align: right;}
-#mz-lcategory select {width: 130px;border: 1px solid #C4C4C4;box-sizing: border-box;border-radius: 10px;padding: 5px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 10px;}
-#mz-lcategory select:hover{border: 1px solid #8a8a8a;box-sizing: border-box;border-radius: 10px;outline: 3px solid #cecece;border-radius: 10px;}
-#mz-lcategory span{padding: 4px 8px;color: #01ad1e;border-radius: 10px;border: 1px solid #01ad1e;font-family: SUIT, sans-serif;font-size: 12px;font-weight: 500;line-height: normal;text-align: center;margin-right: 4px;}
+#mz-lcategory select {width: 130px;border: 1px solid #013dad;box-sizing: border-box;border-radius: 10px;padding: 5px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 10px;}
+#mz-lcategory select:hover{border: 1px solid #abe4ff;box-sizing: border-box;border-radius: 10px;outline: 3px solid #cecece;border-radius: 10px;}
+.mz-lnaver{padding: 4px 8px;color: #ffffff;border-radius: 10px;background-color:#01ad1e; border: 1px solid #01ad1e;font-family: SUIT, sans-serif;font-size: 12px;font-weight: 500;line-height: normal;text-align: center;margin-right: 4px;}
+.mz-lchart{padding: 4px 8px;color: #013dad;border-radius: 10px;border: 1px solid #013dad;font-family: SUIT, sans-serif;font-size: 12px;font-weight: 500;line-height: normal;text-align: center;margin-right: 4px;}
 
 #mz-list ul{display: flex;flex-flow: row wrap;justify-content: space-between;}
 .mz_litem {width:300px;margin-bottom: 20px;}
 .mz_litem img{width:300px;height:200px; border-top-left-radius: 15px;border-top-right-radius: 15px;object-fit: cover; /* 또는 contain, fill, scale-down, none */}
 .mz_litem figure{border-bottom: 1px solid #d3d3d3;}
 .mz_litem figcaption{padding:15px 8px 12px;}
-.mz_litem-category{font-family: SUIT, sans-serif;font-size: 14px;font-weight: 400;line-height: normal;line-height: 150%;color: #3e404e;margin-bottom: 0;}
+.mz_litem-category{font-family: SUIT, sans-serif;font-size: 14px;font-weight: 400;line-height: 150%;color: #3e404e;margin-bottom: 0;}
 .mz_litem-title{overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;text-decoration: none;font-family: SUIT, sans-serif;font-size: 18px;font-weight: 600;line-height: normal;height: 24px;color: #3e404e;margin: 12px 0px;}
 .mz_litem-thumbnail{height: 66px;overflow: hidden;text-overflow: ellipsis;line-height: 150%;color: #585a74;font-family: SUIT, sans-serif;font-size: 14px;font-weight: 400;margin: 0 0 17px;}
 .mz_litem-date{display: block;color: #9d9d9d;font-size: 12px;line-height: 1.5;}

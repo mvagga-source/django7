@@ -21,7 +21,7 @@
         {% csrf_token %}
         <div id='mz-header-bg'>
             <div id='mz-htitle'>
-                Reborn <i class="fa-solid fa-utensils"></i> 매거진
+                <i class="fa-solid fa-utensils"></i> 매거진
             </div>
             <div id='mz-hsearch'>
                 <div id='mz-hsearch-box'>
@@ -37,7 +37,89 @@
     <div id='mz-contents'>
 
         <div id='mz-best'>
-            <h2>{{request.session.user_nm}}님을 취한 추천 매거진</h2>
+            <!--<h2>{{request.session.user_nm}}님을 위한 추천 매거진</h2>-->
+            <h2>이달의 추천 매거진📈</h2>
+            <ul>
+                <li class='mz_litem'>
+                    <a href='/magazine/mhit/{{maxGood.mno}}/'>
+                        <figure>
+                            <div class='mz-bgood'>이번달 인기 매거진</div>
+                            <div>
+                                {% if maxGood.mfile %}
+                                    <img src='/media/{{maxGood.mfile}}'>
+                                {% else %}
+                                    <img src='/static/images/magazine/temp_image.png'>
+                                {% endif %}
+                            </div>
+                            <figcaption>
+                                <div class='mz_litem-category mz-between'>
+                                    <span>
+                                        {{maxGood.magazinecode.mtype_desc}}
+                                    </span>
+                                    <span>
+                                        {% if maxGood.mlike.count %}
+                                            <i class="fa-solid fa-heart mz-red"></i> {{maxGood.mlike.count}}
+                                        {% else %}
+                                            <i class="fa-regular fa-heart"></i> {{maxGood.mlike.count}}
+                                        {% endif %}
+                                    
+                                        {% if maxGood.mhit %}
+                                            &nbsp;<i class="fa-solid fa-eye mz-blue"></i> {{maxGood.mhit}}
+                                        {% else %}
+                                            &nbsp;<i class="fa-regular fa-eye"></i> {{maxGood.mhit}}
+                                        {% endif %}
+    
+                                    </span>
+                                </div>
+                                <h4 class='mz_litem-title'>{{maxGood.mtitle}}</h4>
+                                <p class='mz_litem-thumbnail'>
+                                {{maxGood.mthumbnail}}
+                                </p>
+                                <span class='mz_litem-date'>{{l.mdate|date:'Y-m-d H:i'}}</span>
+                            </figcaption>
+                        </figure>
+                    </a>
+                </li>
+                <li class='mz_litem'>
+                    <a href='/magazine/mhit/{{maxView.mno}}/'>
+                        <figure>
+                            <div class='mz-bview'>이번달 베스트 매거진</div>
+                            <div>
+                                {% if maxView.mfile %}
+                                    <img src='/media/{{maxView.mfile}}'>
+                                {% else %}
+                                    <img src='/static/images/magazine/temp_image.png'>
+                                {% endif %}
+                            </div>
+                            <figcaption>
+                                <div class='mz_litem-category mz-between'>
+                                    <span>
+                                        {{maxView.magazinecode.mtype_desc}}
+                                    </span>
+                                    <span>
+                                        {% if maxView.mlike.count %}
+                                            <i class="fa-solid fa-heart mz-red"></i> {{maxView.mlike.count}}
+                                        {% else %}
+                                            <i class="fa-regular fa-heart"></i> {{maxView.mlike.count}}
+                                        {% endif %}
+                                   
+                                        {% if maxView.mhit %}
+                                            &nbsp;<i class="fa-solid fa-eye mz-blue"></i> {{maxView.mhit}}
+                                        {% else %}
+                                            &nbsp;<i class="fa-regular fa-eye"></i> {{maxView.mhit}}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <h4 class='mz_litem-title'>{{maxView.mtitle}}</h4>
+                                <p class='mz_litem-thumbnail'>
+                                {{maxView.mthumbnail}}
+                                </p>
+                                <span class='mz_litem-date'>{{l.mdate|date:'Y-m-d H:i'}}</span>
+                            </figcaption>
+                        </figure>
+                    </a>
+                </li>                
+            </ul>
         </div>
 
 
@@ -54,8 +136,10 @@
                         {% endif %}
                     {% endfor %}
                 </select>
-    
-                <a href='/magazine/mnaver/'><span>NAVER 음식 매거진</span></a>
+                
+                <a href='/magazine/mmnge/'><span class='mz-lchart'>카테고리별 등록현황</span></a>
+
+                <a href='/magazine/mnaver/'><span class='mz-lnaver'>NAVER 음식 매거진</span></a>
     
             </div>
     
@@ -74,15 +158,24 @@
                                 {% endif %}
                             </div>
                             <figcaption>
-                                <span class='mz_litem-category'>
-                                    {{l.magazinecode.mtype_desc}}
-                                    {% if l.mlike.count %}
-                                        <i class="fa-solid fa-heart mz-red"></i> {{l.mlike.count}}
-                                    {% else %}
-                                        <i class="fa-regular fa-heart"></i> {{l.mlike.count}}
-                                    {% endif %}
-                                    &nbsp;<i class="fa-solid fa-eye"></i> {{l.mhit}}
-                                </span>
+                                <div class='mz_litem-category mz-between'>
+                                    <span>
+                                        {{l.magazinecode.mtype_desc}}
+                                    </span>
+                                    <span>
+                                        {% if l.mlike.count %}
+                                            <i class="fa-solid fa-heart mz-red"></i> {{l.mlike.count}}
+                                        {% else %}
+                                            <i class="fa-regular fa-heart"></i> {{l.mlike.count}}
+                                        {% endif %}
+                                
+                                        {% if l.mhit %}
+                                            &nbsp;<i class="fa-solid fa-eye mz-blue"></i> {{l.mhit}}
+                                        {% else %}
+                                            &nbsp;<i class="fa-regular fa-eye"></i> {{l.mhit}}
+                                        {% endif %}                                            
+                                    </span>
+                                </div>
                                 <h4 class='mz_litem-title'>{{l.mtitle}}</h4>
                                 <p class='mz_litem-thumbnail'>
                                 {{l.mthumbnail}}

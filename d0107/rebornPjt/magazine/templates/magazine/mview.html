@@ -25,9 +25,9 @@ $(function(){
                 console.log('result : ',data.result);
 
                 if(data.like_chk == '1'){
-                    dataHtml = `<i class="fa-solid fa-heart"></i> (${data.like_count})`;
+                    dataHtml = `<i class="fa-solid fa-heart mz-red"></i> ${data.like_count}`;
                 }else{
-                    dataHtml = `<i class="fa-regular fa-heart"></i> (${data.like_count})`;
+                    dataHtml = `<i class="fa-regular fa-heart"></i> ${data.like_count}`;
                 }
 
                 $('#mz-like').html(dataHtml);
@@ -53,7 +53,7 @@ $(function(){
         {% csrf_token %}
         <div id='mz-header-bg'>
             <div id='mz-htitle'>
-                Reborn 매거진
+                <i class="fa-solid fa-utensils"></i> 매거진
             </div>
             <div id='mz-hsearch'>
                 <div id='mz-hsearch-box'>
@@ -88,8 +88,12 @@ $(function(){
                             <i class="fa-regular fa-heart"></i> {{mz.mlike.count}}
                         {% endif %}
                     {% endif %}
-
-                    &nbsp;<i class="fa-solid fa-eye"></i> {{mz.mhit}}
+                    
+                    {% if mz.mhit %}
+                        &nbsp;<i class="fa-solid fa-eye mz-blue"></i> {{mz.mhit}}
+                    {% else %}
+                        &nbsp;<i class="fa-regular fa-eye"></i> {{mz.mhit}}
+                    {% endif %}
                 </li>
             </ul>
             

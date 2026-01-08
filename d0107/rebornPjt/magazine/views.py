@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.db.models import F,Q,Sum,Count
+from django.db.models.functions import ExtractYear
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from magazine.models import Magazine, MagazineCode
@@ -11,9 +12,41 @@ import urllib.request
 def mtest(request):
     return render(request,'magazine/1.html')
 
-def mmnge(request):
-    return render(request,'magazine/mmnge.html')
+def myearChart(request):
+    
+    if request.method == 'POST':
+        
+        print('1')
+        
+        qs = Magazine.objects.annotate(year=ExtractYear('mdate')).values('year').annotate(count=Count('mno')).order_by('year')
+        print(qs)
+        print('2')
+        qs_list = list(qs.values())
+        print('3')
+        context = {'result':'성공','list':qs_list}
+        print('4')
+    
+        return JsonResponse(context)    
 
+def mcategoryChart(request):
+    
+    if request.method == 'POST':
+        
+        qs = Magazine.objects.values('magazinecode','magazinecode__mtype_desc').annotate(max_cnt=Count('magazinecode'))
+        
+        # 객체일때 전체
+        # Json으로 변경시 객체에서 pk키만 변환
+        qs_list = list(qs)
+        
+        context = {'result':'성공','list':qs_list}
+    
+        return JsonResponse(context)
+
+def mmnge(request):
+    
+    return render(request,'magazine/mmnge.html')
+    
+    
 def mnaver(request):
     
     page = int(request.GET.get('page',1))
@@ -126,7 +159,7 @@ def mlist(request):
         if not search: # 공란 처리
             qs = Magazine.objects.all().order_by('-mdate')
         else:
-            qs = Magazine.objects.filter(Q(mtitle__contains=search)|Q(mcontent__contains=search))
+            qs = Magazine.objects.filter(Q(mtitle__contains=search)|Q(mcontent__contains=search)).order_by('-mdate')
 
     else:
         qs_category = MagazineCode.objects.get(mtype=category)
@@ -143,9 +176,14 @@ def mlist(request):
     else:
         etc = 4 - (paginator.count % 4)
         
-    print('paginator.count :',paginator.count, 'etc : ',etc)
+    
+    qs_maxGood = Magazine.objects.all().order_by('-mlike').first();
+    qs_maxView = Magazine.objects.all().order_by('-mhit').first();
         
-    context = {'qs_code':qs_code,'list':qs_list,'page':page,'etc_count':etc,'category':category,'search':search}
+        
+    # print('paginator.count :',paginator.count, 'etc : ',etc)
+        
+    context = {'qs_code':qs_code,'list':qs_list,'page':page,'etc_count':etc,'category':category,'search':search,'maxGood':qs_maxGood,'maxView':qs_maxView}
     return render(request,'magazine/mlist.html',context)
 
 
