@@ -1,5 +1,6 @@
 
 #mz-body{width:100%}
+.mz-red{color:red;}
 
 /* HEADER */
 #mz-header {width:100%;height:244px;background:url('/static/images/common/back_magazine.jpg') center/cover no-repeat;display: flex;align-items: flex-end;justify-content: center;}

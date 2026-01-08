@@ -74,7 +74,15 @@
                                 {% endif %}
                             </div>
                             <figcaption>
-                                <span class='mz_litem-category'>{{l.magazinecode.mtype_desc}}</span>
+                                <span class='mz_litem-category'>
+                                    {{l.magazinecode.mtype_desc}}
+                                    {% if l.mlike.count %}
+                                        <i class="fa-solid fa-heart mz-red"></i> {{l.mlike.count}}
+                                    {% else %}
+                                        <i class="fa-regular fa-heart"></i> {{l.mlike.count}}
+                                    {% endif %}
+                                    &nbsp;<i class="fa-solid fa-eye"></i> {{l.mhit}}
+                                </span>
                                 <h4 class='mz_litem-title'>{{l.mtitle}}</h4>
                                 <p class='mz_litem-thumbnail'>
                                 {{l.mthumbnail}}

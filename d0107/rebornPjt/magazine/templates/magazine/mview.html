@@ -14,10 +14,6 @@ $(function(){
     
     $('#mz-like').click(function(){
 
-        if ($('.fa-solid').length > 0){
-            alert('좋아요를 취소합니다.');
-        }
-
         $.ajax({
             url:'/magazine/mlike/',
             type:'post',
@@ -80,18 +76,20 @@ $(function(){
                     {% if request.session.user_id %}
                     <a href='#' id='mz-like'>
                         {% if mz.mlike.count %}
-                            <i class="fa-solid fa-heart"></i> ({{mz.mlike.count}})
+                            <i class="fa-solid fa-heart mz-red"></i> {{mz.mlike.count}}
                         {% else %}
-                            <i class="fa-regular fa-heart"></i> ({{mz.mlike.count}})
+                            <i class="fa-regular fa-heart"></i> {{mz.mlike.count}}
                         {% endif %}
                     </a>
                     {% else %}
                         {% if mz.mlike.count %}
-                            <i class="fa-solid fa-heart"></i> ({{mz.mlike.count}})
+                            <i class="fa-solid fa-heart mz-red"></i> {{mz.mlike.count}}
                         {% else %}
-                            <i class="fa-regular fa-heart"></i> ({{mz.mlike.count}})
+                            <i class="fa-regular fa-heart"></i> {{mz.mlike.count}}
                         {% endif %}
                     {% endif %}
+
+                    &nbsp;<i class="fa-solid fa-eye"></i> {{mz.mhit}}
                 </li>
             </ul>
             
