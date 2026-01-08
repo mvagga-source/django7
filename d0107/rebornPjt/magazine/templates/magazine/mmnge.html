@@ -26,9 +26,23 @@
     <script>
 
         function yearBtn(){
+
+            //alert('hi');
+
+
             
             label_data = []; // category
             datas = []; // count
+            datasets = [];
+
+            /*            
+            //차트 초기화
+            let chartStatus = Chart.getChart("myChart"); // <canvas> id
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }
+                
+            */
 
             $.ajax({
                 url:'/magazine/myearChart/',
@@ -37,52 +51,70 @@
                 data:{},
                 dataType:'json',
                 success:function(data){
-                    //alert('성공');
                     //console.log(data);
 
                     for(var i=0;i<data.list.length;i++){
                         label_data.push(data.list[i].magazinecode__mtype_desc);
-                        datas.push(data.list[i].max_cnt);
-                    }                    
+                        datas.push(data.list[i].year);
+                        datasets.push(data.list[i].count);
+                    } 
 
+                    console.log(label_data);
+                    console.log(datas);
+                    console.log(datasets);
+
+
+
+                    /*
                     const ctx = document.getElementById('myChart');
+                    //const labels = Utils.months({count: 7});
                     new Chart(ctx, {
-                        type: 'bar',
+                        type: 'line',
                         data: {
-                        labels: label_data,
-                        datasets: [{
-                            label: '2026년 등록현황',
-                            data: datas,
-                            borderWidth: 1,
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.7)', 
-                                'rgba(54, 162, 235, 0.7)', 
-                                'rgba(255, 206, 86, 0.7)', 
-                                'rgba(75, 192, 192, 0.7)', 
-                                'rgba(153, 102, 255, 0.7)', 
-                                'rgba(255, 159, 64, 0.7)' 
-                            ]
-                        }]
+                            labels: ['2024','2025','2026'],
+                            datasets: [{
+                                label: 'My First Dataset',
+                                data: [0, 65, 59],
+                                fill: false,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1
+                            },
+                            {
+                                label: 'My First Dataset1',
+                                data: [0, 90, 159],
+                                fill: false,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1
+                            }                            
+                            ]   
                         },
                         options: {
-                        scales: {
-                            y: {
-                            beginAtZero: true
+                            scales: {
+                                y: {
+                                beginAtZero: true
+                                }
                             }
                         }
-                        }
-                    }); // Chart                    
+                    }); // Chart  
+                    */              
                 },
                 error:function(){
                     alert('실패');
                 }
             });//ajax        
+
         }
 
         function categorytBtn(){
             
             label_data = []; // category
             datas = []; // count
+
+            //차트 초기화
+            let chartStatus = Chart.getChart("myChart"); // <canvas> id
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }              
 
             $.ajax({
                 url:'/magazine/mcategoryChart/',
@@ -98,6 +130,9 @@
                         label_data.push(data.list[i].magazinecode__mtype_desc);
                         datas.push(data.list[i].max_cnt);
                     }                    
+
+                    console.log(label_data);
+                    console.log(datas);
 
                     const ctx = document.getElementById('myChart');
                     new Chart(ctx, {

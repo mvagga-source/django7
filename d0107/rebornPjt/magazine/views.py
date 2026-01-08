@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.db.models import F,Q,Sum,Count
-from django.db.models.functions import ExtractYear
+from django.db.models.functions import ExtractYear, TruncYear
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from magazine.models import Magazine, MagazineCode
@@ -16,15 +16,11 @@ def myearChart(request):
     
     if request.method == 'POST':
         
-        print('1')
+        qs = Magazine.objects.annotate(year=ExtractYear('mdate')).values('year','magazinecode__mtype_desc').annotate(count=Count('mno')).order_by('year','magazinecode')
+        # qs = Magazine.objects.annotate(year=TruncYear('mdate')).values('year').annotate(count=Count('mno')).order_by('year')
+        qs_list = list(qs)
         
-        qs = Magazine.objects.annotate(year=ExtractYear('mdate')).values('year').annotate(count=Count('mno')).order_by('year')
-        print(qs)
-        print('2')
-        qs_list = list(qs.values())
-        print('3')
         context = {'result':'성공','list':qs_list}
-        print('4')
     
         return JsonResponse(context)    
 
