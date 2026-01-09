@@ -1,4 +1,5 @@
 
+
 function selectBtn(str){
 
     if (str == ''){
@@ -21,7 +22,6 @@ function msearchBtn(){
         location.href='/magazine/mmnge/?category='+category+'&search='+search+'&sort='+sort;
     }
 }
-
 
 function searchBtn(){
     searchFrm.submit();

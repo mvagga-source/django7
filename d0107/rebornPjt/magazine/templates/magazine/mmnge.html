@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load pybo_filter %}
 {% block css %}
 <link rel='stylesheet' type="text/css" href="/static/css/magazine.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -183,9 +183,9 @@
     <h2 id='mmtitle'></h2>
     <div id='mmcontents'>
         <ul id='mmmenu'>
+            <li><a href="#" onClick='rankBtn()'># 카테고리별 순위 리스트</a></li>            
             <li><a href="#" onClick='categorytBtn()'># 카테고리별 전체등록 현황(차트)</a></li>
             <li><a href="#" onClick='yearBtn()'># 연도별 전체등록 현황(차트)</a></li>
-            <li><a href="#" onClick='rankBtn()'># 카테고리별 순위 리스트</a></li>
         </ul>
         <div id='mmview'>
             <!--<canvas id="myChart"></canvas>-->
@@ -218,15 +218,16 @@
                         {% endfor %}
 
                     </select>
-                    <input type='text' id='mmsearch' name='msearch'>
+                    <input type='text' id='mmsearch' name='msearch' placeholder='제목+내용'>
                     <button type='text' onclick='msearchBtn()'>검색</button>
                 </div>
 
-                <div id='mmtotal'> # 검색결과 : {{mzlist.paginator.count}}</div>
+                <div id='mmtotal'> <i class="fa-solid fa-magnifying-glass-plus"></i> 검색 ({{mzlist.paginator.count}})</div>
 
                 <table>
                     <colgroup>
-                        <col width="100px">
+                        <col width="50px">
+                        <col width="50px">
                         <col width="140px">                        
                         <col width="100px">
                         <col width="700px">
@@ -235,7 +236,8 @@
                         <col width="100px">
                     </colgroup>
                     <tr>
-                        <th>번호</th>
+                        <th>순번</th>
+                        <th></th>
                         <th>카테고리</th></th>
                         <th>이미지</th>
                         <th>제목</th>
@@ -245,15 +247,15 @@
                     </tr>
                     {% for mz in mzlist %}
                     <tr>
-                        <td style='text-align:center'>{{mz.mno}}</td>
-                        <td style='text-align:center'>{{mz.magazinecode.mtype_desc}}</td>
+                        <td>{{mzlist.paginator.count|sub:mzlist.start_index|sub:forloop.counter0|add:1}}</td>
+                        <td>{{mz.mno}}</td>
+                        <td>{{mz.magazinecode.mtype_desc}}</td>
                         <td style='line-height:0;'><img src='/media/{{mz.mfile}}' width="100px" height="100px"></td>
-                        <td style='padding-left:10px;'>{{mz.mtitle}}</td>
-                        <td style='text-align:center'>{{mz.mlike.count}}</td>
-                        <td style='text-align:center'>{{mz.mhit}}</td>
-                        <td style='text-align:center'>
-                            <button type='text'>수정</button>
-                            <button type='text'>삭제</button>
+                        <td style='padding-left:10px;text-align:left;'>{{mz.mtitle}}</td>
+                        <td>{{mz.mlike.count}}</td>
+                        <td>{{mz.mhit}}</td>
+                        <td>
+                            <button class='mmupdate' type='text'>제목 수정</button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -302,6 +304,29 @@
             </div>
         </div>
     </div>
+
+    <div class="modal">
+        <div class="modal_popup">
+            <h3>모달 팝업 타이틀 입니다!</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, ut facere id ullam ea adipisci et ipsam est quidem commodi ducimus nostrum cum optio non dolor! Quam ipsum nam rem!</p>
+            <button type="button" class="close_btn">닫기</button>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.querySelector('.modal');
+        const modalOpen = document.querySelector('.mmupdate');
+        const modalClose = document.querySelector('.close_btn');
+
+        // 열기 버튼을 눌렀을 때 모달팝업이 열림
+        modalOpen.addEventListener('click',function(){
+            modal.classList.add('on');
+        });
+        // 닫기 버튼을 눌렀을 때 모달팝업이 닫힘
+        modalClose.addEventListener('click',function(){
+            modal.classList.remove('on');
+        });        
+    </script>
 
 
 {% endblock body %}
