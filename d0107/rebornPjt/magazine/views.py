@@ -16,8 +16,16 @@ def myearChart(request):
     
     if request.method == 'POST':
         
-        qs = Magazine.objects.annotate(year=ExtractYear('mdate')).values('year','magazinecode__mtype_desc').annotate(count=Count('mno')).order_by('year','magazinecode')
+        qs = Magazine.objects.annotate(year=ExtractYear('mdate')).values('year','magazinecode__mtype_desc','magazinecode').annotate(count=Count('mno')).order_by('year','magazinecode')
         # qs = Magazine.objects.annotate(year=TruncYear('mdate')).values('year').annotate(count=Count('mno')).order_by('year')
+        
+        # qs = Magazine.objects.all()
+        
+        for year in qs.values_list('year',flat=True).distinct():
+            value = qs.filter(year=year,magazinecode=1)
+            print(value)
+        
+        
         qs_list = list(qs)
         
         context = {'result':'성공','list':qs_list}
