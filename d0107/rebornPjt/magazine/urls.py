@@ -12,4 +12,5 @@ urlpatterns = [
     path('mmnge/', views.mmnge, name='mmnge'),
     path('mcategoryChart/', views.mcategoryChart, name='mcategoryChart'),
     path('myearChart/', views.myearChart, name='myearChart'),
+    path('mcategoryRank/', views.mcategoryRank, name='mcategoryRank'),
 ]
