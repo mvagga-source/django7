@@ -111,7 +111,7 @@
 .modal.on {display: block;}
 .modal {display: none;position: absolute;top:0;left: 0;width: 100%;height: 100%;overflow: hidden;background: rgba(0,0,0,0.5);}
 .modal .modal_popup {position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);padding: 20px;background: #ffffff;border-radius: 20px;}
-.modal .modal_popup .close_btn {display: block;padding: 10px 20px;background-color: rgb(116, 0, 0);border: none;border-radius: 5px;color: #fff;cursor: pointer;transition: box-shadow 0.2s;}
+.modal .modal_popup .mclose_btn {display: block;padding: 5px 10px;background-color: rgb(116, 0, 0);border: none;border-radius: 5px;color: #fff;cursor: pointer;transition: box-shadow 0.2s;}
 
 
 /* media query */

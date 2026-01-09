@@ -172,6 +172,20 @@
         document.getElementById('mmlist').style.display = '';
         document.getElementById('myChart').style.display = 'none';
     }
+
+
+    $(function(){
+
+        $(document).on("click",".mmupdate",function(){
+            $('.modal').addClass('on');
+        })
+
+        $(document).on("click",".mclose_btn",function(){
+            $('.modal').removeClass('on');
+        })
+        
+        
+    })//jquery
     
 </script>    
 
@@ -245,8 +259,9 @@
                         <th>조회수</th>
                         <th></th>
                     </tr>
+                    {% if mzlist %}
                     {% for mz in mzlist %}
-                    <tr>
+                    <tr id='{{mz.mno}}'>
                         <td>{{mzlist.paginator.count|sub:mzlist.start_index|sub:forloop.counter0|add:1}}</td>
                         <td>{{mz.mno}}</td>
                         <td>{{mz.magazinecode.mtype_desc}}</td>
@@ -255,10 +270,16 @@
                         <td>{{mz.mlike.count}}</td>
                         <td>{{mz.mhit}}</td>
                         <td>
-                            <button class='mmupdate' type='text'>제목 수정</button>
+                            <button type='button' class='mmupdate'>수정</button>
                         </td>
                     </tr>
                     {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan='8' style='text-align:center;'>// 검색결과가 없습니다. 다시 시도해 주세요 //</td>
+                    </tr>
+                    {% endif %}
+
                 </table>
 
                 <!-- 페이징 start -->
@@ -309,10 +330,13 @@
         <div class="modal_popup">
             <h3>모달 팝업 타이틀 입니다!</h3>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, ut facere id ullam ea adipisci et ipsam est quidem commodi ducimus nostrum cum optio non dolor! Quam ipsum nam rem!</p>
-            <button type="button" class="close_btn">닫기</button>
+            <div style="width:100%;text-align:right;">
+                <button type="button" class="mclose_btn">닫기</button>
+            </div>
         </div>
     </div>
 
+    {% comment %} 
     <script>
         const modal = document.querySelector('.modal');
         const modalOpen = document.querySelector('.mmupdate');
@@ -326,7 +350,7 @@
         modalClose.addEventListener('click',function(){
             modal.classList.remove('on');
         });        
-    </script>
+    </script> {% endcomment %}
 
 
 {% endblock body %}
