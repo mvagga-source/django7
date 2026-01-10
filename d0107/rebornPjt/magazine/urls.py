@@ -13,4 +13,5 @@ urlpatterns = [
     path('mcategoryChart/', views.mcategoryChart, name='mcategoryChart'),
     path('myearChart/', views.myearChart, name='myearChart'),
     path('mcategoryRank/', views.mcategoryRank, name='mcategoryRank'),
+    path('mupdate/', views.mupdate, name='mupdate'),
 ]

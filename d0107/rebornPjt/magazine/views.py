@@ -76,6 +76,22 @@ def mcategoryChart(request):
         context = {'result':'성공','list':qs_list}
     
         return JsonResponse(context)
+    
+    
+def mupdate(request):
+    
+    if request.method == 'POST':
+
+        mno = request.POST.get('mno')
+        mthumbnail = request.POST.get('thumbnail')
+        
+        qs = Magazine.objects.get(mno=mno)
+        qs.mthumbnail = mthumbnail
+        qs.save()
+    
+    context = {'result':'성공'}
+    
+    return JsonResponse(context)
 
 def mmnge(request):
     
@@ -120,7 +136,7 @@ def mmnge(request):
 
     # 패이징
     page = int(request.GET.get('page',1))
-    paginator = Paginator(qs,50)
+    paginator = Paginator(qs,10)
     qs_list = paginator.get_page(page)
     
     context = {'mzcode':qs_code,'mzlist':qs_list,'sortlist':sortlist,'page':page,'category':category,'sort':sort}

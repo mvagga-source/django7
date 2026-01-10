@@ -29,5 +29,3 @@ function searchBtn(){
 
 //$(document).ready(function(){});
 
-
-

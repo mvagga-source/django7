@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 
-    function yearBtn(){
+    function yearChartBtn(){
         //alert('yearBtn');
 
         if($('#myChart').length === 0 )
@@ -92,7 +92,7 @@
 
     }
 
-    function categorytBtn(){
+    function categorytChartBtn(){
 
         //alert('categorytBtn');
 
@@ -173,20 +173,76 @@
         document.getElementById('myChart').style.display = 'none';
     }
 
-
     $(function(){
 
+        // modal open
         $(document).on("click",".mmupdate",function(){
+            let tr = $(this).closest('tr');
+            id = tr.attr('id');
+            Category = tr.find(".mzCategory").text();
+            title = tr.find(".mztitle").text();
+            thumbnail = tr.find(".mzthumbnail").val();
+            img_src = tr.find("img").attr('src');
+
+            //console.log(id,Category,title,img);
+
+            dataHtml = `
+                <div class="close close1"></div>
+                <ul class='${id}'>
+                    <li class='uCategory'>${Category}</li>
+                    <li class='utitle'>${title}</li>
+                    <li class='uimg'><img src='${img_src}'></li>
+                    <li class='utext'><textarea class='utextarea'>${thumbnail}</textarea></li>
+                    <li class='ubutton'>
+                        <span></span>
+                        <button type="button" class="msave_btn">저장</button> 
+                        <button type="button" class="mclose_btn">닫기</button>
+                    </li>
+                </ul>
+            `;            
+
+            $('.modal_popup').html(dataHtml);
             $('.modal').addClass('on');
-        })
+        }) // mmupdate
+
+        $(document).on("click",'.msave_btn',function(){
+            //alert('msave_btn');
+            let ul = $(this).closest('ul');
+            mno = ul.attr('class');
+            thumbnail = ul.find(".utextarea").val();
+
+            //console.log('thumbnail',thumbnail);
+
+            $.ajax({
+                url:'/magazine/mupdate/',
+                type:'post',
+                headers:{'X-CSRFToken':'{{csrf_token}}'},
+                data:{'mno':mno,'thumbnail':thumbnail},
+                dataType:'json',
+                success:function(data){
+                    //alert('수정 되었습니다.');
+                    $('.ubutton').find('span').text('수정 되었습니다...');
+                    $('.mzthumbnail').val(thumbnail);
+                    //$('.modal').removeClass('on');
+                },
+                error:function(){
+                    alert('실패');
+                }
+            })// .ajax
+
+        }) // msave_btn
 
         $(document).on("click",".mclose_btn",function(){
             $('.modal').removeClass('on');
-        })
+        }) // mclose_btn
+
+        $(document).on("click",".close",function(){
+            $('.modal').removeClass('on');
+        }) // mclose_btn        
         
         
-    })//jquery
-    
+    })//jquery    
+
 </script>    
 
 {% endblock script %}
@@ -198,8 +254,8 @@
     <div id='mmcontents'>
         <ul id='mmmenu'>
             <li><a href="#" onClick='rankBtn()'># 카테고리별 순위 리스트</a></li>            
-            <li><a href="#" onClick='categorytBtn()'># 카테고리별 전체등록 현황(차트)</a></li>
-            <li><a href="#" onClick='yearBtn()'># 연도별 전체등록 현황(차트)</a></li>
+            <li><a href="#" onClick='categorytChartBtn()'># 카테고리별 전체등록 현황(차트)</a></li>
+            <li><a href="#" onClick='yearChartBtn()'># 연도별 전체등록 현황(차트)</a></li>
         </ul>
         <div id='mmview'>
             <!--<canvas id="myChart"></canvas>-->
@@ -243,8 +299,8 @@
                         <col width="50px">
                         <col width="50px">
                         <col width="140px">                        
-                        <col width="100px">
-                        <col width="700px">
+                        <col width="120px">
+                        <col width="680px">
                         <col width="80px">
                         <col width="80px">
                         <col width="100px">
@@ -263,14 +319,15 @@
                     {% for mz in mzlist %}
                     <tr id='{{mz.mno}}'>
                         <td>{{mzlist.paginator.count|sub:mzlist.start_index|sub:forloop.counter0|add:1}}</td>
-                        <td>{{mz.mno}}</td>
-                        <td>{{mz.magazinecode.mtype_desc}}</td>
-                        <td style='line-height:0;'><img src='/media/{{mz.mfile}}' width="100px" height="100px"></td>
-                        <td style='padding-left:10px;text-align:left;'>{{mz.mtitle}}</td>
+                        <td class='mzno'>{{mz.mno}}</td>
+                        <td class='mzCategory'>{{mz.magazinecode.mtype_desc}}</td>
+                        <td style='line-height:0;' class='mzimg'><img src='/media/{{mz.mfile}}' width="100px" height="100px"></td>
+                        <td style='padding-left:10px;text-align:left;' class="mztitle">{{mz.mtitle}}</td>
                         <td>{{mz.mlike.count}}</td>
                         <td>{{mz.mhit}}</td>
                         <td>
                             <button type='button' class='mmupdate'>수정</button>
+                            <button type='hidden' class='mzthumbnail' value='{{mz.mthumbnail}}'></button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -328,13 +385,9 @@
 
     <div class="modal">
         <div class="modal_popup">
-            <h3>모달 팝업 타이틀 입니다!</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam, ut facere id ullam ea adipisci et ipsam est quidem commodi ducimus nostrum cum optio non dolor! Quam ipsum nam rem!</p>
-            <div style="width:100%;text-align:right;">
-                <button type="button" class="mclose_btn">닫기</button>
-            </div>
         </div>
     </div>
+    
 
     {% comment %} 
     <script>

@@ -109,10 +109,25 @@
 
 /* modal */
 .modal.on {display: block;}
-.modal {display: none;position: absolute;top:0;left: 0;width: 100%;height: 100%;overflow: hidden;background: rgba(0,0,0,0.5);}
+/* .modal {display: none;position: absolute;top:0;left: 0;width: 100%;height: 100%;overflow: hidden;background: rgba(0,0,0,0.5);} */
+.modal {display: none;width:100%;height:100%;position:fixed;top:0;left:0;right:0;background: rgba(0, 0, 0, 0.6);}
 .modal .modal_popup {position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);padding: 20px;background: #ffffff;border-radius: 20px;}
-.modal .modal_popup .mclose_btn {display: block;padding: 5px 10px;background-color: rgb(116, 0, 0);border: none;border-radius: 5px;color: #fff;cursor: pointer;transition: box-shadow 0.2s;}
+.modal .modal_popup ul {width:500px;height:530px;}
+.modal .modal_popup ul .uCategory{font-family: SUIT, sans-serif;font-size: 13px;font-weight: 400;line-height: 150%;color: #3e404e;margin-bottom: 0;}
+.modal .modal_popup ul .utitle{overflow: hidden;text-overflow: ellipsis;text-decoration: none;font-family: SUIT, sans-serif;font-size: 16px;font-weight: 600;line-height: normal;color: #3e404e;padding:5px 0;border-bottom:1px solid #b6b6b6;}
+.modal .modal_popup ul .uimg{width:500px;height:300px;display:flex;justify-content: center;align-items:center;margin:10px 0;}
+.modal .modal_popup ul img{width:450px;height:300px;}
+.modal .modal_popup ul .utext{width:100%;display:flex;justify-content: center;align-items:center;}
+.modal .modal_popup ul .utextarea{width:450px;height:120px;border: 1px solid #b6b6b6;box-sizing: border-box;border-radius: 5px;padding: 3px;font-weight: 400;font-size: 13px;line-height: 16px;}
+.modal .modal_popup ul .ubutton{display:flex;justify-content:flex-end;margin-top: 10px;}
+.modal .modal_popup .mclose_btn {display: block;padding: 5px 10px;background-color: rgb(156, 156, 156);border: none;border-radius: 5px;color: #fff;cursor: pointer;transition: box-shadow 0.2s;margin-right:28px;}
+.modal .modal_popup .msave_btn {display: block;padding: 5px 10px;background-color: rgb(166, 0, 0);border: none;border-radius: 5px;color: #fff;cursor: pointer;transition: box-shadow 0.2s;margin:0 10px;}
+.modal .modal_popup ul .ubutton span{color:rgb(166, 0, 0);font-weight: 500;margin-right:20px;}
 
+.close {position:absolute;right:5px;top:10px;width:50px;height:50px;text-align:center;margin-right:10px;cursor:pointer;}
+.close1:after {content: "\00d7"; font-size:15pt;line-height:50px;}
+.close2:after {content: "\00d7"; font-size:25pt;line-height:45px;}
+.close3:after {content: "\00d7"; font-size:50pt;line-height:35px;}
 
 /* media query */
 /* 1180 */
