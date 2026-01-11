@@ -13,9 +13,7 @@
     function yearChartBtn(){
         //alert('yearBtn');
 
-        if($('#myChart').length === 0 )
-            $('#mmview').append('<canvas id="myChart"></canvas>');
-
+        document.getElementById('myChart').classList.add('on');
         document.getElementById('mmlist').style.display = 'none';
 
         //차트 초기화
@@ -93,12 +91,9 @@
     }
 
     function categorytChartBtn(){
-
         //alert('categorytBtn');
 
-        if($('#myChart').length === 0 )
-            $('#mmview').append('<canvas id="myChart"></canvas>');
-
+        document.getElementById('myChart').classList.add('on');
         document.getElementById('mmlist').style.display = 'none';
         
         label_data = []; // category
@@ -168,9 +163,14 @@
         });//ajax        
     }
 
-    function rankBtn(){
-        document.getElementById('mmlist').style.display = '';
-        document.getElementById('myChart').style.display = 'none';
+    function magazineListBtn(){
+        document.getElementById('myChart').classList.remove('on');
+        document.getElementById('mmlist').style.display = '';        
+
+        let chartStatus = Chart.getChart("myChart"); // <canvas> id
+        if (chartStatus != undefined) {
+            chartStatus.destroy();
+        }         
     }
 
     $(function(){
@@ -189,7 +189,7 @@
             dataHtml = `
                 <div class="close close1"></div>
                 <ul class='${id}'>
-                    <li class='uCategory'>${Category}</li>
+                    <li class='uCategory'># ${Category}</li>
                     <li class='utitle'>${title}</li>
                     <li class='uimg'><img src='${img_src}'></li>
                     <li class='utext'><textarea class='utextarea'>${thumbnail}</textarea></li>
@@ -239,9 +239,8 @@
         $(document).on("click",".close",function(){
             $('.modal').removeClass('on');
         }) // mclose_btn        
-        
-        
-    })//jquery    
+    
+    })//jquery
 
 </script>    
 
@@ -250,15 +249,14 @@
 
 {% block body %}
 
-    <h2 id='mmtitle'></h2>
     <div id='mmcontents'>
         <ul id='mmmenu'>
-            <li><a href="#" onClick='rankBtn()'># 카테고리별 순위 리스트</a></li>            
+            <li><a href="#" onClick='magazineListBtn()'># 카테고리별 리스트</a></li>            
             <li><a href="#" onClick='categorytChartBtn()'># 카테고리별 전체등록 현황(차트)</a></li>
             <li><a href="#" onClick='yearChartBtn()'># 연도별 전체등록 현황(차트)</a></li>
         </ul>
         <div id='mmview'>
-            <!--<canvas id="myChart"></canvas>-->
+            <canvas id="myChart"></canvas>
             <div id='mmlist'>
 
                 <div id='msearch'>
@@ -380,30 +378,12 @@
 
 
             </div>
-        </div>
+        </div> 
     </div>
 
     <div class="modal">
         <div class="modal_popup">
         </div>
     </div>
-    
-
-    {% comment %} 
-    <script>
-        const modal = document.querySelector('.modal');
-        const modalOpen = document.querySelector('.mmupdate');
-        const modalClose = document.querySelector('.close_btn');
-
-        // 열기 버튼을 눌렀을 때 모달팝업이 열림
-        modalOpen.addEventListener('click',function(){
-            modal.classList.add('on');
-        });
-        // 닫기 버튼을 눌렀을 때 모달팝업이 닫힘
-        modalClose.addEventListener('click',function(){
-            modal.classList.remove('on');
-        });        
-    </script> {% endcomment %}
-
 
 {% endblock body %}

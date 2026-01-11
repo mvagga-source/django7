@@ -21,6 +21,7 @@ function msearchBtn(){
     }else{
         location.href='/magazine/mmnge/?category='+category+'&search='+search+'&sort='+sort;
     }
+   
 }
 
 function searchBtn(){

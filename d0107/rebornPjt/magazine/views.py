@@ -4,7 +4,7 @@ from django.db.models import F,Q,Sum,Count,Max
 from django.db.models.functions import ExtractYear, TruncYear
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from magazine.models import Magazine, MagazineCode
+from magazine.models import Magazine, MagazineCode, MagazineAdmin
 from member.models import MyUser
 import json
 import urllib.request
@@ -13,12 +13,24 @@ def mtest(request):
     return render(request,'magazine/1.html')
 
 
-def mcategoryRank(request):
+def mlogin(request):
     
+    if request.method == 'POST':
+        
+        mid = request.POST.get('mid')
+        mpw = request.POST.get('mpw')
+        
+        qs = MagazineAdmin.objects.filter(Q(mid=mid) & Q(mpw=mpw))
+        
+        if not qs:
+           context = {'result':'fail'}
+        else:
+            # equest.session['session_id'] = 'admin'
+            context = {'result':'success'}
     
-    context = {'result':'success'}
-    
-    return JsonResponse(context)
+        return JsonResponse(context)
+    else:
+        return render(request,'magazine/mlogin.html')
 
 def myearChart(request):
     

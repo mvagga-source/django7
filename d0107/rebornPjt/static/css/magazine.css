@@ -2,6 +2,7 @@
 #mz-body{width:100%}
 .mz-red{color:red;}
 .mz-blue{color:blue;}
+.mz_right{text-align: right;}
 .mz-between{display: flex;flex-flow: row nowrap;justify-content: space-between;}
 
 /* HEADER */
@@ -87,11 +88,15 @@
 
 
 /* 관리자 */
+
+
+#myChart.on {display: block;}
+#myChart{display: none;}
+
 #mmtitle{width:100%;text-align: center;margin: 20px 0 30px 0;}
 
 #mmcontents{width:1200px;margin:30px auto;}
 #mmmenu{width:100%;height:50px;display:flex;border-bottom: 1px solid gray;flex-flow: row nowrap;justify-content: space-around;}
-
 #mmview{width:100%;padding:10px;}
 #mmcategory{margin:20px 0;}
 #mmlist table{width:100%;}
@@ -102,10 +107,24 @@
 #mmtotal{width:100%;text-align:right;font-family: SUIT, sans-serif;font-size: 14px;font-weight: 500;color:royalblue;margin-bottom: 10px;}
 #msearch select{width: 120px;border: 1px solid royalblue;box-sizing: border-box;border-radius: 5px;padding: 3px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 5px;}
 #msearch input{width: 180px;border: 1px solid royalblue;box-sizing: border-box;border-radius: 5px;padding: 3px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 5px;}
-#msearch button{width: 80px;color:#FFFFFF;background-color:royalblue;border: 1px solid royalblue;box-sizing: border-box;border-radius: 5px;padding: 3px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 5px;}
-#msearch button:hover{width: 80px;color:royalblue;background-color:#ffffff;border: 1px solid royalblue;box-sizing: border-box;border-radius: 5px;padding: 3px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 5px;}
+#msearch button{width: 80px;color:#FFFFFF;background-color:#FF4B2B;border: 1px solid #FF4B2B;box-sizing: border-box;border-radius: 5px;padding: 3px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 5px;}
+#msearch button:active {transform: scale(0.95);}
 .mmupdate {margin: 40px auto;padding: 5px 10px;background-color: rgb(156, 156, 156);border: none;border-radius: 5px; color: #fff;cursor: pointer;transition: box-shadow 0.2s;}
 .mmdelete {margin: 40px auto;padding: 5px 10px;background-color: royalblue;border: none;border-radius: 5px; color: #fff;cursor: pointer;transition: box-shadow 0.2s;}
+
+
+#mmlogin {width:100%;height:100%;position:fixed;top:0;left:0;right:0;background: rgba(0, 0, 0, 0.6);}
+#mmlogin_popup {position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);padding: 20px;background: #ffffff;border-radius: 20px;}
+#mmlogin_popup ul{width:300px;margin:50px auto;}
+#mmlogin_popup ul li{padding:5px 0;}
+#mmlogin_popup ul li input{background-color: #eee;border: none;padding: 12px 15px;margin: 8px 0;width: 100%;}
+#mmlogin_popup ul li button {
+  border-radius: 5px;border: 1px solid #FF4B2B;background-color: #FF4B2B;color: #FFFFFF;font-size: 12px;font-weight: bold; padding: 10px 20px; letter-spacing: 1px;
+  text-transform: uppercase;transition: transform 80ms ease-in;
+}
+#mmlogin_popup ul li button:active {transform: scale(0.95);}
+
+
 
 /* modal */
 .modal.on {display: block;}
@@ -114,7 +133,7 @@
 .modal .modal_popup {position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);padding: 20px;background: #ffffff;border-radius: 20px;}
 .modal .modal_popup ul {width:500px;height:530px;}
 .modal .modal_popup ul .uCategory{font-family: SUIT, sans-serif;font-size: 13px;font-weight: 400;line-height: 150%;color: #3e404e;margin-bottom: 0;}
-.modal .modal_popup ul .utitle{overflow: hidden;text-overflow: ellipsis;text-decoration: none;font-family: SUIT, sans-serif;font-size: 16px;font-weight: 600;line-height: normal;color: #3e404e;padding:5px 0;border-bottom:1px solid #b6b6b6;}
+.modal .modal_popup ul .utitle{display: block;color: black; width: 100%;font-size: 16px;font-weight: bolder;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin:10px 0;border-bottom:1px solid #7e7e7e}
 .modal .modal_popup ul .uimg{width:500px;height:300px;display:flex;justify-content: center;align-items:center;margin:10px 0;}
 .modal .modal_popup ul img{width:450px;height:300px;}
 .modal .modal_popup ul .utext{width:100%;display:flex;justify-content: center;align-items:center;}

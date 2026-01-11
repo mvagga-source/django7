@@ -24,3 +24,9 @@ class Magazine(models.Model):
         return f'{self.mno},{self.mtitle},{self.magazinecode}'
     
 
+class MagazineAdmin(models.Model):
+    mid = models.CharField(max_length=100,unique=True,default='', verbose_name='아이디')
+    mpw = models.CharField(max_length=200, verbose_name='비밀번호')
+    
+    def __str__(self):
+        return f'{self.mid},{self.mpw}'
