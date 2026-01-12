@@ -1,0 +1,389 @@
+{% extends "base.html" %}
+{% load pybo_filter %}
+{% block css %}
+<link rel='stylesheet' type="text/css" href="/static/css/magazine.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock css %}
+
+{% block script %}
+<script src="/static/js/magazine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    function yearChartBtn(){
+        //alert('yearBtn');
+
+        document.getElementById('myChart').classList.add('on');
+        document.getElementById('mmlist').style.display = 'none';
+
+        //차트 초기화
+        let chartStatus = Chart.getChart("myChart"); // <canvas> id
+        if (chartStatus != undefined) {
+            chartStatus.destroy();
+        }
+
+        $.ajax({
+            url:'/magazine/myearChart/',
+            type:'post',
+            headers:{'X-CSRFToken':'{{csrf_token}}'},
+            data:{},
+            dataType:'json',
+            success:function(data){
+                //console.log(data);
+
+                const years = data.years;
+                const dataByCategory = data.data_by_category;
+
+                const colors = [
+                        'rgba(255, 99, 132, 0.7)', 
+                        'rgba(54, 162, 235, 0.7)', 
+                        'rgba(255, 206, 86, 0.7)', 
+                        'rgba(75, 192, 192, 0.7)', 
+                        'rgba(153, 102, 255, 0.7)', 
+                        'rgba(133, 0, 66, 0.7)', 
+                        'rgba(255, 159, 64, 0.7)' 
+                ];
+
+                const datasets = Object.keys(dataByCategory).map((category, index) => ({
+                    label: category,
+                    data: dataByCategory[category],
+                    borderColor: colors[index % colors.length],
+                    backgroundColor: colors[index % colors.length],
+                    tension: 0.3,
+                    fill: false
+                }));
+                
+                const ctx = document.getElementById('myChart');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: years,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '년도별 카테고리별 건수'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                }); // Chart  
+            },
+            error:function(){
+                alert('실패');
+            }
+        });//ajax        
+
+    }
+
+    function categorytChartBtn(){
+        //alert('categorytBtn');
+
+        document.getElementById('myChart').classList.add('on');
+        document.getElementById('mmlist').style.display = 'none';
+        
+        label_data = []; // category
+        datas = []; // count
+
+        //차트 초기화
+        let chartStatus = Chart.getChart("myChart"); // <canvas> id
+        if (chartStatus != undefined) {
+            chartStatus.destroy();
+        }              
+
+        $.ajax({
+            url:'/magazine/mcategoryChart/',
+            type:'post',
+            headers:{'X-CSRFToken':'{{csrf_token}}'},
+            data:{},
+            dataType:'json',
+            success:function(data){
+                //alert('성공');
+                //console.log(data);
+
+                for(var i=0;i<data.list.length;i++){
+                    label_data.push(data.list[i].magazineDesc);
+                    datas.push(data.list[i].max_cnt);
+                }                    
+
+                //console.log(label_data);
+                //console.log(datas);
+
+                const ctx = document.getElementById('myChart');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                    labels: label_data,
+                    datasets: [{
+                        label: '2026년 등록현황',
+                        data: datas,
+                        borderWidth: 1,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)', 
+                            'rgba(54, 162, 235, 0.7)', 
+                            'rgba(255, 206, 86, 0.7)', 
+                            'rgba(75, 192, 192, 0.7)', 
+                            'rgba(153, 102, 255, 0.7)', 
+                            'rgba(255, 159, 64, 0.7)' 
+                        ]
+                    }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '카테고리별 전체등록 건수'
+                            }
+                        },                            
+                        scales: {
+                            y: {
+                            beginAtZero: true
+                            }
+                        }
+                    }
+                }); // Chart                    
+            },
+            error:function(){
+                alert('실패');
+            }
+        });//ajax        
+    }
+
+    function magazineListBtn(){
+        document.getElementById('myChart').classList.remove('on');
+        document.getElementById('mmlist').style.display = '';        
+
+        let chartStatus = Chart.getChart("myChart"); // <canvas> id
+        if (chartStatus != undefined) {
+            chartStatus.destroy();
+        }         
+    }
+
+    $(function(){
+
+        // modal open
+        $(document).on("click",".mmupdate",function(){
+            let tr = $(this).closest('tr');
+            id = tr.attr('id');
+            Category = tr.find(".mzCategory").text();
+            title = tr.find(".mztitle").text();
+            thumbnail = tr.find(".mzthumbnail").val();
+            img_src = tr.find("img").attr('src');
+
+            //console.log(id,Category,title,img);
+
+            dataHtml = `
+                <div class="close close1"></div>
+                <ul class='${id}'>
+                    <li class='uCategory'># ${Category}</li>
+                    <li class='utitle'>${title}</li>
+                    <li class='uimg'><img src='${img_src}'></li>
+                    <li class='utext'><textarea class='utextarea'>${thumbnail}</textarea></li>
+                    <li class='ubutton'>
+                        <span></span>
+                        <button type="button" class="msave_btn">저장</button> 
+                        <button type="button" class="mclose_btn">닫기</button>
+                    </li>
+                </ul>
+            `;            
+
+            $('.modal_popup').html(dataHtml);
+            $('.modal').addClass('on');
+        }) // mmupdate
+
+        $(document).on("click",'.msave_btn',function(){
+            //alert('msave_btn');
+            let ul = $(this).closest('ul');
+            mno = ul.attr('class');
+            thumbnail = ul.find(".utextarea").val();
+
+            //console.log('thumbnail',thumbnail);
+
+            $.ajax({
+                url:'/magazine/mupdate/',
+                type:'post',
+                headers:{'X-CSRFToken':'{{csrf_token}}'},
+                data:{'mno':mno,'thumbnail':thumbnail},
+                dataType:'json',
+                success:function(data){
+                    //alert('수정 되었습니다.');
+                    $('.ubutton').find('span').text('수정 되었습니다...');
+                    $('.mzthumbnail').val(thumbnail);
+                    //$('.modal').removeClass('on');
+                },
+                error:function(){
+                    alert('실패');
+                }
+            })// .ajax
+
+        }) // msave_btn
+
+        $(document).on("click",".mclose_btn",function(){
+            $('.modal').removeClass('on');
+        }) // mclose_btn
+
+        $(document).on("click",".close",function(){
+            $('.modal').removeClass('on');
+        }) // mclose_btn        
+    
+    })//jquery
+
+</script>    
+
+{% endblock script %}
+
+
+{% block body %}
+
+    <div id='mmcontents'>
+        <ul id='mmmenu'>
+            <li><a href="#" onClick='magazineListBtn()'># 카테고리별 리스트</a></li>            
+            <li><a href="#" onClick='categorytChartBtn()'># 카테고리별 전체등록 현황(차트)</a></li>
+            <li><a href="#" onClick='yearChartBtn()'># 연도별 전체등록 현황(차트)</a></li>
+        </ul>
+        <div id='mmview'>
+            <canvas id="myChart"></canvas>
+            <div id='mmlist'>
+
+                <div id='msearch'>
+                    <select id='mmcategory' name='mcategory'>
+                        {% if category == 'all' %}
+                            <option value='all' selected>- 전체 카테고리 -</option>
+                        {% else %}
+                            <option value='all'>- 전체 카테고리 -</option>
+                        {% endif %}
+
+                        {% for code in mzcode %}
+                            {% if category == code.mtype %}
+                                <option value="{{code.mtype}}" selected>{{code.mtype_desc}}</option>
+                            {% else %}
+                                <option value="{{code.mtype}}">{{code.mtype_desc}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+    
+                    <select id='mmsort' name='msort'>
+                        {% for s in sortlist %}
+                            {% if sort == s.value %}
+                                <option value="{{s.value}}" selected>{{s.desc}}</option>
+                            {% else %}
+                                <option value="{{s.value}}">{{s.desc}}</option>
+                            {% endif %}
+                        {% endfor %}
+
+                    </select>
+                    <input type='text' id='mmsearch' name='msearch' placeholder='제목+내용'>
+                    <button type='text' onclick='msearchBtn()'>검색</button>
+                </div>
+
+                <div id='mmtotal'> <i class="fa-solid fa-magnifying-glass-plus"></i> 검색 ({{mzlist.paginator.count}})</div>
+
+                <table>
+                    <colgroup>
+                        <col width="50px">
+                        <col width="50px">
+                        <col width="140px">                        
+                        <col width="120px">
+                        <col width="680px">
+                        <col width="80px">
+                        <col width="80px">
+                        <col width="100px">
+                    </colgroup>
+                    <tr>
+                        <th>순번</th>
+                        <th></th>
+                        <th>카테고리</th></th>
+                        <th>이미지</th>
+                        <th>제목</th>
+                        <th>좋아요</th>
+                        <th>조회수</th>
+                        <th></th>
+                    </tr>
+                    {% if mzlist %}
+                    {% for mz in mzlist %}
+                    <tr id='{{mz.mno}}'>
+                        <td>{{mzlist.paginator.count|sub:mzlist.start_index|sub:forloop.counter0|add:1}}</td>
+                        <td class='mzno'>{{mz.mno}}</td>
+                        <td class='mzCategory'>{{mz.magazinecode.mtype_desc}}</td>
+                        <td style='line-height:0;' class='mzimg'><img src='/media/{{mz.mfile}}' width="100px" height="100px"></td>
+                        <td style='padding-left:10px;text-align:left;' class="mztitle">{{mz.mtitle}}</td>
+                        <td>{{mz.mlike.count}}</td>
+                        <td>{{mz.mhit}}</td>
+                        <td>
+                            <button type='button' class='mmupdate'>수정</button>
+                            <button type='hidden' class='mzthumbnail' value='{{mz.mthumbnail}}'></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan='8' style='text-align:center;'>// 검색결과가 없습니다. 다시 시도해 주세요 //</td>
+                    </tr>
+                    {% endif %}
+
+                </table>
+
+                <!-- 페이징 start -->
+                {% if mzlist.has_other_pages %}
+                <div class="btnAreaList">
+                    <div class="allPageMoving1">
+                        {% if mzlist.has_previous %}
+                            <a href="/magazine/mmnge/?page=1&category={{category}}&search={{search}}&sort={{sort}}" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                            <a href="/magazine/mmnge/?page={{mzlist.previous_page_number}}&category={{category}}&search={{search}}&sort={{sort}}" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+                        {% else %}
+                            <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                            <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+                        {% endif %}
+            
+            
+                        {% for p in mzlist.paginator.page_range %}
+            
+                            {% if p >= mzlist.number|add:'-3' and p <= mzlist.number|add:'3' %}
+            
+                                {% if p == page %}
+                                    <strong>{{p}}</strong>
+                                {% else %}
+                                    <a href="/magazine/mmnge/?page={{p}}&category={{category}}&search={{search}}&sort={{sort}}">{{p}}</a>
+                                {% endif %}
+            
+                            {% endif %}
+                        {% endfor %}
+            
+            
+                        {% if mzlist.has_next %}
+                            <a href="/magazine/mmnge/?page={{mzlist.next_page_number}}&category={{category}}&search={{search}}&sort={{sort}}" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                            <a href="/magazine/mmnge/?page={{mzlist.paginator.num_pages}}&category={{category}}&search={{search}}&sort={{sort}}" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+                        {% else %}
+                            <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                            <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+                        {% endif %}
+            
+                    </div> <!-- 페이징 end -->
+                </div>  
+                {% endif %}                    
+
+
+            </div>
+        </div> 
+    </div>
+
+    <div class="modal">
+        <div class="modal_popup">
+        </div>
+    </div>
+
+{% endblock body %}

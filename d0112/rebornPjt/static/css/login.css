@@ -1,0 +1,111 @@
+.middle-box{
+        max-width: 640px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: center;
+        padding: 150px 0;
+    }
+
+    .login-top{width: 320px;} /*로그인박스*/
+    .login-bottom{width: 320px;} /*회원가입박스*/
+    
+    .login-box {/*로그인 박스 중앙으로*/
+    width: 320px;
+    text-align: center;
+    }
+    h1 {/*타이틀 박스*/
+        height:60px;
+        border-bottom: 1px solid #ccc;/*타이틀박스 아랫선*/
+        padding-right: 40px;/*타이틀 위치*/
+
+    }
+    .login1 {/*타이틀 한글*/
+        width: 100px;
+        margin-bottom: 20px;
+        color: #585757ff;
+    }
+    .login2  {/*타이틀 영어*/
+        width: 100px;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #035fe0;
+    }
+    .none{/*공백*/
+       height:30px; 
+    }
+    form{
+        padding-left: 47px;
+    }
+    .input-box {
+        width: 90%;
+        padding: 12px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        font-weight: 400;
+        height: 40px;
+        outline: none;
+        border-radius: 0;
+        box-sizing: border-box;
+    }
+    .input-box:focus {
+        outline: 1.5px solid #1a1a1a;
+    }
+
+    /* Buttons */
+    .btn {
+        width: 90%;
+        height: 42px;
+        font-size: 15px;
+        font-weight: 500;
+        margin: 15px 0;
+        cursor: pointer;
+        border: none;
+        border-radius: 0;
+    }
+    .btn-login {
+        background-color: #035fe0;
+        color: #fafafa;
+    }
+    .btn-signup {
+        background-color: #c5c5c59f;
+        border: none;
+        color: #1a1a1a;
+        width: 140px;
+        height: 45px;
+        margin-top: 15px;
+    }
+    
+
+    /* Signup box */
+    .none1{/*공백*/
+       height:29px; 
+    }
+    .signup-box {
+        width: 320px;
+        border-top: 1px solid #ccc;
+        padding: 50px;
+        margin-top: 30px;
+        text-align: center;
+    }
+    .signup-box p {
+        font-size: 13px;
+        font-weight: 400;
+        color: #636363;
+        margin: 7px 0;
+    }
+    .signup-box p1 {
+        font-size: 13px;
+        font-weight: 400;
+        color: #035FE0;
+        margin: 7px 0;
+    }
+    .signup-box strong {
+        color: #1a1a1a;
+        font-weight: 700;
+    }
+    .signup-box ps {
+        color: #035FE0;
+        font-weight: 700;
+    }

@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/css/common.css">
+    <link rel='stylesheet' href='/static/css/login.css'>
+    <!--https://ko.wix.com/website/templates-->
+    {% block css %}{% endblock %}
+    {% block style %}
+    <style>
+        /* 1. 토스트 전체 박스 스타일 */
+        .swal2-toast {
+            background-color: #ffffff !important; /* 배경 흰색 */
+            border-radius: 12px !important;       /* 둥글게 */
+            border: 1px solid #e2e8f0 !important; /* join3.css 느낌의 연한 테두리 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important; /* 부드러운 그림자 */
+            padding: 10px 15px !important;
+        }
+
+        /* 2. 토스트 제목(텍스트) 스타일 */
+        .swal2-title {
+            color: #1e293b !important;            /* 진한 그레이 색상 */
+            font-size: 14px !important;           /* 적당한 크기 */
+            font-weight: 600 !important;
+            font-family: 'Pretendard', sans-serif !important;
+            margin: 0 10px !important;
+        }
+
+        /* 3. 로딩바(하단 시간 표시줄) 색상 변경 */
+        .swal2-timer-progress-bar {
+            background: #4A90E2 !important;      /* 사용자님의 메인 컬러(블루 계열) */
+        }
+        
+        /* 4. 아이콘 크기 살짝 조정 */
+        .swal2-icon {
+            margin: 0 !important;
+            transform: scale(0.7) !important;     /* 아이콘이 너무 크면 촌스러우니 축소 */
+        }
+    </style>
+    {% endblock %}
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- 날짜 포맷함수 -->
+    {% comment %} <script type="text/javascript" src="/static/js/moment.min.js"></script> {% endcomment %}
+    {% block script %}
+    
+    <script>
+    
+    // 1. 테스트용 콘솔 출력
+    function loginBtn(event){
+        // event.preventDefault(); //페이지가 새로고침되는 걸 막아준다.
+        // 입력된 데이터 가져오기
+        const userId = document.querySelector('input[name="id"]').value;
+        const userPw = document.querySelector('input[name="pw"]').value;
+        // 콘솔창에 출력
+        console.log("아이디 : ", userId);
+        console.log("비밀번호 : ", userPw);
+    }
+    
+    // 2. 서버에서 보낸 메시지(성공/실패) 처리
+    {% if messages %}
+        document.addEventListener('DOMContentLoaded', function() {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                
+                // 여기서 직접 색상과 스타일을 지정합니다 (치트키)
+                background: '#ffffff',     // 배경 흰색
+                color: '#1e293b',          // 글자 진한 회색
+                iconColor: '#4A90E2',      // 아이콘 색상을 사용자님 메인색으로!
+                
+                didOpen: (toast) => {
+                    // 자바스크립트로 직접 테두리와 그림자를 강제로 입힙니다.
+                    toast.style.borderRadius = '12px';
+                    toast.style.border = '1px solid #e2e8f0';
+                    toast.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+                    
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            {% for message in messages %}
+                Toast.fire({
+                    icon: "{{ message.tags }}", 
+                    title: '<span style="font-size:14px; font-weight:600; font-family:Pretendard;">{{ message }}</span>'
+                });
+            {% endfor %}
+        });
+    {% endif %}
+    </script>
+    
+    {% endblock script %}
+</head>
+
+
+<body>
+    <!-- 헤더 메뉴 -->
+    <header class="navbar">
+       <div class="logo"><a href="/">Reborn</a></div>
+    </header>
+
+    <!-- 메인 콘텐츠 영역 (푸터를 하단에 고정하기 위해 필요) -->
+    <main class="content">
+        {% block body %}{% endblock %}
+    
+        <div class="middle-box">
+            <span class="login-top">
+                <div class="login-box">
+                    <h1>
+                        <span class="login1">로그인</span>
+                        <span class="login2">LOGIN</span>
+                    </h1>
+                    <div class="none"></div>
+                        <form action='{% url "member:login" %}' method='POST'>
+                            {% csrf_token %}
+                            <input type="text" name='id' placeholder="아이디" class="input-box" value='{{id}}' required>
+                            <input type="password" name='pw' placeholder="비밀번호" class="input-box" value='{{pw}}' required>
+                            <button type="submit" class="btn btn-login" onclick="loginBtn(event)">로그인</button>
+                        </form>
+                </div>
+               
+            </span>
+            <span class="login-bottom">
+                <div class="none1"></div>
+                <div class="signup-box">
+                    <p><strong><ps>Reborn</ps> 회원이 아니신가요?</strong></p>
+                    <p>지금 가입하고<br>더욱 다양한 <ps>Reborn</ps>을 둘러보세요.</p>
+                    <a href="{% url 'member:join' %}">
+                        <button class="btn-signup">회원가입</button>
+                    </a> 
+                </div>
+            </span>
+        </div>
+
+    </main>
+    <!-- 푸터 -->
+     {% include "footer.html" %}
+</body>
+</html>

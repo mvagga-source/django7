@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/css/common.css">
+    <link rel='stylesheet' href='/static/css/join.css'>
+    <!--https://ko.wix.com/website/templates-->
+    {% block css %}{% endblock %}
+    {% block style %}{% endblock %}
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <!-- 날짜 포맷함수 -->
+    {% comment %} <script type="text/javascript" src="/static/js/moment.min.js"></script> {% endcomment %}
+    {% block script %}
+
+    <script>
+    
+
+    </script>
+
+    {% endblock script %}
+</head>
+<body>
+    <!-- 헤더 메뉴 -->
+    <header class="navbar">
+       <div class="logo"><a href="/">Reborn</a></div>
+    </header>
+
+    <!-- 메인 콘텐츠 영역 (푸터를 하단에 고정하기 위해 필요) -->
+    <main class="content">
+        {% block body %}{% endblock %}
+    
+        <div class="middle-box">
+            <span class="login-top">
+                <div class="login-box">
+                    <h1>
+                        <span class="login1">회원가입</span>
+                        <span class="login2">JOIN</span>
+                    </h1>
+
+                    <div class="none"></div>
+                        <div class="box">
+                            <p><ps>Reborn </ps>서비스 이용을 위해</p>
+                            <pp><strong>약관 동의 후 </strong>회원가입이 진행됩니다.</pp>
+                            
+                            <button class="btn btn-join" onclick="location.href='{% url 'member:join1' %}'">회원가입 시작하기</button>
+                            
+                        </div>
+                </div>
+               
+            </span>
+            <span class="login-bottom">
+                <div class="none1"></div>
+                <div class="signup-box">
+                    <p><strong>이미 <ps>Reborn </ps>회원인가요?</strong></p>
+                    <p>지금 바로 로그인해서<br><ps>Reborn</ps>을 둘러보세요.</p>
+                    <a href="{% url 'member:login' %}">
+                        <button class="btn-signup">로그인</button>
+                    </a> 
+                </div>
+            </span>
+        </div>
+
+    </main>
+    <!-- 푸터 -->
+     {% include "footer.html" %}
+</body>
+</html>
