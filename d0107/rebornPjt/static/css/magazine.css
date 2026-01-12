@@ -36,6 +36,7 @@
 #mz-lcategory select {width: 130px;border: 1px solid #013dad;box-sizing: border-box;border-radius: 10px;padding: 5px;font-weight: 400;font-size: 13px;line-height: 16px;margin-right: 10px;}
 #mz-lcategory select:hover{border: 1px solid #abe4ff;box-sizing: border-box;border-radius: 10px;outline: 3px solid #cecece;border-radius: 10px;}
 .mz-lnaver{padding: 4px 8px;color: #ffffff;border-radius: 10px;background-color:#01ad1e; border: 1px solid #01ad1e;font-family: SUIT, sans-serif;font-size: 12px;font-weight: 500;line-height: normal;text-align: center;margin-right: 4px;}
+.mz-lnaver:active {transform: scale(0.95);}
 .mz-lchart{padding: 4px 8px;color: #013dad;border-radius: 10px;border: 1px solid #013dad;font-family: SUIT, sans-serif;font-size: 12px;font-weight: 500;line-height: normal;text-align: center;margin-right: 4px;}
 
 #mz-list ul{display: flex;flex-flow: row wrap;justify-content: space-between;}
@@ -88,8 +89,6 @@
 
 
 /* 관리자 */
-
-
 #myChart.on {display: block;}
 #myChart{display: none;}
 

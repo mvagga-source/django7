@@ -9,6 +9,8 @@ urlpatterns = [
     
     # JSON 리턴 : id 존재 확인
     path('idCheck/',views.idCheck,name='idCheck'),
+    path('userAll/',views.userAll,name='userAll'),
+    path('userInsert/',views.userInsert,name='userInsert'),
 
 ]
 
