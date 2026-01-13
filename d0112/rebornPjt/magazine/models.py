@@ -18,7 +18,7 @@ class Magazine(models.Model):
     mfile = models.FileField(default='',null=True,blank=True,upload_to='magazine/')
     mhit = models.IntegerField(default=0)
     mdate = models.DateTimeField(auto_now_add=True)
-    mlike = models.ManyToManyField(MyUser,related_name='like_myuser',null=True,blank=True)
+    mlike = models.ManyToManyField(MyUser,related_name='like_myuser',blank=True)
     
     def __str__(self):
         return f'{self.mno},{self.mtitle},{self.magazinecode}'

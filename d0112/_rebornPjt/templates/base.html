@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}식당추천사이트{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/common_media.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!--https://ko.wix.com/website/templates-->
+    {% block css %}
+    <style>
+    /* 토스트 알림창 디자인 커스텀 */
+    .swal2-toast {
+        background-color: #ffffff !important;
+        border-radius: 12px !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    }
+    .swal2-title {
+        color: #1e293b !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+    }
+</style>
+    {% endblock %}
+    {% block style %}{% endblock %}
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <!-- 날짜 포맷함수 -->
+    {% comment %} <script type="text/javascript" src="/static/js/moment.min.js"></script> {% endcomment %}
+    <script src="/static/js/common.js"></script>
+    {% block script %}{% endblock %}
+</head>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<!-- JavaScript 추가 -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const hamburgerToggle = document.getElementById('hamburger-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        const mainContent = document.querySelector('main.content');
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        {% if messages %}
+            {% for message in messages %}
+                Toast.fire({
+                    icon: "{{ message.tags }}", 
+                    title: "{{ message }}"
+                });
+            {% endfor %}
+        {% endif %}
+
+        // 메뉴를 닫고 상태를 초기화하는 함수
+        const closeMenu = () => {
+            navMenu.classList.remove('active');
+            hamburgerToggle.classList.remove('active');
+            document.body.style.overflow = ''; // 스크롤 잠금 해제
+        };
+
+        const toggleMenu = () => {
+            const isActive = navMenu.classList.toggle('active');
+            hamburgerToggle.classList.toggle('active');
+            
+            // 메뉴가 열려있을 때만 스크롤 방지
+            document.body.style.overflow = isActive ? 'hidden' : '';
+        };
+
+        // 햄버거 버튼 클릭
+        hamburgerToggle.addEventListener('click', (event) => {
+            event.stopPropagation();
+            toggleMenu();
+        });
+
+        // 창 크기가 변하면(Resize) 즉시 메뉴 초기화
+        // 리솜 사이트처럼 사용자가 창을 드래그하여 크기를 조절하는 순간 닫힙니다.
+        window.addEventListener('resize', () => {
+            closeMenu();
+        });
+
+        // 메인 콘텐츠 클릭 시 닫기
+        mainContent.addEventListener('click', () => {
+            if (navMenu.classList.contains('active')) {
+                closeMenu();
+            }
+        });
+        
+        // 메뉴 링크 클릭 시 닫기
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    });
+</script>
+<body>
+    <!-- 헤더 메뉴 -->
+    {% if request.session.user_id %}
+        {% include "navbar.html" %}  {% else %}
+        {% include "header.html" %}  {% endif %}
+
+    <!-- 메인 콘텐츠 영역 (푸터를 하단에 고정하기 위해 필요) -->
+    <main class="content">
+        {% block body %}{% endblock %}
+    </main>
+
+    <!-- 푸터 -->
+     {% include "footer.html" %}
+</body>
+</html>

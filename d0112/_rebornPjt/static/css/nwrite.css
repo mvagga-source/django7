@@ -1,0 +1,147 @@
+/* bwrite.css (또는 inquiry.css) */
+
+/* 1. 기본 컨테이너 레이아웃 */
+.inquiry-container {
+    max-width: 800px;
+    margin: 80px auto;
+    padding: 0 20px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 2. 헤더 섹션 */
+.inquiry-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.inquiry-header .title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.inquiry-header .subtitle {
+    font-size: 16px;
+    color: #666;
+}
+
+/* 3. 폼 그리드 (성명 & 주제 선택 가로 배열) */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.required {
+    color: #e03131;
+    margin-left: 2px;
+}
+
+/* 4. 공통 입력창 스타일 (Input, Textarea, Select 통합) */
+.input-field, .textarea-field, .select-field {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: #fcfcfc;
+    transition: all 0.2s ease;
+    box-sizing: border-box; /* 패딩이 너비에 영향을 주지 않도록 설정 */
+    outline: none;
+}
+
+/* 포커스 시 효과 (파란색 포인트) */
+.input-field:focus, .textarea-field:focus, .select-field:focus {
+    border-color: #035fe0;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(3, 95, 224, 0.1);
+}
+
+/* 5. 성명란 (Readonly) 전용 스타일 */
+.readonly-field {
+    background-color: #f1f3f5 !important; /* 연한 회색 바탕 */
+    color: #adb5bd !important;           /* 글자색 흐리게 */
+    border-color: #e9ecef !important;
+    cursor: not-allowed;                  /* 금지 마우스 커서 */
+}
+
+/* 6. 주제 선택창 (Select) 커스텀 디자인 */
+.select-field {
+    cursor: pointer;
+    appearance: none;           /* 브라우저 기본 화살표 숨기기 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    /* 세련된 화살표 아이콘 삽입 */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    background-size: 14px;
+    padding-right: 45px; /* 화살표 공간 확보 */
+}
+
+/* 7. 상세 내용창 높이 조절 */
+.textarea-field {
+    height: 250px;
+    resize: none; /* 유저가 임의로 크기 조절 못하게 고정 */
+    line-height: 1.6;
+}
+
+/* 8. 하단 버튼 영역 */
+.form-footer {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.btn-submit {
+    padding: 18px 70px;
+    background-color: #1a1a1a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #333;
+}
+
+.btn-cancel {
+    padding: 18px 50px;
+    background-color: #f1f3f5;
+    color: #495057;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancel:hover {
+    background-color: #e9ecef;
+}

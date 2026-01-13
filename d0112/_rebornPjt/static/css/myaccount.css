@@ -1,0 +1,164 @@
+/* 전체 레이아웃 */
+.board-wrapper {
+    background-color: #f4f7fa;
+    min-height: 100vh;
+    padding-bottom: 80px;
+}
+
+.top-hero {
+    height: 200px;
+    background: #2c3e50;
+}
+
+.main-container {
+    max-width: 1000px;
+    margin: -80px auto 0;
+    display: flex;
+    gap: 30px;
+    position: relative;
+    padding: 0 20px;
+}
+
+/* 좌측 사이드바 */
+.sidebar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.side-menu {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px 0;
+    list-style: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.side-menu li {
+    padding: 0 15px;
+}
+
+.side-menu li a {
+    display: block;
+    padding: 15px 20px;
+    color: #555;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.side-menu li.active a, .side-menu li a:hover {
+    background-color: #f0f7ff;
+    color: #0066ff;
+}
+
+/* 우측 콘텐츠 메인 카드 */
+.content-area {
+    flex-grow: 1;
+}
+
+.form-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 50px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #222;
+    margin-bottom: 8px;
+}
+
+.sub-title {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 40px;
+}
+
+.brand-text {
+    color: #0066ff;
+    font-weight: 700;
+}
+
+/* 폼 요소 스타일링 */
+.form-group {
+    margin-bottom: 22px;
+}
+
+.input-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #e1e4e8;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: #fafbfc;
+    box-sizing: border-box;
+}
+
+.input-field:focus {
+    border-color: #0066ff;
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.input-field.readonly {
+    background-color: #f0f2f5;
+    color: #999;
+}
+
+.input-with-btn {
+    display: flex;
+    gap: 8px;
+}
+
+.check-btn {
+    min-width: 90px;
+    background: #fff;
+    color: #0066ff;
+    border: 1px solid #0066ff;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.check-btn:hover {
+    background: #0066ff;
+    color: #fff;
+}
+
+/* 버튼 및 기타 */
+.btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 30px;
+    box-shadow: 0 5px 15px rgba(0, 102, 255, 0.2);
+}
+
+.btn-submit:hover {
+    background: #0052cc;
+}
+
+.pw-guide { font-size: 12px; color: #999; margin-top: 5px; }
+.status-msg { font-size: 12px; margin-top: 5px; display: block; }
+.mt-8 { margin-top: 8px; }

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% comment %} css 작업은 여기서 하세요!! {% endcomment %}
+{% block css %}
+<link rel='stylesheet' type="text/css" href="/static/css/magazine.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock css %}
+
+{% comment %} script 작업은 여기서 하세요!! {% endcomment %}
+{% block script %}
+<script src="/static/js/magazine.js"></script>
+<script>
+$(function(){
+    
+    $('#mz-like').click(function(){
+
+        $.ajax({
+            url:'/magazine/mlike/',
+            type:'post',
+            headers:{'X-CSRFToken':'{{csrf_token}}'},
+            data:{'mno':'{{mz.mno}}'},
+            dataType:'json',
+            success:function(data){
+                //alert('성공');
+                console.log('result : ',data.result);
+
+                if(data.like_chk == '1'){
+                    dataHtml = `<i class="fa-solid fa-heart mz-red"></i> ${data.like_count}`;
+                }else{
+                    dataHtml = `<i class="fa-regular fa-heart"></i> ${data.like_count}`;
+                }
+
+                $('#mz-like').html(dataHtml);
+            },
+            error:function(){
+                alert('실패');
+            }
+        });//ajax
+
+    });//mz-like
+
+}); //jquery
+</script>
+{% endblock script %}
+
+{% comment %} body 작업은 여기서 하세요!! {% endcomment %}
+{% block body %}
+
+<div id='mz-body'>
+
+    <div id='mz-header'>
+        <form name='searchFrm' action='/magazine/mlist/' method='get'>
+        {% csrf_token %}
+        <div id='mz-header-bg'>
+            <div id='mz-htitle'>
+                <i class="fa-solid fa-utensils"></i> 매거진
+            </div>
+            <div id='mz-hsearch'>
+                <div id='mz-hsearch-box'>
+                    <span id='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
+                    <input type='text' name='search' placeholder="매거진 내에서 검색해보세요."/>
+                </div>
+                <button id='mz-hsearch-btn' name='search-btn' onclick='searchBtn()'>검색</button>
+            </div>
+        </div>
+        </form>
+    </div>
+
+    <div id='mz-view'>
+
+        <div id='mz-vtitle'>
+            <h1>{{mz.mtitle}}</h1>
+            <ul>
+                <li class='mz-vtitle-date'>{{mz.mdate|date:'Y-m-d H:i:s'}}</li>
+                <li class='mz-vtitle-list'>
+                    {% if request.session.user_id %}
+                    <a href='#' id='mz-like'>
+                        {% if mz.mlike.count %}
+                            <i class="fa-solid fa-heart mz-red"></i> {{mz.mlike.count}}
+                        {% else %}
+                            <i class="fa-regular fa-heart"></i> {{mz.mlike.count}}
+                        {% endif %}
+                    </a>
+                    {% else %}
+                        {% if mz.mlike.count %}
+                            <i class="fa-solid fa-heart mz-red"></i> {{mz.mlike.count}}
+                        {% else %}
+                            <i class="fa-regular fa-heart"></i> {{mz.mlike.count}}
+                        {% endif %}
+                    {% endif %}
+                    
+                    {% if mz.mhit %}
+                        &nbsp;<i class="fa-solid fa-eye mz-blue"></i> {{mz.mhit}}
+                    {% else %}
+                        &nbsp;<i class="fa-regular fa-eye"></i> {{mz.mhit}}
+                    {% endif %}
+                </li>
+            </ul>
+            
+        </div>
+
+        <div id='mz-vcontent'>
+        {{mz.mcontent|safe}}
+        </div>
+
+        <ul id='mz-vmove'>
+            {% if pre %}
+            <li><a href='/magazine/mview/{{pre.mno}}/'>← Prev</a></li>
+            {% else %}
+            <li class='nodata'>← Prev</li>
+            {% endif %}
+
+            <li><a href='/magazine/mlist/'><i class="fa-duotone fa-solid fa-bars"></i></i></a></li>
+
+            {% if next %}
+            <li><a href='/magazine/mview/{{next.mno}}/'>Next →</a></li>
+            {% else %}
+            <li class='nodata'>Next →</li>
+            {% endif %}
+        </ul>
+    </div>
+
+
+</div> <!-- mz-body -->
+    
+{% endblock body %}
+
+

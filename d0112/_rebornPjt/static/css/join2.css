@@ -1,0 +1,154 @@
+/* 1. 기본 변수 및 레이아웃 */
+:root {
+    --primary-color: #035fe0;
+    --bg-color: #f4f7fa;
+    --text-main: #1a1a1a;
+    --text-sub: #666;
+    --border-color: #e1e4e8;
+}
+
+.navbar {
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+    height: 100px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: #007bff;
+    white-space: nowrap;
+}
+
+.join-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.join-content {
+    width: 100%;
+    max-width: 440px;
+    background: #fff;
+    padding: 50px 40px;
+    text-align: center;
+}
+
+/* 2. 스텝 인디케이터 */
+.step-indicator { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; gap: 10px; }
+.step { width: 28px; height: 28px; border-radius: 50%; background: #eee; font-size: 12px; display: flex; align-items: center; justify-content: center; color: #999; }
+.step.active { background: var(--primary-color); color: #fff; font-weight: bold; }
+.step-line { width: 30px; height: 1px; background: #eee; }
+
+/* 3. 제목 및 폼 그룹 */
+.main-title { font-size: 24px; margin-bottom: 12px; font-weight: 700; }
+.sub-title { font-size: 15px; color: var(--text-sub); line-height: 1.5; margin-bottom: 40px; }
+.sub-title ps { color: var(--primary-color); font-weight: 700; font-style: normal; }
+
+.form-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+/* 4. 입력창 및 [중복 확인] 가로 배치 필수 CSS */
+.input-with-btn {
+    display: flex;
+    gap: 10px; /* 입력창과 버튼 사이 간격 */
+    align-items: flex-start;
+}
+
+.input-field {
+    flex: 1; /* 버튼 제외 남은 공간 다 채우기 */
+    height: 50px;
+    padding: 0 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%; /* 기본값 */
+}
+
+.input-field:focus {
+    border-color: var(--primary-color);
+}
+
+/* 5. 중복 확인 버튼 (check-btn) */
+.check-btn {
+    width: 100px;
+    height: 50px;
+    background: #fff;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.check-btn:hover {
+    background: #f0f6ff;
+}
+
+/* 6. 상태 메시지 및 유효성 피드백 */
+.status-msg {
+    display: none; /* 기본적으로 안보임 */
+    font-size: 12px;
+    margin-top: 6px;
+    padding-left: 4px;
+}
+
+/* 중복일 때 (JS에서 is-invalid 클래스 추가 시) */
+.input-field.is-invalid {
+    border: 2px solid #ff5252 !important;
+}
+
+.status-msg.error {
+    display: block !important;
+    color: #ff5252;
+}
+
+/* 사용 가능할 때 (JS에서 is-valid 클래스 추가 시) */
+.input-field.is-valid {
+    border: 2px solid #4caf50 !important;
+}
+
+.status-msg.success {
+    display: block !important;
+    color: #4caf50;
+}
+
+/* 7. 기타 요소 */
+.pw-guide {
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+    padding-left: 4px;
+}
+
+.btn-next {
+    width: 100%;
+    height: 56px;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-next:hover {
+    background-color: #0249ad;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(3, 95, 224, 0.2);
+}

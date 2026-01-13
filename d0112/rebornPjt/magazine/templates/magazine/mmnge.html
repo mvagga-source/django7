@@ -1,17 +1,27 @@
 {% extends "base.html" %}
 {% load pybo_filter %}
+{% load static %} 
+
 {% block css %}
-<link rel='stylesheet' type="text/css" href="/static/css/magazine.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel='stylesheet' href="{% static 'css/mychange.css' %}">
+<link rel='stylesheet' type="text/css" href="{% static 'css/magazine.css'%}">
 {% endblock css %}
 
 {% block script %}
-<script src="/static/js/magazine.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/mychange.js' %}" defer></script>
+<script src="{% static 'js/magazine.js' %}"></script>
 <script>
 
     function yearChartBtn(){
         //alert('yearBtn');
+
+        document.getElementById('magazineList').style.color = 'gray'
+        document.getElementById('magazineList').style.backgroundColor = '#fff';
+
+        document.getElementById('categorytChart').classList.remove('on');
+        document.getElementById('yearChart').classList.add('on');
 
         document.getElementById('myChart').classList.add('on');
         document.getElementById('mmlist').style.display = 'none';
@@ -93,6 +103,12 @@
     function categorytChartBtn(){
         //alert('categorytBtn');
 
+        document.getElementById('magazineList').style.color = 'gray'
+        document.getElementById('magazineList').style.backgroundColor = '#fff';
+
+        document.getElementById('categorytChart').classList.add('on');
+        document.getElementById('yearChart').classList.remove('on');
+
         document.getElementById('myChart').classList.add('on');
         document.getElementById('mmlist').style.display = 'none';
         
@@ -164,6 +180,12 @@
     }
 
     function magazineListBtn(){
+        document.getElementById('magazineList').style.color = '#fff'
+        document.getElementById('magazineList').style.backgroundColor = 'gray';
+
+        document.getElementById('categorytChart').classList.remove('on');
+        document.getElementById('yearChart').classList.remove('on');
+        
         document.getElementById('myChart').classList.remove('on');
         document.getElementById('mmlist').style.display = '';        
 
@@ -246,144 +268,161 @@
 
 {% endblock script %}
 
-
 {% block body %}
 
-    <div id='mmcontents'>
-        <ul id='mmmenu'>
-            <li><a href="#" onClick='magazineListBtn()'># 카테고리별 리스트</a></li>            
-            <li><a href="#" onClick='categorytChartBtn()'># 카테고리별 전체등록 현황(차트)</a></li>
-            <li><a href="#" onClick='yearChartBtn()'># 연도별 전체등록 현황(차트)</a></li>
-        </ul>
-        <div id='mmview'>
-            <canvas id="myChart"></canvas>
-            <div id='mmlist'>
+<div class="board-wrapper">
+    <div class="top-hero"></div>
 
-                <div id='msearch'>
-                    <select id='mmcategory' name='mcategory'>
-                        {% if category == 'all' %}
-                            <option value='all' selected>- 전체 카테고리 -</option>
-                        {% else %}
-                            <option value='all'>- 전체 카테고리 -</option>
-                        {% endif %}
+    <div class="mmain-container">
+        <aside class="sidebar">
+            <ul class="side-menu">
+                <li><a href="/mypage/mychange/">개인정보</a></li>
+                <li><a href="/mypage/myaccount/">계정관리</a></li>
+                <li class="active"><a href="#">매거진관리</a></li>
+            </ul>
+        </aside>
 
-                        {% for code in mzcode %}
-                            {% if category == code.mtype %}
-                                <option value="{{code.mtype}}" selected>{{code.mtype_desc}}</option>
-                            {% else %}
-                                <option value="{{code.mtype}}">{{code.mtype_desc}}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-    
-                    <select id='mmsort' name='msort'>
-                        {% for s in sortlist %}
-                            {% if sort == s.value %}
-                                <option value="{{s.value}}" selected>{{s.desc}}</option>
-                            {% else %}
-                                <option value="{{s.value}}">{{s.desc}}</option>
-                            {% endif %}
-                        {% endfor %}
+        <main class="mcontent-card">
 
-                    </select>
-                    <input type='text' id='mmsearch' name='msearch' placeholder='제목+내용'>
-                    <button type='text' onclick='msearchBtn()'>검색</button>
+                <div id='mmcontents'>
+                    <h2>매거진 관리</h2>
+                    <ul id='mmmenu'>
+                        <li id='magazineList'><a href="#" onClick='magazineListBtn()'>카테고리별 리스트</a></li>            
+                        <li id='categorytChart'><a href="#" onClick='categorytChartBtn()'>카테고리별 전체등록 현황(차트)</a></li>
+                        <li id='yearChart'><a href="#" onClick='yearChartBtn()'>연도별 전체등록 현황(차트)</a></li>
+                    </ul>
+                    <div id='mmview'>
+                        <canvas id="myChart"></canvas>
+                        <div id='mmlist'>
+
+                            <div id='msearch'>
+                                <select id='mmcategory' name='mcategory'>
+                                    {% if category == 'all' %}
+                                        <option value='all' selected>- 전체 카테고리 -</option>
+                                    {% else %}
+                                        <option value='all'>- 전체 카테고리 -</option>
+                                    {% endif %}
+
+                                    {% for code in mzcode %}
+                                        {% if category == code.mtype %}
+                                            <option value="{{code.mtype}}" selected>{{code.mtype_desc}}</option>
+                                        {% else %}
+                                            <option value="{{code.mtype}}">{{code.mtype_desc}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                
+                                <select id='mmsort' name='msort'>
+                                    {% for s in sortlist %}
+                                        {% if sort == s.value %}
+                                            <option value="{{s.value}}" selected>{{s.desc}}</option>
+                                        {% else %}
+                                            <option value="{{s.value}}">{{s.desc}}</option>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                </select>
+                                <input type='text' id='mmsearch' name='msearch' placeholder='제목+내용'>
+                                <button type='text' onclick='msearchBtn()'>검색</button>
+                            </div>
+
+                            <div id='mmtotal'> <i class="fa-solid fa-magnifying-glass-plus"></i> 검색 ({{mzlist.paginator.count}})</div>
+
+                            <table>
+                                <colgroup>
+                                    <col width="50px">
+                                    <col width="50px">
+                                    <col width="140px">                        
+                                    <col width="120px">
+                                    <col width="680px">
+                                    <col width="80px">
+                                    <col width="80px">
+                                    <col width="100px">
+                                </colgroup>
+                                <tr>
+                                    <th>순번</th>
+                                    <th></th>
+                                    <th>카테고리</th></th>
+                                    <th>이미지</th>
+                                    <th>제목</th>
+                                    <th>좋아요</th>
+                                    <th>조회수</th>
+                                    <th></th>
+                                </tr>
+                                {% if mzlist %}
+                                {% for mz in mzlist %}
+                                <tr id='{{mz.mno}}'>
+                                    <td>{{mzlist.paginator.count|sub:mzlist.start_index|sub:forloop.counter0|add:1}}</td>
+                                    <td class='mzno'>{{mz.mno}}</td>
+                                    <td class='mzCategory'>{{mz.magazinecode.mtype_desc}}</td>
+                                    <td style='line-height:0;' class='mzimg'><img src='/media/{{mz.mfile}}' width="100px" height="100px"></td>
+                                    <td style='padding-left:10px;text-align:left;' class="mztitle">{{mz.mtitle}}</td>
+                                    <td>{{mz.mlike.count}}</td>
+                                    <td>{{mz.mhit}}</td>
+                                    <td>
+                                        <button type='button' class='mmupdate'>수정</button>
+                                        <button type='hidden' class='mzthumbnail' value='{{mz.mthumbnail}}'></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr>
+                                    <td colspan='8' style='text-align:center;'>// 검색결과가 없습니다. 다시 시도해 주세요 //</td>
+                                </tr>
+                                {% endif %}
+
+                            </table>
+
+                            <!-- 페이징 start -->
+                            {% if mzlist.has_other_pages %}
+                            <div class="btnAreaList">
+                                <div class="allPageMoving1">
+                                    {% if mzlist.has_previous %}
+                                        <a href="/magazine/mmnge/?page=1&category={{category}}&search={{search}}&sort={{sort}}" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                                        <a href="/magazine/mmnge/?page={{mzlist.previous_page_number}}&category={{category}}&search={{search}}&sort={{sort}}" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+                                    {% else %}
+                                        <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                                        <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+                                    {% endif %}
+                        
+                        
+                                    {% for p in mzlist.paginator.page_range %}
+                        
+                                        {% if p >= mzlist.number|add:'-3' and p <= mzlist.number|add:'3' %}
+                        
+                                            {% if p == page %}
+                                                <strong>{{p}}</strong>
+                                            {% else %}
+                                                <a href="/magazine/mmnge/?page={{p}}&category={{category}}&search={{search}}&sort={{sort}}">{{p}}</a>
+                                            {% endif %}
+                        
+                                        {% endif %}
+                                    {% endfor %}
+                        
+                        
+                                    {% if mzlist.has_next %}
+                                        <a href="/magazine/mmnge/?page={{mzlist.next_page_number}}&category={{category}}&search={{search}}&sort={{sort}}" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                                        <a href="/magazine/mmnge/?page={{mzlist.paginator.num_pages}}&category={{category}}&search={{search}}&sort={{sort}}" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+                                    {% else %}
+                                        <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                                        <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+                                    {% endif %}
+                        
+                                </div> <!-- 페이징 end -->
+                            </div>  
+                            {% endif %}                    
+
+
+                        </div>
+                    </div> 
+                </div> <!-- mmcontents -->
+
+                <div class="modal">
+                    <div class="modal_popup">
+                    </div>
                 </div>
 
-                <div id='mmtotal'> <i class="fa-solid fa-magnifying-glass-plus"></i> 검색 ({{mzlist.paginator.count}})</div>
-
-                <table>
-                    <colgroup>
-                        <col width="50px">
-                        <col width="50px">
-                        <col width="140px">                        
-                        <col width="120px">
-                        <col width="680px">
-                        <col width="80px">
-                        <col width="80px">
-                        <col width="100px">
-                    </colgroup>
-                    <tr>
-                        <th>순번</th>
-                        <th></th>
-                        <th>카테고리</th></th>
-                        <th>이미지</th>
-                        <th>제목</th>
-                        <th>좋아요</th>
-                        <th>조회수</th>
-                        <th></th>
-                    </tr>
-                    {% if mzlist %}
-                    {% for mz in mzlist %}
-                    <tr id='{{mz.mno}}'>
-                        <td>{{mzlist.paginator.count|sub:mzlist.start_index|sub:forloop.counter0|add:1}}</td>
-                        <td class='mzno'>{{mz.mno}}</td>
-                        <td class='mzCategory'>{{mz.magazinecode.mtype_desc}}</td>
-                        <td style='line-height:0;' class='mzimg'><img src='/media/{{mz.mfile}}' width="100px" height="100px"></td>
-                        <td style='padding-left:10px;text-align:left;' class="mztitle">{{mz.mtitle}}</td>
-                        <td>{{mz.mlike.count}}</td>
-                        <td>{{mz.mhit}}</td>
-                        <td>
-                            <button type='button' class='mmupdate'>수정</button>
-                            <button type='hidden' class='mzthumbnail' value='{{mz.mthumbnail}}'></button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td colspan='8' style='text-align:center;'>// 검색결과가 없습니다. 다시 시도해 주세요 //</td>
-                    </tr>
-                    {% endif %}
-
-                </table>
-
-                <!-- 페이징 start -->
-                {% if mzlist.has_other_pages %}
-                <div class="btnAreaList">
-                    <div class="allPageMoving1">
-                        {% if mzlist.has_previous %}
-                            <a href="/magazine/mmnge/?page=1&category={{category}}&search={{search}}&sort={{sort}}" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
-                            <a href="/magazine/mmnge/?page={{mzlist.previous_page_number}}&category={{category}}&search={{search}}&sort={{sort}}" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
-                        {% else %}
-                            <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
-                            <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
-                        {% endif %}
-            
-            
-                        {% for p in mzlist.paginator.page_range %}
-            
-                            {% if p >= mzlist.number|add:'-3' and p <= mzlist.number|add:'3' %}
-            
-                                {% if p == page %}
-                                    <strong>{{p}}</strong>
-                                {% else %}
-                                    <a href="/magazine/mmnge/?page={{p}}&category={{category}}&search={{search}}&sort={{sort}}">{{p}}</a>
-                                {% endif %}
-            
-                            {% endif %}
-                        {% endfor %}
-            
-            
-                        {% if mzlist.has_next %}
-                            <a href="/magazine/mmnge/?page={{mzlist.next_page_number}}&category={{category}}&search={{search}}&sort={{sort}}" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
-                            <a href="/magazine/mmnge/?page={{mzlist.paginator.num_pages}}&category={{category}}&search={{search}}&sort={{sort}}" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
-                        {% else %}
-                            <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
-                            <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
-                        {% endif %}
-            
-                    </div> <!-- 페이징 end -->
-                </div>  
-                {% endif %}                    
-
-
-            </div>
-        </div> 
+        </main>
     </div>
-
-    <div class="modal">
-        <div class="modal_popup">
-        </div>
-    </div>
-
+</div>
 {% endblock body %}

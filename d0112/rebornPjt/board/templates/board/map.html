@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %} {% block css %}
+<link rel='stylesheet' href="{% static 'css/map.css' %}">
+
+{% endblock css %}
+
+{% block script %}
+<script src="{% static 'js/map.js' %}" defer></script>
+{% endblock script %}
+
+{% block body %}
+<div class="board-wrapper">
+    <div class="top-hero"></div>
+
+    <div class="main-container">
+        <div class="board-header">
+            <div class="header-left">
+                <h1 class="title"><strong></strong> COMMUNITY</h1>
+                <nav class="tab-menu">
+                    <a href="/board/map/" class="active">맛집공유</a>
+                    <a href="/board/blist/">자유게시판</a>
+                    <a href="{% url 'board:noticelist' %}">공지사항 및 문의</a>
+                </nav>
+            </div>
+            
+            <div class="header-right">
+                <form action="{% url 'board:map' %}" method="GET" class="search-box">
+                    {% if current_topic %}
+                        <input type="hidden" name="topic" value="{{ current_topic }}">
+                    {% endif %}
+                    <input type="text" name="search" value="{{ search_kw|default:'' }}" placeholder="맛집 검색...">
+                    <button type="submit">검색</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="filter-and-action">
+            <div class="filter-buttons">
+                <a href="{% url 'board:map' %}?topic=" class="btn {% if not current_topic %}active{% endif %}">전체보기</a>
+                <a href="{% url 'board:map' %}?topic=free" class="btn {% if current_topic == 'free' %}active{% endif %}">추천 해주세요</a>
+                <a href="{% url 'board:map' %}?topic=hidden_gem" class="btn {% if current_topic == 'hidden_gem' %}active{% endif %}">숨은 맛집</a>
+                <a href="{% url 'board:map' %}?topic=report" class="btn {% if current_topic == 'report' %}active{% endif %}">핫플</a>
+                <a href="{% url 'board:map' %}?topic=family" class="btn {% if current_topic == 'family' %}active{% endif %}">가족/회식 </a>
+                <a href="{% url 'board:map' %}?topic=honey_tip" class="btn {% if current_topic == 'honey_tip' %}active{% endif %}">데이트</a>
+            </div>
+            <div class="action-right">
+                <div class="sort-group">
+                    <a href="?sort=recent{% if current_topic %}&topic={{ current_topic }}{% endif %}{% if search_kw %}&search={{ search_kw }}{% endif %}" 
+                        class="btn-sort {% if sort == 'recent' or not sort %}active{% endif %}">최신순</a>
+                    <span class="sort-divider">|</span>
+                    <a href="?sort=likes{% if current_topic %}&topic={{ current_topic }}{% endif %}{% if search_kw %}&search={{ search_kw }}{% endif %}" 
+                        class="btn-sort {% if sort == 'likes' %}active{% endif %}">인기순&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                </div>
+                
+            </div>
+            {% if request.session.login_user %}
+                <a href="{% url 'board:mwrite' %}" class="btn-write">글쓰기</a>
+            {% endif %}
+            
+        </div>
+
+        <div class="post-list">
+            {% for post in posts %}
+            <div class="post-item"> <div class="post-info">
+                    <div class="post-content">
+                        <span class="topic-tag">
+                            {% if post.topic == 'free' %} [추천]
+                            {% elif post.topic == 'hidden_gem' %} [숨은맛집]
+                            {% elif post.topic == 'report' %} [핫플]
+                            {% elif post.topic == 'family' %} [모임]
+                            {% elif post.topic == 'honey_tip' %} [데이트]
+                            {% endif %}
+                        </span>
+                        <a href="{% url 'board:bview' post.id %}" class="post-title">{{ post.title }}</a>
+                    </div>
+                    <div class="post-meta">
+                        by {{ post.author }} | {{ post.created_at|date:"Y.m.d" }} | 조회수 {{ post.views }} 
+                    | <span style="color: #ff4d4d;">{% if post.likes > 0 %}♥{% else %}♡{% endif %}</span>{{ post.likes }}
+                    </div>
+                </div>
+
+                {% if post.images.all %}
+                <div class="post-thumbnail">
+                    <a href="{% url 'board:bview' post.id %}">
+                        <img src="{{ post.images.all.0.image.url }}" alt="썸네일">
+                    </a>
+                </div>
+                {% endif %}
+                
+            </div>
+            {% empty %}
+            <div class="no-post">등록된 게시글이 없습니다.</div>
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}{% if current_topic %}&topic={{ current_topic }}{% endif %}{% if search_kw %}&search={{ search_kw }}{% endif %}" class="arrow">&lt;</a>
+            {% endif %}
+            
+            {% for num in posts.paginator.page_range %}
+                <a href="?page={{ num }}{% if current_topic %}&topic={{ current_topic }}{% endif %}{% if search_kw %}&search={{ search_kw }}{% endif %}" class="num {% if posts.number == num %}active{% endif %}">{{ num }}</a>
+            {% endfor %}
+
+            {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}{% if current_topic %}&topic={{ current_topic }}{% endif %}{% if search_kw %}&search={{ search_kw }}{% endif %}" class="arrow">&gt;</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock body %}
