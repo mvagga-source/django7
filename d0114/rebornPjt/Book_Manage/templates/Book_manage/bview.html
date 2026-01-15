@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>도서관리자페이지-내용상세보기</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      color: #1a1a1a;
+    }
+    
+    /* Detail Container */
+    .detail-container {
+      max-width: 800px;
+      margin: 80px auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .detail-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 70px;
+      text-align: center;
+    }
+    .detail-info {
+      display: flex;
+      justify-content: space-between;
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+    }
+    .detail-content {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #888;
+      white-space: pre-wrap; /* 줄바꿈 유지 */
+      margin-bottom: 40px;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 20px;
+    }
+
+    /* Buttons */
+    .detail-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+    .detail-buttons a,
+    .detail-buttons button {
+      text-decoration: none;
+      padding: 8px 18px;
+      font-size: 14px;
+      color: white;
+      background-color: #035fe0;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .detail-buttons a:hover,
+    .detail-buttons button:hover {
+      background-color: #0046b3;
+    }
+
+  </style>
+  <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <!-- Detail View -->
+  <div class="detail-container">
+    {% if book %}
+      <div class="detail-title">{{book.btitle}}</div>
+      <div class="detail-info">
+        <div>지은이: {{book.bauthor}}</div>
+        <div>출판사: {{book.bpublisher}}</div>
+        <div>출판일: {{book.bpubdate}}</div>
+        <div>책가격: {{book.bprice}}</div>
+      </div>
+      <div class="detail-content">
+        책 소개: {{book.bdescription}}<br>
+        {% if book.bimage %}
+        <img src='{{book.bimage}}' style='width:150px;'>
+        {% else %}
+        <div> 첨부된 파일이 없습니다.</div>
+        {% endif %}
+      </div>
+    {% endif %}
+    <div class="detail-buttons">
+      <a href="/Book_Manage/blist/">목록으로</a>
+    </div>
+  </div>
+
+</body>
+</html>

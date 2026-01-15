@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/blist.css' %}">
+<link rel='stylesheet' href="{% static 'css/bview.css' %}">
+<style>
+    /* 이미지 확대 모달 스타일 */
+    #imageModal {
+        display: none;
+        position: fixed;
+        z-index: 10000;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        overflow: hidden;
+        touch-action: none;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-wrapper {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: grab;
+    }
+    .modal-content {
+        max-width: 95%; max-height: 95vh;
+        object-fit: contain;
+        transition: transform 0.1s ease-out;
+        transform-origin: center;
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+    .close-modal {
+        position: absolute;
+        top: 20px; right: 30px;
+        color: #fff; font-size: 50px; font-weight: bold;
+        cursor: pointer; z-index: 10001;
+    }
+    .zoom-hint {
+        position: absolute; bottom: 20px; left: 50%;
+        transform: translateX(-50%);
+        color: #bbb; background: rgba(0,0,0,0.5);
+        padding: 5px 15px; border-radius: 20px;
+        font-size: 13px; pointer-events: none;
+    }
+</style>
+{% endblock css %}
+
+{% block script %}
+<script src="{% static 'js/bview.js' %}" defer></script>
+
+<script>
+    // JS에서 로그인 여부를 체크하기 위한 전역 변수
+    const isUserLoggedIn = "{{ request.session.user_nm|default:'' }}" !== "";
+    const loginUrl = "{% url 'member:login' %}"; // 로그인 페이지 경로
+</script>
+{% endblock script %}
+
+{% block body %}
+<div class="board-wrapper">
+    <div class="top-hero"></div>
+    <div class="main-container">
+        <div class="view-container">
+            <div class="view-header">
+                <h1>{{ post.title }}</h1>
+                <div class="view-meta">
+                    <span class="author">by {{ post.author }}</span>
+                    <div class="divider"></div>
+                    <span class="date">{{ post.created_at|date:"Y.m.d" }}</span>
+                    <div class="divider"></div>
+                    <span class="views">조회수 {{ post.views }}</span>
+                    <div class="divider"></div>
+
+                    <form action="{% url 'board:post_like' post.id %}" method="POST" class="like-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-like-icon" {% if not request.session.user_nm %}onclick="alert('로그인이 필요합니다.'); return false;"{% endif %}>
+                            {% if post.id in request.session.liked_posts %}<span class="heart-red">❤️</span>{% else %}<span class="heart-empty">🤍</span>{% endif %}
+                            <span class="like-count">{{ post.likes }}</span>
+                        </button>
+                    </form>
+
+                    <div class="divider"></div>
+                    {% if request.session.user_nm == post.author %}
+                    <div class="post-util">
+                        <a href="javascript:void(0)" onclick="togglePostEdit()" class="btn-edit">수정</a>
+                        <div class="divider"></div>
+                        <form action="{% url 'board:bdelete' post.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-del-text" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="view-content-box">
+                {% if post.images.all %}
+                <div class="post-images-container" style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+                    {% for img_obj in post.images.all %}
+                    <img src="{{ img_obj.image.url }}" alt="첨부이미지" style="max-width: 100%; height: auto; border-radius: 10px; cursor: pointer;" onclick="zoomImage(this.src)">
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div id="post-display">
+                    <div class="post-text">{{ post.content|linebreaks }}</div>
+                </div>
+
+                <div id="post-edit-form" style="display: none;">
+                    <form action="{% url 'board:bupdate' post.id %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="text" name="title" value="{{ post.title }}" style="width: 100%; margin-bottom: 12px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-weight: bold;">
+
+                        <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                            <label for="post-edit-images" style="cursor: pointer; background: #f8f9fa; padding: 5px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; display: inline-flex; align-items: center;">
+                                📷 사진 수정 (기존 사진 대체)
+                            </label>
+                            <input type="file" id="post-edit-images" name="images" multiple accept="image/*" style="display: none;" onchange="updateFileName(this, 'edit-file-name')">
+                            <span id="edit-file-name" style="font-size: 12px; color: #999;">기존 사진이 유지되지 않습니다.</span>
+                        </div>
+
+                        <textarea name="content" style="width: 100%; height: 300px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; resize: vertical; margin-bottom: 5px;">{{ post.content }}</textarea>
+
+                        <div class="edit-btn-group">
+                            <button type="submit" class="btn-save">저장</button>
+                            <button type="button" onclick="togglePostEdit()" class="btn-cancel">취소</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="comment-container">
+                <span class="comment-count">댓글 {{ comments.count }}개</span>
+
+                {% if request.session.user_nm %}
+                <form action="{% url 'board:comment_write' post.id %}" method="POST" enctype="multipart/form-data" class="comment-form">
+                    {% csrf_token %}
+                    <textarea name="content" placeholder="따뜻한 댓글을 남겨주세요." required></textarea>
+                    <div class="comment-form-footer" style="display: flex; align-items: center; margin-top: 10px; gap: 10px;">
+                        <label for="comment-image" style="cursor: pointer; background: #f4f4f4; padding: 6px 12px; border: 1px solid #ddd; border-radius: 5px; font-size: 13px; display: inline-flex; align-items: center;">
+                            📷 사진 첨부
+                        </label>
+                        <input type="file" id="comment-image" name="image" accept="image/*" style="display: none;" onchange="document.getElementById('file-name-main').innerText = this.files[0].name">
+                        <span id="file-name-main" style="font-size: 12px; color: #888; flex: 1;"></span>
+                        <button type="submit" class="btn-comment-submit">댓글등록</button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="comment-login-required" style="padding: 20px; border: 1px solid #eee; border-radius: 8px; text-align: center; background: #f9f9f9; margin-bottom: 20px;">
+                    <p style="margin: 0; color: #666;">댓글과 답글을 작성하려면 <a href="{% url 'member:login' %}" style="color: #103d91ff; font-weight: bold; ">로그인</a>이 필요합니다.</p>
+                </div>
+                {% endif %}
+
+                <ul class="comment-list">
+                    {% for comment in comments %}
+                        {% if not comment.parent %}
+                        <li class="comment-item" style="border-bottom: 1px solid #eee; padding: 15px 0; list-style: none;">
+                            <div class="comment-info">
+                                <span class="comment-author" style="font-weight: 700;">{{ comment.author }}</span>
+                                <span class="comment-date" style="color: #999; font-size: 12px; margin-left: 10px;">{{ comment.created_at|date:"Y.m.d H:i" }}</span>
+
+                                <div class="comment-util">
+                                    {% if request.session.user_nm == comment.author %}
+                                    <a href="javascript:void(0)" onclick="toggleEdit('{{ comment.id }}')" class="btn-edit">수정</a>
+                                    <span class="util-divider">|</span>
+                                    <form action="{% url 'board:comment_delete' post.id comment.id %}" method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-del" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                                    </form>
+                                    <span class="util-divider">|</span>
+                                    {% endif %}
+                                    <a href="javascript:void(0)" onclick="toggleReply('{{ comment.id }}')" class="btn-reply">답글</a>
+                                </div>
+                            </div>
+
+                            <p class="comment-text" id="content-{{ comment.id }}">{{ comment.content }}</p>
+                            {% if comment.image %}
+                            <div class="comment-img-box">
+                                <img src="{{ comment.image.url }}" style="max-width: 250px; border-radius: 8px; cursor: pointer; margin-top:10px;" onclick="zoomImage(this.src)">
+                            </div>
+                            {% endif %}
+
+                            <form id="edit-form-{{ comment.id }}" action="{% url 'board:comment_update' post.id comment.id %}" method="POST" enctype="multipart/form-data" style="display:none; margin-top: 10px;" class="reply-form">
+                                {% csrf_token %}
+                                <textarea name="content" style="width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">{{ comment.content }}</textarea>
+                                <div style="margin-top: 8px; display: flex; align-items: center; gap: 10px;">
+                                    <label for="edit-img-{{ comment.id }}" style="cursor: pointer; background: #f8f9fa; padding: 4px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px;">📷 사진 변경</label>
+                                    <input type="file" id="edit-img-{{ comment.id }}" name="image" accept="image/*" style="display: none;" onchange="document.getElementById('edit-file-name-{{ comment.id }}').innerText = this.files[0].name">
+                                    <span id="edit-file-name-{{ comment.id }}" style="font-size: 11px; color: #888;">{% if comment.image %}기존 사진이 변경됩니다.{% endif %}</span>
+                                    <button type="submit" class="btn-comment-submit" style="margin-left: auto;">수정완료</button>
+                                </div>
+                            </form>
+
+                            <ul class="reply-list" style="margin-left: 40px; border-left: 2px solid #f2f2f2; padding-left: 15px; margin-top: 10px;">
+                                {% for reply in comment.replies.all %}
+                                <li class="reply-item" style="margin-bottom: 15px; list-style: none;">
+                                    <div class="comment-info">
+                                        <span class="comment-author" style="font-weight: 700;">{{ reply.author }}</span>
+                                        <span class="comment-date" style="color: #999; font-size: 11px; margin-left: 8px;">{{ reply.created_at|date:"m.d H:i" }}</span>
+                                        {% if request.session.user_nm == reply.author %}
+                                        <div class="reply-util">
+                                            <a href="javascript:void(0)" onclick="toggleEdit('{{ reply.id }}')" class="btn-edit">수정</a>
+                                            <span style="color:#eee; font-size:10px;">|</span>
+                                            <form action="{% url 'board:comment_delete' post.id reply.id %}" method="POST" style="display:inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn-del" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                                            </form>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <p class="comment-text" id="content-{{ reply.id }}">{{ reply.content }}</p>
+                                    {% if reply.image %}
+                                    <img src="{{ reply.image.url }}" style="max-width: 180px; border-radius: 8px; cursor: pointer; margin-top: 5px;" onclick="zoomImage(this.src)">
+                                    {% endif %}
+
+                                    <form id="edit-form-{{ reply.id }}" action="{% url 'board:comment_update' post.id reply.id %}" method="POST" enctype="multipart/form-data" style="display:none; margin-top: 10px;" class="reply-form">
+                                        {% csrf_token %}
+                                        <textarea name="content" style="width: 100%; height: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">{{ reply.content }}</textarea>
+                                        <div style="margin-top: 5px; display: flex; align-items: center; gap: 10px;">
+                                            <label for="edit-img-{{ reply.id }}" style="cursor: pointer; background: #f8f9fa; padding: 3px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 11px;">📷 사진 변경</label>
+                                            <input type="file" id="edit-img-{{ reply.id }}" name="image" accept="image/*" style="display: none;" onchange="document.getElementById('edit-file-name-{{ reply.id }}').innerText = this.files[0].name">
+                                            <span id="edit-file-name-{{ reply.id }}" style="font-size: 11px; color: #888;"></span>
+                                            <button type="submit" class="btn-comment-submit" style="margin-left: auto;">수정완료</button>
+                                        </div>
+                                    </form>
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                            <form id="reply-form-{{ comment.id }}" action="{% url 'board:comment_write' post.id %}" method="POST" enctype="multipart/form-data" style="display:none; margin-left: 40px;" class="reply-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <textarea name="content" placeholder="답글을 남겨주세요." required></textarea>
+                                <div style="margin-top: 5px; display: flex; align-items: center; gap: 10px;">
+                                    <input type="file" name="image" accept="image/*" style="font-size: 12px;">
+                                    <button type="submit" class="btn-comment-submit" style="margin-left: auto;">답글등록</button>
+                                </div>
+                            </form>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {% comment %} <div class="view-nav">
+                {% if prev_post %}
+                    <a href="{% url 'board:bview' prev_post.id %}" class="nav-btn" title="이전글">
+                        <span class="nav-icon">&lt;</span>
+                    </a>
+                {% else %}
+                    <a href="javascript:void(0)" class="nav-btn disabled" style="opacity: 0.3; cursor: default;">
+                        <span class="nav-icon">&lt;</span>
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'board:noticelist' %}" class="nav-btn list-icon" title="목록으로">
+                    <span class="nav-icon">⋮</span>
+                </a>
+
+                {% if next_post %}
+                    <a href="{% url 'board:bview' next_post.id %}" class="nav-btn" title="다음글">
+                        <span class="nav-icon">&gt;</span>
+                    </a>
+                {% else %}
+                    <a href="javascript:void(0)" class="nav-btn disabled" style="opacity: 0.3; cursor: default;">
+                        <span class="nav-icon">&gt;</span>
+                    </a>
+                {% endif %}
+            </div> {% endcomment %}
+
+            <div class="category-list-preview" style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="category-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-size: 15px; font-weight: normal;">
+                        <strong style="color: #103d91ff;">맛집공유</strong> 카테고리 글
+                    </h3>
+                    <a href="{% url 'board:map' %}" style="font-size: 20px; color: #666; text-decoration: none;">≡</a>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    {% for p in posts_in_category %}
+                    <tr style="border-bottom: 1px solid #f2f2f2; {% if p.id == post.id %}background-color: #f9f9f9;{% endif %}">
+                        <td style="padding: 12px 5px;">
+                            <a href="{% url 'board:bview' p.id %}" style="text-decoration: none; color: {% if p.id == post.id %}#103d91{% else %}#333{% endif %};">
+                                {{ p.title }}
+                                {% if p.comments.count > 0 %}
+                                <span style="color: #103d91ff; font-size: 12px; margin-left: 5px;">({{ p.comments.count }})</span>
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td style="padding: 12px 5px; text-align: right; color: #999; width: 100px;">
+                            {{ p.created_at|date:"Y. m. d." }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+                <div class="category-pagination" style="display: flex; justify-content: center; align-items: center; margin-top: 20px; gap: 20px; font-size: 14px; color: #666;">
+                    {% if posts_in_category.has_previous %}
+                        <a href="?page={{ posts_in_category.previous_page_number }}" style="text-decoration: none; color: #333;">&lt; </a>
+                    {% else %}
+                        <span style="color: #ccc;">&lt; </span>
+                    {% endif %}
+
+                    <div class="page-numbers">
+                        {{ posts_in_category.number }} / {{ posts_in_category.paginator.num_pages }}
+                    </div>
+
+                    {% if posts_in_category.has_next %}
+                        <a href="?page={{ posts_in_category.next_page_number }}" style="text-decoration: none; color: #333;"> &gt;</a>
+                    {% else %}
+                        <span style="color: #ccc;"> &gt;</span>
+                    {% endif %}
+                    
+                    <a href="#" style="margin-left: auto; font-weight: 900; text-decoration: none; color: #8f8f8fff; font-size: 12px;">↑</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="imageModal">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <div class="modal-wrapper" id="modalWrapper">
+        <img class="modal-content" id="fullImage" draggable="false">
+    </div>
+    <div class="zoom-hint">마우스 휠: 확대/축소 | 드래그: 이동</div>
+</div>
+{% endblock body %}

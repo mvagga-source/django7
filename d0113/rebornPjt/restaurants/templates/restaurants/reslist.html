@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% comment %} css 작업은 여기서 하세요!! {% endcomment %}
+{% block css %}
+<link rel='stylesheet' href="/static/css/restaurants.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock css %}
+
+{% comment %} script 작업은 여기서 하세요!! {% endcomment %}
+{% block script %}
+<script src="/static/js/restaurants.js"></script>
+
+{% endblock script %}
+
+{% comment %} body 작업은 여기서 하세요!! {% endcomment %}
+{% block body %}
+
+
+
+<form action="/restaurants/reslist/" method="get" name="searchFrm">
+<div class='rest-header_bg'>
+    <div class='rest-header'>
+        <div class='rest-title'>
+            Reborn <i class="fa-solid fa-utensils"></i> 레스토랑
+        </div>
+        <div class="search-container">
+            <div class="search-box">
+                <span class="search-icon"><img src='/static/images/restaurants/search_icon.png'></span>
+                <input type="text" name="search" placeholder="검색어를 입력하세요."/>
+            </div>
+            <button type="button" class="search-btn" onclick="searchBtn()">검색</button>
+        </div>
+    </div>
+</div>
+</form>
+
+<!-- 슬라이더 상단 우측 프로모션 등록 버튼 -->
+<div class="promo-header">
+  <a href="/promo/admin/" class="promo-btn-link">
+    프로모션 등록
+  </a>
+</div>
+
+<!-- ✅ 광고 슬라이더 START -->
+{% include "promo/promo_slider.html" %}
+<!-- ✅ 광고 슬라이더 END -->
+
+
+<main class="rest_container">
+    <!-- 카드 리스트 -->
+    <section class="rest_card-grid">
+        {% for r in list %}
+        <!-- START -->
+        <div class="rest_card" name='{{r.resno}}'><a href="/restaurants/resview/{{r.resno}}/">
+            {% if r.images.all %}
+                {# 대표이미지 1개만 prefetch 했으므로 0번째가 대표 #}
+                <img src="{{ r.images.all.0.image.url }}" width="600" height="400" alt="{{ r.res_name }}">
+            {% else %}
+                <img src="https://picsum.photos/600/400?{{ r.resno }}" width="600" height="400" alt="{{ r.res_name }}">
+            {% endif %}
+            <div class="rest_card-body">
+                <h3>{{r.res_name}}</h3>
+                <div class="rest_rating">
+                    {% if r.review_count > 0 %}
+                        ⭐ {{ r.avg_rating|floatformat:1 }} 
+                        <span class="review-count">({{ r.review_count }})</span>
+                    {% else %}
+                        리뷰 없음
+                    {% endif %}
+                </div>
+                <p class="rest_location">📍 {{r.addr}}</p>
+                <p class="rest_desc">{{r.desc}}</p>
+            </div></a>
+        </div>
+        {% endfor %}
+        <!-- END -->
+    </section>
+
+</main>
+<!-- 페이징 -->
+<div class="btnAreaList">
+    <div class="allPageMoving1">
+        <!-- 이전페이지 -->
+        {% if list.has_previous %}
+        <a href="/restaurants/reslist/?page=1" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+        <a href="/restaurants/reslist/?page={{list.previous_page_number}}" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+        {% else %}
+        <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+        <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+        {% endif %}
+        
+        <!-- 페이지넘버링-->
+        {% for p in list.paginator.page_range %}
+            {% if p >= list.number|add:'-3' and p <= list.number|add:'3' %}<!-- 앞뒤 페이지표시 -->
+                {% if p == page %}
+                <strong>{{p}}</strong>
+                {% else %}
+                <a href="/restaurants/reslist/?page={{p}}">{{p}}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        
+        <!-- 다음페이지-->
+        {% if list.has_next %}
+        <a href="/restaurants/reslist/?page={{list.next_page_number}}" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+        <a href="/restaurants/reslist/?page={{list.paginator.num_pages}}" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+        {% else %}
+        <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+        <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock body %}

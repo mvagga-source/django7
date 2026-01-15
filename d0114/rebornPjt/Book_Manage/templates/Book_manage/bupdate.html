@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>도서관리자페이지-내용수정하기</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      color: #1a1a1a;
+    }
+
+    /*도서내용 수정란*/
+    .write-container {
+      max-width: 800px;
+      margin: 80px auto;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .write-title {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    form.write-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .write-form input[type="text"],
+    .write-form textarea {
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .write-form textarea {
+      resize: vertical;
+      min-height: 200px;
+    }
+
+    .write-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+
+    .write-buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      color: white;
+      background-color: #035fe0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .write-buttons button:hover {
+      background-color: #0046b3;
+    }
+
+    .write-buttons .cancel {
+      background-color: #6c757d;
+    }
+
+    .write-buttons .cancel:hover {
+      background-color: #5a6268;
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <!-- 글수정 폼 -->
+  <div class="write-container">
+    <div class="write-title">도서내용 수정</div>
+    <form class="write-form" action="/Book_Manage/bup_finish/{{book.bisbn}}/" method='POST' enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="text" name='bisbn' placeholder="책고유번호" value='{{book.bisbn}}' required/>
+      <input type="text" name='btitle' placeholder="책제목" value='{{book.btitle}}' required/>
+      <input type="text" name='bauthor' placeholder="지은이" value='{{book.bauthor}}' required/>
+      <input type="text" name='bpublisher' placeholder="출판사" value='{{book.bpublisher}}' required />
+      <input type="date" name='bpubdate' value='{{book.bpubdate}}'/>
+      <input type="number" name='bprice' placeholder="책가격" value='{{book.bprice}}'/>
+      <input type="text" name='bimage' placeholder="이미지 url" value='{{book.bimage}}'/>
+      <textarea name='bdescription' placeholder="책소개를 입력하세요." maxlength="2000">{{book.bdescription}}</textarea>
+
+      <div class="write-buttons">
+        <button type="submit">수정</button>
+        <button type="button" class="cancel" onclick="history.back()">취소</button>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

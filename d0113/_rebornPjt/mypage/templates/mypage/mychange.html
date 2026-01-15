@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block css %}
+<link rel='stylesheet' href="{% static 'css/mychange.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock css %}
+
+{% block script %}
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="{% static 'js/mychange.js' %}" defer></script>
+
+{% endblock script %}
+
+{% block body %}
+
+<div class="board-wrapper">
+    <div class="top-hero"></div>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <ul class="side-menu">
+                <li class="active"><a href="#">개인정보</a></li>
+                <li><a href="/mypage/myaccount/">계정관리</a></li>
+                {% if request.session.user_id == 'admin' %}
+                    <li><a href="/magazine/mmnge/">매거진관리</a></li>
+                {% endif %}                
+            </ul>
+        </aside>
+
+        <main class="content-card">
+            <div class="inner-form-container">
+                <h1 class="main-title">정보 수정</h1>
+                <p class="sub-title"><span class="brand-text">Reborn</span>에서 사용할 회원 정보를 수정해 주세요.</p>
+
+                <form action="/mypage/update/" method="POST" id="edit-form" onsubmit="return validateForm()">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label class="input-label">성명</label>
+                        <input type="text" name="mem_nm" class="input-field readonly" value="{{ user.mem_nm }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="input-label">아이디 (변경 불가)</label>
+                        <input type="text" name="mem_id" class="input-field readonly" value="{{ user.mem_id }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="input-label">새 비밀번호</label>
+                        <div class="password-wrapper">
+                            <input type="password" name="mem_pw" id="password" class="input-field" placeholder="비밀번호 변경 시에만 입력" oninput="checkPasswordMatch()">
+                            <span class="toggle-password" onclick="togglePasswordVisibility('password', this)">
+                                <i class="fa-regular fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="input-label">비밀번호 확인</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="password_confirm" class="input-field" placeholder="비밀번호를 한번 더 입력해 주세요" oninput="checkPasswordMatch()">
+                            <span class="toggle-password" onclick="togglePasswordVisibility('password_confirm', this)">
+                                <i class="fa-regular fa-eye"></i>
+                            </span>
+                        </div>
+                        <span id="pw_match_msg" class="status-msg"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="input-label">닉네임</label>
+                        <div class="input-with-btn">
+                            <input type="text" name="nick_nm" id="nick_nm" class="input-field" value="{{ user.nick_nm }}" placeholder="닉네임">
+                            <button type="button" class="check-btn" onclick="checkDuplicate('nick_nm')">중복 확인</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="input-label">이메일</label>
+                        <div class="input-with-btn">
+                            <input type="email" name="email" id="email" class="input-field" value="{{ user.email }}" placeholder="이메일">
+                            <button type="button" class="check-btn" onclick="checkDuplicate('email')">중복 확인</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="input-label">주소</label>
+                        <div class="input-with-btn">
+                            <input type="text" name="zip_code" id="zip_code" class="input-field" value="{{ user.zip_code }}" placeholder="우편번호" readonly>
+                            <button type="button" class="check-btn" onclick="execDaumPostcode()">주소 검색</button> 
+                        </div>
+                        <input type="text" name="base_addr" id="base_addr" class="input-field mt-8" value="{{ user.base_addr }}" readonly>
+                        <input type="text" name="detail_addr" id="detail_addr" class="input-field mt-8" value="{{ user.detail_addr }}" placeholder="상세 주소">
+                    </div>
+
+                    <button type="button" class="btn-submit" onclick="submitEditForm()">수정완료</button>
+                </form> </div>
+        </main>
+    </div>
+</div>
+
+{% if messages %}
+<script>
+    {% for message in messages %}
+        alert("{{ message }}");
+    {% endfor %}
+</script>
+{% endif %}
+
+<script src="{% static 'js/mychange.js' %}" defer></script>
+
+{% endblock body %}

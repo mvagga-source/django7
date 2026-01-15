@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도서관리자 페이지-정보 글쓰기</title>
+    <style>
+        .container{width:1100px; height:900px;
+            margin:100px auto;}
+        .big-t{margin:0 auto;}
+        .big-t h2{text-align:center; font-size:50px;}
+        .book-input{width:800px; height:600px; margin:50px auto;}
+        .book-input form{margin-left:270px;}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="big-t">
+            <h2>추가할 도서정보 작성하기</h2>
+        </div>
+        <div class="book-input">
+            <form action="{% url 'Book_Manage:bwrite' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label>책제목 :</label>
+                <input type="text" name="btitle"><br>
+                <label>지은이 :</label>
+                <input type="text" name="bauthor"><br><br>
+                <label>출판사 :</label>
+                <input type="text" name="bpublisher"><br>
+                <label>출판일 :</label>
+                <input type="date" name="bpubdate"><br>
+                <label>책가격 :</label>
+                <input type="number" name="bprice" min="0" placeholder="숫자만 입력하세요"><br><br>
+                <label>이미지 :</label>
+                <input type="text" name="bimage" placeholder="이미지 url"><br><br>
+                <label>책 소개 :</label>
+                <textarea name="bdescription" rows="5" placeholder="책 내용을 입력하세요"></textarea><br><br>
+                <label>ISBN</label>
+                <input type="text" name="bisbn"><br><br>
+                <input type="submit" value="저장">
+            </form>
+        </div>
+    </div> 
+
+</body>
+</html>

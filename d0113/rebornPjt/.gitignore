@@ -1,0 +1,16 @@
+# git파일 업로드 방지(깃허브 올리고 싶지 않은 파일 추가)
+/logs/*
+launch.json
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+
+# Django DB나 필요없는 다운로드 media파일들도 제외가능
+# db.sqlite3
+# media/

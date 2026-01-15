@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% comment %} css 작업은 여기서 하세요!! {% endcomment %}
+{% block css %}
+<link rel='stylesheet' type="text/css" href="/static/css/magazine.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock css %}
+
+{% comment %} script 작업은 여기서 하세요!! {% endcomment %}
+{% block script %}
+<script src="/static/js/magazine.js">
+{% endblock script %}
+
+{% comment %} body 작업은 여기서 하세요!! {% endcomment %}
+{% block body %}
+
+<div id='mz-body'>
+
+    <div id='nz-header'>
+        <form name='searchFrm' action='/magazine/mlist/' method='get'>
+        {% csrf_token %}
+        <div id='nz-header-bg'>
+            <div id='nz-htitle'>
+                NAVER <i class="fa-solid fa-utensils"></i> 매거진
+            </div>
+        </div>
+        </form>
+    </div>
+
+    <div id='n-list'>
+
+        <div id='nlcategory'>
+            {% if sort == 'sim' %}
+                <a href='?sort=sim' class='org rev'>정확도순</a>
+                <a href='?sort=date' class='org'>날짜순</a>
+            {% else %}
+                <a href='?sort=sim' class='org'>정확도순</a>
+                <a href='?sort=date' class='org rev'>날짜순</a>
+            {% endif %}
+            <a href='/magazine/mlist/'><span>REBORN 매거진</span></a>
+        </div>
+        
+        {% if result == '1' %}
+        <!-- 매거진 출력 start (탬플릿 함수) -->
+        <ul class='nlist2'>
+            {% for n in nlist %}
+            <li>
+                <a href="{{n.link}}" target="_blank" rel="noopener noreferrer">
+                    <div class='nbl'>
+                        <span class='nblname'>{{n.bloggername}}</span>
+                        <span class='nblname'>{{n.bloggerlink}}</span>
+                    </div>
+                    {% comment %} <h3 class='ntitle'>{{n.title|cut:'<b>'|cut:'</b>'|cut:'&lt;'|cut:'&gt;'|cut:'&quot;'}}</h3>{% endcomment %}
+                    <h3 class='ntitle'>{{n.title|striptags|cut:'&lt;'|cut:'&gt;'|cut:'&amp;'}}</h3>
+                    <p class='ndesc'>{{n.description|striptags|cut:'&lt;'|cut:'&gt;'|cut:'&amp;'}}</p>                    
+                    <p class='ninfo'>{{n.postdate}} </p>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>         
+        <!-- 매거진 출력 end -->
+        {% else %}
+            <div class='mz-noinfo'><i class="fa-solid fa-circle-info"></i> 매거진 정보가 더이상 없습니다.</div>
+        {% endif %}        
+
+        <div id='m-move'> 
+            <ul>
+                {% if page > 1 %}
+                    <li><a href='?page={{page|add:'-1'}}&sort={{sort}}'><i class="fa-solid fa-backward"></i></a></li>
+                {% else %}
+                    <li style='color:#c7c7c7'><i class="fa-solid fa-backward"></i></a></li>
+                {% endif %}
+
+                <li>{{page}} 페이지</li>
+
+                {% if result == '1' %}
+                <li><a href='?page={{page|add:'1'}}&sort={{sort}}'><i class="fa-solid fa-forward"></i></a></li>
+                {% else %}
+                <li></li>
+                {% endif %}
+            </ul>
+        </div>
+
+
+    </div>
+
+</div> <!-- mz-body -->
+
+{% endblock body %}
+
+

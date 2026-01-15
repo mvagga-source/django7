@@ -1,0 +1,302 @@
+/* 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Pretendard', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* 페이지 내용이 적어도 푸터가 바닥에 있게 함 */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+/* --- 헤더 메뉴 스타일 --- */
+.navbar {
+    display: flex; 
+    justify-content: space-between; /* 로고/메뉴/로그인 간격 배분 */
+    align-items: center;
+    padding: 0 5%;
+    height: 100px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* --- 햄버거 메뉴 아이콘 스타일 --- */
+.hamburger-menu {
+    display: none; /* 기본적으로 데스크톱에서는 숨김 */
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 22px; /* 세 줄 높이 조정 */
+    position: absolute; /* 절대 위치 지정 */
+    right: 5%; /* 오른쪽 끝에 배치 */
+    z-index: 2000; 
+}
+
+.bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #333;
+    transition: all 0.3s ease-in-out;
+}
+
+/* 메뉴 컨테이너 (모바일에서 숨겨질 부분) */
+.nav-container {
+    /* 데스크톱 스타일 유지 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    flex: 1;
+}
+
+/* 로고 스타일 */
+.logo-Reborn {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: #007bff;
+    white-space: nowrap;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    height: 100%; /* 부모 높이 확보 */
+}
+
+.nav-links li {
+    height: 100%; /* li도 헤더 높이만큼 꽉 채움 */
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.nav-links a {
+    display: flex;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    transition: color 0.3s ease-in-out; /* 텍스트 색상 전환 효과 */
+    position: relative; /* ::after의 기준점 */
+    padding-bottom: 5px; /* 선이 텍스트와 너무 붙지 않게 여백 추가 */
+    border-bottom: 2px solid transparent; /* 호버 시 덜덜거림 방지 */
+    height: 100%;       /* 헤더 전체 높이를 클릭 영역으로 확보 */
+    align-items: center; /* 글자 세로 중앙 정렬 */
+    padding: 0px 40px;
+}
+
+/* --- 밑줄 (가상 요소): 글자 길이에 맞춤 --- */
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;          /* 헤더의 제일 하단에 위치 */
+    left: 40px;         /* a 태그의 padding-left 값과 동일하게 설정 */
+    right: 40px;        /* a 태그의 padding-right 값과 동일하게 설정 */
+    height: 3px;        /* 밑줄 두께 */
+    background-color: #007bff;
+    transition: transform 0.3s ease;
+    transform: scaleX(0); /* 처음에는 가로 길이를 0으로 숨김 */
+}
+
+.nav-links a:hover {
+    color: #007bff;
+}
+
+.nav-links a:hover::after {
+    transform: scaleX(1); /* 마우스를 올리면 글자 너비만큼 선이 나타남 */
+}
+
+.nav-links a svg {
+    display: none;
+    flex-shrink: 0; /* 아이콘 크기 유지 */
+}
+
+/* 우측 로그인 버튼 */
+.user-menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px; /* 버튼 사이 간격 추가 */
+    min-width: 300px; /* 로그인 후 긴 문장이 들어올 것을 대비해 미리 공간 확보 */
+}
+
+.login-btn {
+    padding: 8px 24px;
+    border-radius: 20px;
+    background-color: #f0f7ff;
+    color: #007bff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap; /* 줄바꿈 방지 */
+}
+
+/* 새로운 회원가입 버튼 (Primary Color 강조) */
+.signup-btn {
+    padding: 10px 24px;
+    border-radius: 25px; /* 좀 더 둥글게 */
+    background-color: #007bff; /* 로고와 같은 포인트 컬러 */
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+/* 로그인 후 프로필 영역 */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0; /* 화면이 좁아져도 크기가 줄어들거나 밀리지 않음 */
+}
+
+.user-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.user-name span {
+    color: #007bff; /* 이름만 포인트 컬러 */
+}
+
+.user-name .user-welcome{
+    color: #333;
+}
+
+.mypage-btn {
+    font-size: 0.9rem;
+    color: #666;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.mypage-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #666; /* 기본 글자색 */
+    padding: 5px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #007bff;
+    color: #007bff;
+}
+/* 기본적으로(데스크톱) 메뉴 안의 로그아웃은 숨김 */
+.nav-links li.mobile-logout {
+    display: none;
+}
+
+/* SVG 아이콘 크기 미세 조절 */
+.logout-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor; /* 부모 텍스트 색상을 그대로 따라감 */
+}
+/* 로그인 후 프로필 영역 */
+
+/* --- 메인 콘텐츠 스타일 --- */
+.content {
+    flex: 1; /* 남은 공간을 모두 차지하여 푸터를 아래로 밀어냄 */
+}
+
+/* --- 푸터 스타일 --- */
+.footer {
+    background-color: #f4f4f4;
+    color: #666;
+    padding: 20px 5%;
+    border-top: 1px solid #ddd;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+/* 푸터영역 끝 */
+
+/* --- X자 모양 애니메이션 (active 클래스 적용 시) --- */
+/* 첫 번째 bar를 45도 회전시켜 가운데로 이동 (정확한 translateY 값 적용) */
+.hamburger-menu.active .bar:nth-child(1) {
+    transform: translateY(5px) rotate(45deg); 
+}
+
+/* 두 번째 bar (가운데) 숨기기 */
+.hamburger-menu.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+/* 세 번째 bar를 -45도 회전시켜 가운데로 이동 (정확한 translateY 값 적용) */
+.hamburger-menu.active .bar:nth-child(3) {
+    transform: translateY(-9.5px) rotate(-45deg);
+}
+
+
+#board_bg{
+    height:244px;width:100%;background:url('/static/images/common/back_community.jpg') no-repeat;
+    background-size: cover;
+}
+
+#store_bg{
+    height:244px;width:100%;background:url('/static/images/common/back_store.jpg') no-repeat;
+    background-size: cover;
+}
+
+#header_bg{
+    height:244px;width:100%;background:url('/static/images/common/back_header.jpg') no-repeat;
+    background-size: cover;
+}
+
+
+/* PAGING */
+.btnAreaList{position:relative; width:100%; text-align:center; clear:both;}
+.allPageMoving1{margin:30px 0 50px 0;}
+.allPageMoving1 *{vertical-align:top;}
+.allPageMoving1 a{display:inline-block;width:25px;height:25px;line-height:23px;color:#888;text-decoration:none; border:1px #c0c0c0 solid; background:#fff; font-size:12px;}
+.allPageMoving1 a.n{border:0;padding:0;}
+.allPageMoving1 a.pre{border:0;padding:0;}
+.allPageMoving1 a.next{border:0;padding:0;}
+.allPageMoving1 a img{vertical-align:top;}
+.allPageMoving1 span.mobile{display:none;}
+.allPageMoving1 strong{display:inline-block; width:25px; height:25px; line-height:23px; color:#f7703c; text-decoration:none; border:1px #f7703c solid; background:#fff; font-size:12px; font-weight:normal;}

@@ -6,6 +6,13 @@ from django.db.models import F,Q,Sum,Count
 from comment.models import Comment
 from django.http import JsonResponse
 
+# get, post, put, delete 방식 지정
+from rest_framework.decorators import api_view
+# JsonResponse -> Response 사용
+from rest_framework.response import Response
+# status : 200 - 정상, 404 - 페이지 오류, 500 - 시스템 상태값 확인
+from rest_framework import status
+
 def clikes(request):
     
     
@@ -108,3 +115,61 @@ def clist(request):
     
     context = {'list':list_qs,'page':page, 'category':category,'search':search}
     return render(request,'customer/clist.html', context)
+
+
+# @api_view(['POST'])
+@api_view(['GET'])
+def clistJson(request):
+    
+    # axios Json 데이터로 전달
+    
+    # POST 방식    
+    # page = request.data.get('page')
+    # print('page : ',page)
+    
+    id = request.query_params.get('id')
+    page = request.query_params.get('page')
+    print('id : ',id,' page : ', page)
+    
+    qs = Board.objects.all().order_by('-bno')
+    
+    # Json
+    l_qs = list(qs.values())
+    context = {'list':l_qs}
+    
+    return Response(context, status=status.HTTP_200_OK)
+
+@api_view(['POST'])
+def cwriteJson(request):
+    
+    print('11')
+    
+    id = request.data.get('id','aaa')
+    btitle = request.data.get('btitle','')
+    bcontent = request.data.get('bcontent','')
+    print('넘어온 데이터',id,btitle,bcontent)
+    
+    member = Member.objects.get(id=id)    
+    
+    qs = Board.objects.create(member=member,btitle=btitle,bcontent=bcontent)
+    qs.bgroup = qs.bno
+    qs.save()
+    
+    l_qs = list(Board.objects.filter(bno=qs.bno).values())
+    
+    context = {'result':'성공','board':l_qs}
+    
+    return Response(context, status=status.HTTP_200_OK)    
+    
+@api_view(['DELETE'])
+def cdeleteJson(request, bno):
+    
+    name = request.data.get('name')
+    print('넘어온 데이터 : ',bno,name)
+    
+    Board.objects.get(bno=bno).delete()
+    
+    context = {'result':'성공'}
+    return Response(context, status=status.HTTP_200_OK)    
+    
+    

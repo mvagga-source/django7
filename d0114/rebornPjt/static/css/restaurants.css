@@ -1,0 +1,280 @@
+/* RESTAURANTS HEADER */
+.rest-header_bg{width: 100%;height: 244px; background:url('/static/images/restaurants/back_restaurants.png') center/cover no-repeat; display: flex;align-items: flex-end;justify-content: center;}
+.rest-header {background: #ffffff;width: 1095px;max-width: 1095px;height: 107px;display: flex;align-items: center;justify-content: center;margin: 200px auto 0px;padding: 0 28px;border-top-left-radius: 24px;border-top-right-radius: 24px;}
+.rest-title {font-size:30px; font-weight: 450;text-align: center; width:350px;margin-right: 50px;color:#3e404e;}
+
+/* SEARCH */
+.search-container {display: flex;align-items: center;width: 100%;max-width: 600px;background: #fff;border-radius: 999px;padding: 6px;box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);}
+.search-box {flex: 1;display: flex;align-items: center;padding: 0 14px;}
+.search-icon {font-size: 16px;color: #9ca3af;margin-right: 8px;}
+.search-icon img {height:28px;}
+.search-box input {border: none;outline: none;width: 100%;font-size: 14px;color: #111827;}
+.search-box input::placeholder {color: #9ca3af;}
+.search-btn {border: none;padding: 10px 20px;border-radius: 999px;background: #2563eb;color: #fff;font-size: 14px;font-weight: 600;cursor: pointer;}
+.search-btn:hover {background: #1e40af;}
+
+/* ===== 프로모션 등록 버튼 영역 ===== */
+
+.promo-header{
+  max-width: 1200px;
+  margin: 6px auto 0;
+  padding: 0 20px;
+  display: flex;
+  justify-content: flex-end; /* 🔥 우측 끝 정렬 */
+}
+
+.promo-btn-link{
+  padding: 12px 52px;
+  display: inline-block;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #fff;
+  background: #59abe3;
+  border: 2px solid #59abe3;
+  border-radius: 40px;
+  transition: background-color 0.5s, color 0.5s;
+}
+
+/* hover 효과 */
+.promo-btn-link:hover{
+  background: #fff;
+  color: #59abe3;
+}
+
+/* 클릭 시 */
+.promo-btn-link:active{
+  background: #fff;
+  border-color: #fff;
+}
+
+/* ===============================
+   PROMO SLIDER (with arrows, dots, swipe)
+   =============================== */
+
+.promo-slider{
+  max-width: 1200px;
+  height: 320px;
+  margin: 18px auto 6px;
+  padding: 0 20px;
+}
+
+.promo-track{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #111;
+  touch-action: pan-y; /* 세로 스크롤은 허용, 가로 스와이프는 JS로 처리 */
+}
+
+/* Slides */
+.promo-slide{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  align-items: center;
+  opacity: 0;
+  transition: opacity .55s ease;
+  pointer-events: none;
+}
+
+.promo-slide.is-active{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Image */
+.promo-img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(.92);
+  z-index: 0;
+}
+
+/* Overlay */
+.promo-slide::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(90deg, rgba(255,255,255,.85) 0%, rgba(255,255,255,.55) 45%, rgba(255,255,255,0) 75%);
+  z-index:1;
+}
+
+/* Text */
+.promo-text{
+  position: absolute;
+  left: clamp(60px, 6vw, 90px);   /* 화살표 영역 피해서 좌측 여백 */
+  top: 50%;                        /* 세로 중앙 기준점 */
+  transform: translateY(-50%);     /* 정확히 중앙 맞추기 */
+  z-index: 4;
+
+  padding: clamp(16px, 2.5vw, 26px) clamp(18px, 3vw, 32px);
+  color: #111;
+  max-width: min(520px, calc(100% - 140px));
+
+  /* 가독성 보정 */
+  background: rgba(255,255,255,.72);
+  backdrop-filter: blur(6px);
+  border-radius: 14px;
+}
+
+.promo-kicker{
+  font-size: 13px;
+  margin: 0 0 10px;
+  opacity: .9;
+}
+
+.promo-title{
+  font-size: 34px;
+  line-height: 1.1;
+  margin: 0 0 12px;
+  letter-spacing: -0.3px;
+}
+
+.promo-sub{
+  font-size: 14px;
+  margin: 0 0 18px;
+  opacity: .9;
+}
+
+.promo-cta{
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Arrows */
+.promo-btn{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0,0,0,.45);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+}
+
+.promo-btn:hover{ background: rgba(0,0,0,.6); }
+.promo-btn:active{ transform: translateY(-50%) scale(.98); }
+
+.promo-btn.prev{ left: 14px; }
+.promo-btn.next{ right: 14px; }
+
+/* Dots */
+.promo-dots{
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 6;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(6px);
+}
+
+.promo-dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: 0;
+  background: rgba(255,255,255,.6);
+  cursor: pointer;
+}
+
+.promo-dot.is-active{
+  width: 18px;
+  background: rgba(255,255,255,.95);
+}
+
+/* Responsive */
+@media (max-width: 860px){
+  .promo-slider{ height: 280px; }
+  .promo-slide{ grid-template-columns: 1fr; }
+  .promo-slide::before{
+    background: linear-gradient(180deg, rgba(255,255,255,.82) 0%, rgba(255,255,255,.45) 55%, rgba(255,255,255,0) 100%);
+  }
+  .promo-text{ padding: 22px 22px; max-width: 100%; }
+  .promo-title{ font-size: 26px; }
+}
+/* 슬라이더 end */
+
+/* LAYOUT */
+.rest_container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* 4 x 5 카드 그리드 */
+.rest_card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4열 고정 */
+    grid-template-rows: repeat(5, auto);   /* 5행 */
+    gap: 20px;
+}
+
+/* CARD */
+.rest_card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.rest_card:hover {
+    transform: translateY(-4px);
+}
+
+.rest_card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
+
+.rest_card-body {
+    padding: 14px;
+}
+
+.rest_card-body h3 {
+    font-size: 17px;
+    margin-bottom: 6px;
+}
+
+.rest_location {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+}
+
+.rest_desc {
+    font-size: 13px;
+    font-weight: 400;
+    color: #666;
+    margin-top: 6px;
+}

@@ -1,0 +1,89 @@
+/* 반응형 */
+@media (max-width: 1400px) {
+    .user-welcome{
+        display: none;
+    }
+    /* 마이페이지 버튼 숨기기 (겹침 방지) */
+    .mypage-btn {
+        display: none;
+    }
+}
+
+
+/* --- 반응형 설정 (모바일 뷰: 768px 이하) --- */
+@media (max-width: 1180px) {
+    /* 모바일에서 로그인 버튼과 햄버거 아이콘이 겹치지 않도록 */
+    .user-menu {
+         /* 햄버거 메뉴 너비(30px) + 간격(15px) 정도의 마진 확보 */
+         margin-right: 60px;
+         min-width: auto;
+    }
+
+    /* 회원가입, 로그아웃 버튼 숨기기 (겹침 방지) */
+    .signup-btn, .logout-btn, .mypage-btn {
+        display: none;
+    }
+
+    /* 햄버거 메뉴 내부의 로그아웃은 보이게 설정 */
+    .nav-links li.mobile-logout {
+        display: block;
+        margin-top: 30px; /* 메뉴와 간격 분리 */
+        border-top: 1px solid #eee; /* 구분선 */
+        width: 100%;
+    }
+
+    .nav-container {
+        position: fixed;
+        right: -100%;
+        top: 80px;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background-color: #fff;
+        transition: 0.3s ease-in-out;
+        z-index: 1500;
+        
+        /* 내부 스크롤 추가 */
+        overflow-y: auto; 
+        padding: 30px 20px;
+        display: block; /* flex 해제하여 스크롤 흐름 확보 */
+    }
+
+    .nav-container.active {
+        right: 0;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 30px;
+        align-items: flex-start; /* [수정] 모바일 메뉴 글자를 왼쪽으로 정렬 */
+        padding-left: 10%;      /* 왼쪽 여백 */
+    }
+
+    .nav-links li {
+        width: 100%; /* 리스트 항목 전체 너비 사용 */
+        height: auto;
+    }
+    
+    .nav-links a {
+        display: flex !important; /* 모바일에서는 가로를 꽉 채워 클릭하기 쉽게 */
+        width: 100%;
+        padding: 15px 0; /* 위아래 패딩으로 간격 확보 */
+        font-size: 1.5rem;
+    }
+
+    .nav-links a::after {
+        display: none;  /* 모바일에서는 하단 선이 필요 없으므로 제거 */
+    }
+
+    .nav-links a svg {
+        display: block;            /* 또는 inline-block */
+        margin-right: 12px;        /* 글자와의 간격 */
+        width: 22px;               /* 모바일 아이콘 크기 */
+        height: 22px;
+    }
+
+    .hamburger-menu {
+        display: flex; 
+    }
+}
+

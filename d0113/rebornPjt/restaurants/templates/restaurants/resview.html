@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% comment %} css 작업은 여기서 하세요!! {% endcomment %}
+{% block css %}
+<link rel='stylesheet' href="/static/css/resview.css">
+{% endblock css %}
+
+{% comment %} script 작업은 여기서 하세요!! {% endcomment %}
+{% block script %}
+<script src="/static/js/resview.js"></script>
+{% endblock script %}
+
+{% comment %} body 작업은 여기서 하세요!! {% endcomment %}
+{% block body %}
+<div class="container">
+
+    <!-- 상단 이미지 영역 -->
+    <section class="image-section">
+        <div class="image-main">
+            {% if main_image %}
+                <img src="{{ main_image.image.url }}" alt="대표 이미지" width="600" height="400">
+            {% else %}
+                <img src="https://picsum.photos/600/400?{{ view.resno }}" alt="대표 이미지" width="600" height="400">
+            {% endif %}
+        </div>
+        <div class="image-sub">
+            {% if sub_images %}
+                {% for img in sub_images %}
+                <img src="{{ img.image.url }}" width="200" height="130" alt="서브 이미지">
+                {% endfor %}
+            {% else %}
+                {# 식당 이미지가 아예 없거나 / 대표만 있고 서브가 없을 때 placeholder #}
+                <img src="https://picsum.photos/200/130?{{ view.resno }}-1" width="200" height="130" alt="서브 이미지">
+                <img src="https://picsum.photos/200/130?{{ view.resno }}-2" width="200" height="130" alt="서브 이미지">
+                <img src="https://picsum.photos/200/130?{{ view.resno }}-3" width="200" height="130" alt="서브 이미지">
+            {% endif %}
+        </div>
+    </section>
+    
+    <!-- 메인 정보 -->
+    <section class="content-section">
+        <!-- 왼쪽 -->
+        <div class="left">
+            <h1 class="restaurant-name">{{view.res_name}}</h1>
+            
+            <p class="description">
+                {{view.desc}}
+            </p>
+            
+            <h2>메뉴</h2>
+            <!-- 메뉴 정보를 Django에서 전달받아 표시 -->
+            <ul class="menu-list">
+                {% for m in menu %}
+                <li>
+                    <span>{{m.fnm}}</span>
+                    <span>₩{{m.price}}</span>
+                </li>
+                {% empty %}
+                <li>등록된 메뉴가 없습니다.</li>
+                {% endfor %}
+            </ul>
+            
+            <h2>위치</h2>
+            <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=5e70fd27e706e2059836a7360cd4a693"></script>
+            <div class="map" id="map" style="width:100%; height:350px;"></div>
+            <script>
+                var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+                    mapOption = { 
+                        center: new kakao.maps.LatLng({{view.lat|floatformat:7}}, {{view.lng|floatformat:7}}), // 지도의 중심좌표
+                        level: 3 // 지도의 확대 레벨
+                    };
+
+                var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+                // 마커가 표시될 위치입니다 
+                var markerPosition  = new kakao.maps.LatLng({{view.lat|floatformat:7}}, {{view.lng|floatformat:7}}); 
+
+                // 마커를 생성합니다
+                var marker = new kakao.maps.Marker({
+                    position: markerPosition
+                });
+
+                // 마커가 지도 위에 표시되도록 설정합니다
+                marker.setMap(map);
+
+                // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
+                // marker.setMap(null);    
+            </script>
+        
+            <!-- 리뷰 영역 -->
+            <section class="review-section">
+                <h2>방문자 리뷰</h2>
+
+                <!-- 리뷰 요약 & 정렬 -->
+                <div class="review-summary">
+                    <div class="summary-left">
+                        <span class="avg-rating">
+                            ⭐ <strong id="avgRating">{{ avg_rating }}</strong>
+                        </span>
+                        <span class="review-count">
+                            (리뷰 <strong id="reviewCount">{{ review_count }}</strong>개)
+                        </span>
+                    </div>
+
+                    <div class="summary-right">
+                        <button class="sort-btn active" data-sort="latest">최신순</button>
+                        <button class="sort-btn" data-sort="rating">별점순</button>
+                    </div>
+                </div>
+                
+                <div class="review-grid" id='reviewGrid'>
+                    <!-- 리뷰 카드 -->
+                    {% include "restaurants/review_list_partial.html" %}
+                </div>
+
+            </section>
+        </div>
+
+        <!-- 오른쪽 -->
+        <div class="right">
+            <div class="info-box">
+                <p><strong>📍 주소</strong><br>{{view.addr}}</p>
+                <p><strong>📞 전화</strong><br>{{view.tel}}</p>
+                <!-- 영업시간 정보를 Django에서 전달받아 표시 -->
+                <p><strong>⏰ 영업시간</strong><br>
+                    {% for op in oper_time %}
+                        {{ op.week }} : {{ op.open_time }} ~ {{ op.close_time }}<br>
+                    {% empty %}
+                        영업시간 정보가 없습니다.
+                    {% endfor %}
+                </p>
+                <div class="button-group">
+                    <button class="review-btn">후기작성</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- 뒤로가기 버튼 -->
+<div class="back-button-wrapper">
+    <button class="back-btn" onclick="history.back()">뒤로가기</button>
+</div>
+
+<!-- 후기 작성 모달 -->
+<div class="review-modal" id="reviewModal">
+    <div class="modal-content">
+        <h3>후기 작성</h3>
+        <!-- 별점 -->
+        <div class="star-rating">
+            <span data-value="1">⭐</span>
+            <span data-value="2">⭐</span>
+            <span data-value="3">⭐</span>
+            <span data-value="4">⭐</span>
+            <span data-value="5">⭐</span>
+        </div>
+        
+        <!-- 후기 내용 -->
+        <input type="hidden" id="restaurantId" value="{{ view.resno }}">
+        <textarea id="reviewText" placeholder="후기를 작성해주세요."></textarea>
+
+        <!-- 이미지 업로드 -->
+        <label class="image-upload">
+            📷 사진 첨부
+            <input type="file" id="reviewImages" multiple accept="image/*" hidden>
+        </label>
+        
+        <div class="image-preview" id="imagePreview"></div>
+
+        <!-- 버튼 -->
+        <div class="modal-buttons">
+            <button class="cancel-btn" id="closeModal">취소</button>
+            <button class="submit-btn" id="submitReview">등록</button>
+        </div>
+    </div>
+</div>
+
+
+{% endblock body %}

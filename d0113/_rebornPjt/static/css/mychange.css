@@ -1,0 +1,180 @@
+.board-wrapper {
+    background-color: #f4f7fa;
+    min-height: 100vh;
+    padding-bottom: 100px;
+}
+
+.top-hero {
+    height: 200px;
+    /* background: #2c3e50; */
+    background:url('/static/images/common/back_ribbon.jpg') center/cover no-repeat;
+}
+
+.main-container {
+    max-width: 1200px; /* 전체 가로폭을 좀 더 확보 */
+    margin: -80px auto 0;
+    display: flex;
+    justify-content: center;
+    gap: 11px; /* 카드 사이 간격은 반으로 유지 */
+    padding: 0 20px;
+}
+
+/* 1번 카드: 원래의 듬직한 크기에서 오른쪽으로 확장 */
+.sidebar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.side-menu {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px 0;
+    list-style: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.side-menu li {
+    padding: 0 15px;
+}
+
+.side-menu li a {
+    display: block;
+    padding: 15px 10px;
+    color: #555;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.side-menu li.active a, .side-menu li a:hover {
+    background-color: #f0f7ff;
+    color: #0066ff;
+}
+/* 2번 카드: 정보 수정 영역 */
+.content-card {
+    flex-grow: 1;
+    max-width: 800px; /* 2번 카드 자체의 너비 */
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: center;
+    padding: 60px 0;
+}
+
+/* 2번 카드 내부 폼: 양 사이드 여백을 넓게 하여 답답함 해소 */
+.inner-form-container {
+    width: 60%; /* 카드 대비 폼 비율을 낮춰 양 옆 공백을 더 넓힘 */
+    max-width: 450px; /* 입력창이 너무 길어지지 않게 제한 */
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #222;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.sub-title {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 45px;
+    text-align: center;
+}
+
+.brand-text { color: #0066ff; font-weight: 700; }
+
+/* 입력창 및 버튼 스타일 */
+.form-group { margin-bottom: 22px; }
+.input-label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 8px; }
+
+.input-field {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid #e1e4e8;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: #fafbfc;
+    box-sizing: border-box;
+}
+
+.input-field:focus {
+    border-color: #0066ff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.input-field.readonly { background-color: #f0f2f5; color: #999; }
+
+.input-with-btn { display: flex; gap: 8px; }
+.check-btn {
+    min-width: 90px;
+    background: #fff;
+    color: #0066ff;
+    border: 1.5px solid #0066ff;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-submit {
+    width: 100%;
+    padding: 18px;
+    background: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: 0.2s;
+}
+
+.btn-submit:hover { background: #0052cc; }
+
+.pw-guide { font-size: 12px; color: #999; margin-top: 5px; }
+.mt-8 { margin-top: 8px; }
+
+
+/* 비밀번호 보이기 아이콘 스타일 추가 */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #999;
+    font-size: 18px;
+    z-index: 10;
+}
+
+.toggle-password:hover {
+    color: #0066ff;
+}
+
+.input-field {
+    width: 100%;
+    padding: 14px 18px;
+    padding-right: 45px; /* 아이콘 공간 확보 */
+    border: 1px solid #e1e4e8;
+    border-radius: 12px;
+    font-size: 15px;
+    background-color: #fafbfc;
+    box-sizing: border-box;
+}
+
+.status-msg {
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+    color: #ff4d4d; /* 일치하지 않을 때 빨간색 */
+}

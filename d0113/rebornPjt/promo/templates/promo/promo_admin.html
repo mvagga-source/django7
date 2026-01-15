@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% comment %} css 작업은 여기서 하세요!! {% endcomment %}
+{% block css %}
+<link rel='stylesheet' href="/static/css/promo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock css %}
+
+{% comment %} script 작업은 여기서 하세요!! {% endcomment %}
+{% block script %}
+<script src="/static/js/promo.js"></script>
+{% endblock script %}
+
+{% comment %} body 작업은 여기서 하세요!! {% endcomment %}
+{% block body %}
+<div class='rest-header_bg'>
+    <div class='rest-header'>
+        <div class='rest-title'>
+            Reborn <i class="fa-solid fa-utensils"></i> 프로모션
+        </div>
+    </div>
+</div>
+
+<!-- ✅ 프로모션 등록/수정 UI -->
+<section class="promo-admin-wrap">
+
+  <!-- ✅ 왼쪽: 등록된 프로모션 목록 (AJAX로 렌더링) -->
+  <div class="promo-panel">
+    <h3 class="promo-panel-title">현재 등록된 프로모션</h3>
+    <ul class="promo-registered" id="promoRegistered">
+      <li class="promo-empty">불러오는 중...</li>
+    </ul>
+  </div>
+
+  <!-- ✅ 오른쪽: 편집 폼 (AJAX 저장/삭제) -->
+  <div class="promo-panel">
+    <h3 class="promo-panel-title">프로모션 편집</h3>
+
+    <form class="promo-form" id="promoForm">
+      {% csrf_token %}
+      <input type="hidden" name="promo_id" id="promoId" value="">
+
+      <label class="promo-field">
+        <span class="promo-field__label">식당 선택</span>
+        <select name="resno" id="promoResno" class="promo-field__control" required>
+          <option value="">-- 식당 선택 --</option>
+          {% for r in restaurant_list %}
+            <option value="{{ r.resno }}" data-img="{{ r.main_img_url }}">
+              {{ r.res_name }}
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <div class="promo-preview">
+        <div class="promo-preview__label">대표 이미지 미리보기 (promo-img)</div>
+        <div class="promo-preview__imgbox">
+          <img id="promoPreviewImg" src="/static/images/common/noimage.png" alt="">
+        </div>
+      </div>
+
+      <div class="promo-grid2">
+        <label class="promo-field">
+          <span class="promo-field__label">kicker</span>
+          <input type="text" name="kicker" id="promoKicker" class="promo-field__control" maxlength="30">
+        </label>
+
+        <label class="promo-field">
+          <span class="promo-field__label">CTA 텍스트</span>
+          <input type="text" name="cta_text" id="promoCtaText" class="promo-field__control" maxlength="20">
+        </label>
+      </div>
+
+      <label class="promo-field">
+        <span class="promo-field__label">title</span>
+        <input type="text" name="title" id="promoTitle" class="promo-field__control" maxlength="60" required>
+      </label>
+
+      <label class="promo-field">
+        <span class="promo-field__label">sub</span>
+        <input type="text" name="sub" id="promoSub" class="promo-field__control" maxlength="80">
+      </label>
+
+      <div class="promo-cta-preview">
+        <div class="promo-cta-preview__label">CTA 이동 미리보기 (promo-cta)</div>
+        <a href="#" id="promoCtaLink" class="promo-cta-preview__link" target="_blank" rel="noopener">
+          선택한 식당으로 이동 →
+        </a>
+      </div>
+
+      <div class="promo-actions">
+        <button type="submit" class="promo-btn primary">저장(AJAX)</button>
+        <button type="button" class="promo-btn danger" id="promoDeleteBtn" disabled>삭제</button>
+        <button type="button" class="promo-btn ghost" id="promoResetBtn">초기화</button>
+      </div>
+
+      <p class="promo-hint">
+        * 왼쪽 목록 클릭 → 수정모드 / 초기화 → 신규등록 모드
+      </p>
+    </form>
+  </div>
+
+</section>
+
+
+{% endblock body %}

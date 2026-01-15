@@ -1,0 +1,36 @@
+{% for r in reviews %}
+<div class="review-card" data-review-id="{{ r.rno }}">
+    <div class="review-header">
+        <span class="user-id">
+            {{ r.member.nick_nm|default:"탈퇴회원" }}
+        </span>
+        <span class="rating">
+            {% for _ in ""|center:r.rating %}⭐{% endfor %}
+        </span>
+    </div>
+
+    <p class="review-content">{{ r.rcontent }}</p>
+
+    {% if r.images.all %}
+    <div class="review-images">
+        {% for img in r.images.all %}
+            <div class="existing-image" data-image-id="{{ img.ino }}">
+                <img src="{{ img.image.url }}">
+                <button type="button" class="remove-existing-img">×</button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="review-date">
+        {{ r.rdate|date:"Y-m-d" }}
+    </div>
+
+    {% if login_user_id == r.member.mem_id %}
+    <div class="review-actions">
+        <button class="edit-review-btn">수정</button>
+        <button class="delete-review-btn">삭제</button>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}

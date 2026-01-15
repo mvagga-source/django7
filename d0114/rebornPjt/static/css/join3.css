@@ -1,0 +1,129 @@
+/* join3.css */
+
+.mt-8 { margin-top: 8px; }
+.mt-24 { margin-top: 24px; }
+
+/* 그룹 라벨 스타일 */
+.group-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    padding-left: 4px;
+}
+
+/* 주소 검색 버튼 정렬 */
+/* join3.css에 아래 내용 추가 또는 수정 */
+
+/* 1. 가로 배치를 위한 컨테이너 (join2와 동일) */
+.input-with-btn {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start; /* join2의 설정값 유지 */
+    margin-bottom: 0; 
+}
+
+/* 2. 입력창 설정 (버튼 제외 나머지 공간 차지) */
+.input-with-btn .input-field {
+    flex: 1;
+    height: 50px;
+}
+
+/* 3. 주소 검색 버튼 (join2의 중복 확인 버튼 스타일 적용) */
+.check-btn {
+    width: 100px;
+    height: 50px;
+    background: #fff;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    /* 추가: join3.css에 기존 버튼 스타일이 있다면 초기화 */
+    padding: 0; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.check-btn:hover {
+    background: #f0f6ff;
+}
+
+/* 4. 기존 address-wrap 스타일은 삭제하거나 무시해도 됩니다. */
+
+/* 음식 카테고리 그리드 */
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    background: #f8fafd;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.check-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-sub);
+    cursor: pointer;
+    border-color: none;
+}
+
+.check-box input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
+/* 셀렉트 박스 커스텀 배경 (화살표 대응) */
+select.input-field {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    appearance: none;
+}
+
+/* SweetAlert2 팝업 박스 전체 수정 */
+.swal2-popup {
+    border-radius: 20px !important; /* 각진 모서리를 둥글게 */
+    padding: 2rem !important;
+    font-family: 'Pretendard', sans-serif !important; /* 폰트 통일 */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important; /* 부드러운 그림자 */
+}
+
+/* 제목(Title) 스타일 */
+.swal2-title {
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    color: #333 !important;
+    padding-top: 10px !important;
+}
+
+/* 본문(Text) 스타일 */
+.swal2-html-container {
+    color: #666 !important;
+    font-size: 1rem !important;
+}
+
+/* 확인 버튼 스타일 (사용자님의 메인 컬러로 변경하세요) */
+.swal2-confirm {
+    background-color: #4A90E2 !important; /* 사용자님의 primary-color 입력 */
+    border-radius: 8px !important;
+    padding: 10px 30px !important;
+    font-weight: 600 !important;
+}
+
+/* 아이콘 스타일 수정 (너무 크면 조절) */
+.swal2-icon {
+    border-width: 2px !important;
+    transform: scale(0.8); /* 아이콘 크기를 살짝 줄임 */
+}

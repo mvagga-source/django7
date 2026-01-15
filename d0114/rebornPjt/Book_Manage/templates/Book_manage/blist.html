@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>도서관리자페이지-도서목록</title>
+  <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #fff;
+        color: #1a1a1a;
+        }
+
+    /* Board Container */
+    .board-container {
+        max-width: 1100px;
+        margin: 80px auto;
+        padding: 0 20px;
+    }
+    .board-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center; /* 가운데 정렬 추가 */
+    }
+    table.board-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    .board-table th,
+    .board-table td {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 12px 10px;
+        text-align: center;
+    }
+    .board-table th {
+        background-color: #f9f9f9;
+        font-weight: 600;
+        border-top:1px solid #848484;
+    }
+    .board-table td.title{text-align:left; padding-left:30px;}
+    .board-table td.title a {
+        color: #1a1a1a;
+        text-decoration: none;
+    }
+    .board-table td.title a:hover {
+        text-decoration: underline;
+        color: #035fe0;
+    }
+    .board-table td.date,
+    .board-table td.views {
+        color: #888;
+        font-size: 13px;
+    }
+
+
+
+    /* Write Button */
+    .write-box {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end; /* 오른쪽 정렬 */
+        margin-top: 20px;
+    }
+
+    .write-btn {
+        padding: 8px 18px;
+        background-color: #035fe0;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .write-btn:hover {
+        background-color: #0046b3;
+    }
+
+    .slist-btn {
+        margin-left:15px;
+        padding: 8px 18px;
+        background-color: #035fe0;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .slist-btn:hover {
+        background-color: #0046b3;
+    }
+
+
+
+
+    /* Pagination & Search Styling */
+    .board-footer {
+        width:100%;
+        margin-top: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        }
+
+    .pagination {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        }
+
+    .pagination a {
+        padding: 6px 12px;
+        text-decoration: none;
+        border: 1px solid #ccc;
+        color: #333;
+        font-size: 13px;
+        border-radius: 3px;
+        }
+
+    .pagination a:hover {
+        background-color: #f0f0f0;
+    }
+    .pagination a.active {
+        background-color: #035fe0;
+        color: white;
+        border-color: #035fe0;
+        }  
+  </style>
+  <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+</head>
+
+
+<body>
+  <!-- Board List -->
+  <div class="board-container">
+        <div class="board-title">도서정보 목록</div>
+        <table class="board-table">
+        <colgroup>
+            <col width='20%'>
+            <col width='20%'>
+            <col width='10%'>
+            <col width='10%'>
+            <col width='20%'>
+            <col width='10%'>
+            <col width='10%'>
+        </colgroup>
+        <thead>
+            <tr>
+                <th>책 고유번호(ISBN)</th>
+                <th>제목</th>
+                <th>지은이</th>
+                <th>출판사</th>
+                <th>출판일</th>
+                <th>수정버튼</th>
+                <th>삭제버튼</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if list %}
+            {% for b in list  %}
+            <tr>
+                <td><a href="/Book_Manage/bview/{{b.bisbn}}/">{{b.bisbn}}</a></td>
+                <td class="title"><a href="/Book_Manage/bview/{{b.bisbn}}/">{{b.btitle}}</a></td>
+                <td>{{b.bauthor}}</td>
+                <td class="date">{{b.bpublisher}}</td>
+                <td class="views">{{b.bpubdate}}</td>
+                <td>
+                    <button type="button" onclick="location.href='/Book_Manage/bupdate/{{b.bisbn}}/'">수정하기</button>
+                </td>
+                <td>
+                    <button type="button" onclick="deleteBook('{{b.bisbn}}')">삭제하기</button>
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan='6'>데이터가 없습니다.</td>
+            </tr>
+            {% endif %}
+        </tbody>
+        </table>
+
+        <!-- Write Button -->
+        <div class="write-box">
+        <a href="/Book_Manage/bwrite/" class="write-btn">글쓰기</a>
+        <a href="/store/slist/" class="slist-btn">스토어페이지로 이동</a>
+        </div>
+
+        <!-- Pagination & Search -->
+        <div class="board-footer" >
+            <div class="pagination">
+                <!-- 처음페이지, 이전페이지 버튼 -->
+                {% if list.has_previous  %}
+                <a href="/Book_Manage/blist/?page=1">처음으로</a>
+                <a href="/Book_Manage/blist/?page={{list.previous_page_number}}">이전페이지</a>
+                {% else %}
+                <a>처음으로</a>
+                <a>이전페이지</a>
+                {% endif %}
+                <!-- 넘버링 시작 -->
+                {% for p in list.paginator.page_range  %}
+                {% if p >= list.number|add:'-3' and p <= list.number|add:'3' %}
+                    {% if p == list.number %}
+                        <a class="active">{{p}}</a>
+                    {% else %}
+                        <a href="/Book_Manage/blist/?page={{p}}">{{p}}</a>
+                    {% endif %}
+                {% endif %}
+                {% endfor %}
+                
+                <!-- 다음페이지, 마지막페이지 -->
+                {% if list.has_next  %}
+                <a href="/Book_Manage/blist/?page={{list.next_page_number}}">다음페이지</a>
+                <a href="/Book_Manage/blist/?page={{list.paginator.num_pages}}">끝으로</a>
+                {% else %}
+                <a>다음페이지</a>
+                <a>끝으로</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function deleteBook(isbn){
+    if (confirm('정말 삭제하시겠습니까?')){
+    alert('삭제 처리를 진행합니다.'); 
+    location.href = '/Book_Manage/bdelete/' + isbn;
+    }
+    else {
+    return false;
+    }
+    }
+</script>
+</body>
+</html>

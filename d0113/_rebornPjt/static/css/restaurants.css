@@ -1,0 +1,74 @@
+/* RESTAURANTS HEADER */
+.rest-header_bg{width: 100%;height: 244px;display: flex;align-items: flex-end;justify-content: center;}
+.rest-header {background: #ffffff;width: 1095px;max-width: 1095px;height: 107px;display: flex;align-items: center;justify-content: center;margin:auto;padding: 0 28px;border-top-left-radius: 24px;border-top-right-radius: 24px;}
+
+/* SEARCH */
+.search-container {display: flex;align-items: center;width: 100%;max-width: 600px;background: #fff;border-radius: 999px;padding: 6px;box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);}
+.search-box {flex: 1;display: flex;align-items: center;padding: 0 14px;}
+.search-icon {font-size: 16px;color: #9ca3af;margin-right: 8px;}
+.search-icon img {height:28px;}
+.search-box input {border: none;outline: none;width: 100%;font-size: 14px;color: #111827;}
+.search-box input::placeholder {color: #9ca3af;}
+.search-btn {border: none;padding: 10px 20px;border-radius: 999px;background: #2563eb;color: #fff;font-size: 14px;font-weight: 600;cursor: pointer;}
+.search-btn:hover {background: #1e40af;}
+
+/* LAYOUT */
+.rest_container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+/* 4 x 5 카드 그리드 */
+.rest_card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4열 고정 */
+    grid-template-rows: repeat(5, auto);   /* 5행 */
+    gap: 20px;
+}
+
+/* CARD */
+.rest_card {
+    background: #fff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.rest_card:hover {
+    transform: translateY(-4px);
+}
+
+.rest_card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+}
+
+.rest_card-body {
+    padding: 14px;
+}
+
+.rest_card-body h3 {
+    font-size: 17px;
+    margin-bottom: 6px;
+}
+
+.rest_category {
+    font-size: 13px;
+    color: #888;
+}
+
+.rest_location {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+}
+
+.rest_desc {
+    font-size: 13px;
+    font-weight: 400;
+    color: #666;
+    margin-top: 6px;
+}

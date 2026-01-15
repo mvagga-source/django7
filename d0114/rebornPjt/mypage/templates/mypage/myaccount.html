@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %} 
+
+{% block css %}
+<link rel='stylesheet' href="{% static 'css/myaccount.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock css %}
+
+{% block script %}
+<script src="{% static 'js/myaccount.js' %}" defer></script>
+{% endblock script %}
+
+{% block body %}
+<div class="board-wrapper">
+    <div class="top-hero"></div>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <ul class="side-menu">
+                <li><a href="/mypage/mychange/">개인정보</a></li>
+                <li class="active"><a href="/mypage/myaccount/">계정관리</a></li>
+                {% if request.session.user_id == 'admin' %}
+                    <li><a href="/magazine/mmnge/">매거진관리</a></li>
+                {% endif %}                
+            </ul>
+        </aside>
+
+        <main class="content-card">
+            <div class="inner-form-container">
+                <h1 class="main-title">회원 탈퇴</h1>
+                <p class="sub-title">정말 <span class="brand-text">Reborn</span>을 탈퇴 하시겠습니까?</p>
+
+                <div class="warning-box">
+                    <p class="warning-title">주의사항</p>
+                    <ul class="warning-list">
+                        <li>탈퇴 후 동일한 아이디로 재가입이 제한됩니다.</li>
+                        <li>탈퇴하면 계정 정보는 복구할 수 없습니다.</li>
+                        <li>작성하신 게시물은 삭제되지 않을 수 있으니 미리 확인해 주세요.</li>
+                    </ul>
+                </div>
+
+                <form id="delete-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="input-label">비밀번호 확인</label>
+                        <div class="password-wrapper">
+                            <input type="password" name="current_pw" id="current_pw" class="input-field" placeholder="비밀번호를 한번 더 입력해 주세요">
+                            <span class="toggle-password" onclick="togglePasswordVisibility()">
+                                <i class="fa-regular fa-eye-slash toggle-pw-icon"></i>
+                            </span>
+                        </div>
+                        <div id="pw_error_msg" class="status-msg"></div>
+                    </div>
+
+                    <div class="delete-confirm-box">
+                        <div class="confirm-left-group">
+                            <p class="confirm-question">정말 탈퇴하시겠습니까?</p>
+                            
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="agree_check">
+                                <span class="checkbox-text">
+                                    위 주의사항을 모두 확인하였으며,<br>
+                                    이에 동의합니다.
+                                </span>
+                            </label>
+                            
+                            <div class="yellow-space-area"></div>
+                        </div>
+
+                        <div class="confirm-right-group">
+                            <button type="button" id="btn-submit" class="btn-delete-action">탈퇴하기</button>
+                        </div>
+                    </div>
+                </form> 
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock body %}

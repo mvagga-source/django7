@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% load static %} {% block css %}
+<link rel="stylesheet" href="{% static 'css/blist.css' %}">
+<link rel='stylesheet' href="{% static 'css/bview.css' %}">
+{% endblock css %}
+
+{% block script %}
+<script src="{% static 'js/bview.js' %}" defer></script>
+
+<script>
+    // JS에서 로그인 여부를 체크하기 위한 전역 변수
+    const isUserLoggedIn = "{{ request.session.user_nm|default:'' }}" !== "";
+    const loginUrl = "{% url 'member:login' %}"; // 로그인 페이지 경로
+</script>
+{% endblock script %}
+
+
+
+{% block body %}
+<div class="board-wrapper">
+    <div class="top-hero"></div>
+
+    <div class="main-container">
+        <div class="view-container">
+            
+            <div class="view-header">
+                <h1>{{ post.title }}</h1>
+                <div class="view-meta">
+                    <span class="author">by {{ post.author }}</span>
+                    <div class="divider"></div>
+                    <span class="date">{{ post.created_at|date:"Y.m.d" }}</span>
+                    <div class="divider"></div>
+                    <span class="views">조회수 {{ post.views }}</span>
+                    
+                    <div class="divider"></div>
+                    <form action="{% url 'board:post_like' post.id %}" method="POST" class="like-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-like-icon" {% if not request.session.user_nm %}onclick="alert('로그인이 필요합니다.'); return false;"{% endif %}>
+                            {% if post.id in request.session.liked_posts %}
+                                <span class="heart-red">❤️</span> 
+                            {% else %}
+                                <span class="heart-empty">🤍</span> 
+                            {% endif %}
+                            <span class="like-count">{{ post.likes }}</span>
+                        </button>
+                    </form>
+
+                    {% if request.session.user_nm == post.author %}
+                    <div class="divider"></div>
+                    <div class="post-util">
+                        <a href="javascript:void(0)" onclick="togglePostEdit()" class="btn-edit">수정</a>
+                        <div class="divider"></div>
+                        <form action="{% url 'board:bdelete' post.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-del-text" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="view-content-box">
+                <div id="post-display">
+                    <div class="post-text">{{ post.content|linebreaks }}</div>
+                </div>
+
+                <div id="post-edit-form" style="display: none;">
+                    <form action="{% url 'board:bupdate' post.id %}" method="POST" class="reply-form" style="margin-left:0;">
+                        {% csrf_token %}
+                        <input type="text" name="title" value="{{ post.title }}" style="width: 100%; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-weight: bold;">
+                        <textarea name="content" style="width: 100%; height: 300px;">{{ post.content }}</textarea>
+                        <div style="text-align: right; margin-top: 10px;">
+                            <button type="submit" class="btn-save">저장</button>
+                            <button type="button" onclick="togglePostEdit()" class="btn-cancel">취소</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="comment-container">
+                <span class="comment-count">댓글 {{ comments.count }}개</span>
+                <br>
+                
+                {% if request.session.user_nm %}
+                    <form action="{% url 'board:comment_write' post.id %}" method="POST" class="comment-form">
+                        {% csrf_token %}
+                        <textarea name="content" placeholder="따뜻한 댓글을 남겨주세요." required></textarea>
+                        <button type="submit" class="btn-comment-submit">댓글등록</button>
+                    </form>
+                {% else %}
+                    <div class="comment-login-required" style="padding: 20px; border: 1px solid #eee; border-radius: 8px; text-align: center; background: #f9f9f9; margin-bottom: 20px;">
+                        <p style="margin: 0; color: #666;">댓글을 작성하려면 <a href="{% url 'member:login' %}" style="color: #103d91ff; font-weight: bold; ">로그인</a>이 필요합니다.</p>
+                    </div>
+                {% endif %}
+                <br><br>
+
+                <ul class="comment-list">
+                    {% for comment in comments %}
+                        {% if not comment.parent %}
+                        <li class="comment-item">
+                            <div class="comment-info">
+                                <span class="comment-author">{{ comment.author }}</span>
+                                <span class="comment-date">{{ comment.created_at|date:"Y.m.d H:i" }}</span>
+                                
+                                <div class="comment-util">
+                                    {% if request.session.user_nm == comment.author %}
+                                    <a href="javascript:void(0)" onclick="toggleEdit('{{ comment.id }}')" class="btn-edit">수정</a>
+                                    <span class="util-divider">|</span>
+                                    <form action="{% url 'board:comment_delete' post.id comment.id %}" method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-del" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                                    </form>
+                                    <span class="util-divider">|</span>
+                                    {% endif %}
+                                    <a href="javascript:void(0)" onclick="toggleReply('{{ comment.id }}')" class="btn-reply">답글</a>
+                                </div>
+                            </div>
+
+                            <p class="comment-text" id="content-{{ comment.id }}">{{ comment.content }}</p>
+
+                            <form id="edit-form-{{ comment.id }}" action="{% url 'board:comment_update' post.id comment.id %}" method="POST" style="display:none;" class="reply-form">
+                                {% csrf_token %}
+                                <textarea name="content">{{ comment.content }}</textarea>
+                                <button type="submit" class="btn-comment-submit">수정완료</button>
+                            </form>
+
+                            <ul class="reply-list" style="margin-left: 40px; border-left: 2px solid #eee; padding-left: 15px;">
+                                {% for reply in comment.replies.all %}
+                                <li class="reply-item" style="margin-top: 10px;">
+                                    <div class="comment-info">
+                                        <span class="comment-author"> {{ reply.author }}</span>
+                                        <span class="comment-date">{{ reply.created_at|date:"m.d H:i" }}</span>
+
+                                        {% if request.session.user_nm == reply.author %}
+                                        <div class="reply-util">
+                                            <a href="javascript:void(0)" onclick="toggleEdit('{{ reply.id }}')" class="btn-edit">수정</a>
+                                            <span style="color:#eee; font-size:10px;">|</span>
+                                            <form action="{% url 'board:comment_delete' post.id reply.id %}" method="POST" style="display:inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn-del" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                                            </form>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <p class="comment-text" id="content-{{ reply.id }}">{{ reply.content }}</p>
+
+                                    <form id="edit-form-{{ reply.id }}" action="{% url 'board:comment_update' post.id reply.id %}" method="POST" style="display:none;" class="reply-form">
+                                        {% csrf_token %}
+                                        <textarea name="content">{{ reply.content }}</textarea>
+                                        <button type="submit" class="btn-comment-submit">수정완료</button>
+                                    </form>
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                            <form id="reply-form-{{ comment.id }}" action="{% url 'board:comment_write' post.id %}" method="POST" style="display:none; margin-left: 40px;" class="reply-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <textarea name="content" placeholder="답글을 남겨주세요." required></textarea>
+                                <button type="submit" class="btn-comment-submit">답글등록</button>
+                            </form>
+                        </li>
+                        {% endif %}
+                {% empty %}
+                
+                    <li class="no-comment">첫 번째 댓글을 남겨보세요!</li>
+                {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <br><br><br>
+
+            {% comment %} <div class="view-nav">
+                {% if prev_post %}
+                    <a href="{% url 'board:bview' prev_post.id %}" class="nav-btn" title="이전글">
+                        <span class="nav-icon">&lt;</span>
+                    </a>
+                {% else %}
+                    <a href="javascript:void(0)" class="nav-btn disabled" style="opacity: 0.3; cursor: default;">
+                        <span class="nav-icon">&lt;</span>
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'board:blist' %}" class="nav-btn list-icon" title="목록으로">
+                    <span class="nav-icon">⋮</span>
+                </a>
+
+                {% if next_post %}
+                    <a href="{% url 'board:bview' next_post.id %}" class="nav-btn" title="다음글">
+                        <span class="nav-icon">&gt;</span>
+                    </a>
+                {% else %}
+                    <a href="javascript:void(0)" class="nav-btn disabled" style="opacity: 0.3; cursor: default;">
+                        <span class="nav-icon">&gt;</span>
+                    </a>
+                {% endif %}
+            </div> {% endcomment %}
+
+            <div class="category-list-preview" style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="category-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="font-size: 15px; font-weight: normal;">
+                        <strong style="color: #103d91ff;">자유게시판</strong> 카테고리 글
+                    </h3>
+                    <a href="{% url 'board:blist' %}" style="font-size: 20px; color: #666; text-decoration: none;">≡</a>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    {% for p in posts_in_category %}
+                    <tr style="border-bottom: 1px solid #f2f2f2; {% if p.id == post.id %}background-color: #f9f9f9;{% endif %}">
+                        <td style="padding: 12px 5px;">
+                            <a href="{% url 'board:bview' p.id %}" style="text-decoration: none; color: {% if p.id == post.id %}#103d91{% else %}#333{% endif %};">
+                                {{ p.title }}
+                                {% if p.comments.count > 0 %}
+                                <span style="color: #103d91ff; font-size: 12px; margin-left: 5px;">({{ p.comments.count }})</span>
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td style="padding: 12px 5px; text-align: right; color: #999; width: 100px;">
+                            {{ p.created_at|date:"Y. m. d." }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+                <div class="category-pagination" style="display: flex; justify-content: center; align-items: center; margin-top: 20px; gap: 20px; font-size: 14px; color: #666;">
+                    {% if posts_in_category.has_previous %}
+                        <a href="?page={{ posts_in_category.previous_page_number }}" style="text-decoration: none; color: #333;">&lt; </a>
+                    {% else %}
+                        <span style="color: #ccc;">&lt; </span>
+                    {% endif %}
+
+                    <div class="page-numbers">
+                        {{ posts_in_category.number }} / {{ posts_in_category.paginator.num_pages }}
+                    </div>
+
+                    {% if posts_in_category.has_next %}
+                        <a href="?page={{ posts_in_category.next_page_number }}" style="text-decoration: none; color: #333;"> &gt;</a>
+                    {% else %}
+                        <span style="color: #ccc;"> &gt;</span>
+                    {% endif %}
+                    
+                    <a href="#" style="margin-left: auto; font-weight: 900; text-decoration: none; color: #8f8f8fff; font-size: 12px;">↑</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock body %}

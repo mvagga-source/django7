@@ -1,0 +1,178 @@
+/* RESTAURANTS HEADER */
+.rest-header_bg{width: 100%;height: 244px; background:url('/static/images/restaurants/back_restaurants.png') center/cover no-repeat; display: flex;align-items: flex-end;justify-content: center;}
+.rest-header {background: #ffffff;width: 1095px;max-width: 1095px;height: 107px;display: flex;align-items: center;justify-content: center;margin: 200px auto 0px;padding: 0 28px;border-top-left-radius: 24px;border-top-right-radius: 24px;}
+.rest-title {font-size:30px; font-weight: 450;text-align: center; width:350px;margin-right: 50px;color:#3e404e;}
+
+/* ===============================
+   PROMO ADMIN PAGE
+   =============================== */
+.promo-admin-wrap{
+  max-width: 1200px;
+  margin: 18px auto 40px;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+}
+
+.promo-panel{
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.06);
+  padding: 16px;
+}
+
+.promo-panel-title{
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.promo-registered{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.promo-item{
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.promo-item:hover{ background: #f9fafb; }
+
+.promo-item__thumb img{
+  width: 60px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+.promo-item__name{ font-weight: 800; font-size: 14px; color:#111; }
+.promo-item__desc{ font-size: 12px; color:#6b7280; margin-top:2px; }
+
+.promo-empty{
+  padding: 14px;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+  color:#6b7280;
+  text-align: center;
+}
+
+.promo-form{ display: grid; gap: 12px; }
+
+.promo-field{ display: grid; gap: 6px; }
+.promo-field__label{ font-size: 12px; font-weight: 800; color:#374151; }
+
+.promo-field__control{
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+.promo-field__control:focus{
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 3px rgba(147,197,253,.35);
+}
+
+.promo-grid2{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.promo-preview{
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px;
+  background: #f9fafb;
+}
+.promo-preview__label{
+  font-size: 12px;
+  font-weight: 800;
+  color:#374151;
+  margin-bottom: 8px;
+}
+.promo-preview__imgbox{
+  border-radius: 12px;
+  overflow: hidden;
+  height: 160px;
+  background:#111;
+}
+.promo-preview__imgbox img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.promo-cta-preview{
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px;
+}
+.promo-cta-preview__label{
+  font-size: 12px;
+  font-weight: 800;
+  color:#374151;
+  margin-bottom: 6px;
+}
+.promo-cta-preview__link{
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 800;
+  color:#2563eb;
+}
+
+.promo-actions{
+  display:flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.promo-btn{
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.promo-btn.primary{ background:#111827; color:#fff; }
+.promo-btn.ghost{ background:#eef2ff; color:#1f2937; }
+
+.promo-btn.danger{
+  background: #fee2e2;
+  color: #991b1b;
+}
+.promo-btn.danger:disabled{
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* 목록 우측 삭제 아이콘 버튼 */
+.promo-del-mini{
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+.promo-del-mini:hover{ background: #fee2e2; }
+
+.promo-hint{ margin: 2px 0 0; font-size: 12px; color:#6b7280; }
+
+@media (max-width: 900px){
+  .promo-admin-wrap{ grid-template-columns: 1fr; }
+}

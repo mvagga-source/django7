@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> reBorn 스토어페이지 </title>
+    <style>
+    /*  공통적인 헤더부분  */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #f9f9f9; color: #333; }
+        
+        .store-header {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover; background-position: center; height: 300px;
+            display: flex; align-items: center; justify-content: center; color: white; \
+            font-size: 100px; text-align: center;
+        }
+        
+        /* 2. [추가] 헤더 안에 있는 h1 태그를 직접 콕 집어서 키우기 */
+        .store-header h1 {
+            font-size: 65px; /* 원하는 크기로 조절 (너무 크면 깨질 수 있으니 60~80px 추천) */
+            font-weight: bold; /* 글자 두껍게 */
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5); /* 예쁘게 그림자도 살짝! */
+            margin: 0; /* h1이 기본적으로 가진 여백 제거 (정렬 꼬임 방지) */
+        }
+    {% block store__style %}
+    {% endblock store__style %}
+    </style>
+</head>
+
+
+<body>
+    <header class="store-header">
+        <h1>BLUE RIBBON STORE</h1>
+    </header>
+
+{% block store__html %}
+{% endblock store__html %}
+
+{% block store__js %}
+{% endblock store__js %}
+
+
+</body>
+</html>

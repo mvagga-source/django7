@@ -1,0 +1,30 @@
+{# promos: Promo queryset (img_url 속성 포함) #}
+
+<section class="promo-slider" aria-label="프로모션 배너">
+    {% if promos %}
+    <div class="promo-track" id="promoTrack">
+        {% for p in promos %}
+        <article class="promo-slide {% if forloop.first %}is-active{% endif %}">
+        <div class="promo-text">
+            {% if p.kicker %}
+            <p class="promo-kicker">{{ p.kicker }}</p>
+            {% endif %}
+            <h2 class="promo-title">{{ p.title|linebreaksbr }}</h2>
+            {% if p.sub %}
+            <p class="promo-sub">{{ p.sub }}</p>
+            {% endif %}
+            <a class="promo-cta" href="/restaurants/resview/{{ p.restaurant.resno }}/">
+            {{ p.cta_text|default:"자세히 보기" }}
+            </a>
+        </div>
+
+        <img class="promo-img" src="{{ p.img_url }}" alt="프로모션 배너">
+        </article>
+        {% endfor %}
+
+        <button class="promo-btn prev" type="button" aria-label="이전 배너" id="promoPrev">‹</button>
+        <button class="promo-btn next" type="button" aria-label="다음 배너" id="promoNext">›</button>
+        <div class="promo-dots" role="tablist" aria-label="배너 선택" id="promoDots"></div>
+    </div>
+    {% endif %}
+</section>

@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}책스토어 사이트{% endblock %}</title>
+
+
+{% block css %}
+    <style>
+        /* [핵심 추가] 모든 박스의 크기를 테두리 포함해서 계산해라! (레이아웃 깨짐 방지) */
+        * { box-sizing: border-box; }
+
+        /* HEADER */
+        .store-header{background:url('/static/images/store/StoreBook.jpg') center/cover no-repeat; width:100%;height:260px;
+            margin-top:60px; margin-bottom:60px; display: flex; align-items: center; justify-content: center;}
+        
+        .store-header h2{
+            font-size: 70px; font-weight: bold; color: white; text-align:center;
+            /* padding-top 제거 (flex로 중앙 정렬했으므로) */
+            margin: 0; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .container {width:1100px; margin: 50px auto 50px; 
+            background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 40px;}
+
+        .filter-bar { display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 2px solid #eee;
+            padding-bottom: 20px; margin-bottom: 30px;
+            width: 100%; /* container 안이니까 100%로 변경 */ height:70px;}
+
+        .filter-tabs{ display:flex; gap:25px; margin-top:30px; padding-left:18px; 
+            width:450px; height:50px;}
+        
+        .only__manager{color: #999; font-size: 13px; font-weight: bold;}  
+        .filter-tabs button { background: none; border: none; 
+            margin-right: 20px; cursor: pointer; color: #999; transition: 0.3s; 
+            font-size: 16px; font-weight: bold; /* 폰트 사이즈 통일 */
+            border-bottom: 3px solid transparent; /* 미리 투명 테두리 (덜컹거림 방지) */
+        }
+        
+        /* 활성화되거나 마우스 올렸을 때 */
+        .filter-tabs button.active,
+        .filter-tabs button:hover { 
+            color: #004680; 
+            border-bottom: 3px solid #004680; 
+        }
+
+        
+        /* TOP3 영역 */
+        .total-top3-book{
+            width: 100%; /* 부모 크기에 맞춤 */
+            height: 420px;
+            display:flex;
+            gap: 20px;
+            margin-bottom:50px; /* 아래 도서 목록과 간격 띄우기 */
+        }
+
+        /* TOP 1, 2, 3 공통 스타일 정리 */
+        .top1, .top2, .top3 {
+            border: 3px solid #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.2s;
+            overflow: hidden; /* 내용 넘침 방지 */
+            background: white;
+        }
+        .top1:hover, .top2:hover, .top3:hover { 
+            transform: translateY(-5px); background-color: #f8f9fa; 
+        }
+
+        .top1 { width: 470px; height: 400px; }
+        .top2 { width: 250px; height: 400px; }
+        .top3 { width: 250px; height: 400px; }
+
+        
+        .top1 img { width: 200px; height: 300px; border-radius: 10px; object-fit: cover; }
+        
+        .top1-conts { display: flex; gap: 25px; padding: 20px;}
+        .top2-3__conts{ padding: 20px; text-align: center; }
+        .top2 img, .top3 img { width: 140px; height: 210px; border-radius: 10px; object-fit: cover; margin-bottom: 15px; }
+
+        .top2-3__details h4{color: #610B29;} /*top2위,3위 타이틀*/
+        
+
+        .top1-details p{margin-top:25px;}
+        .top1-details h4{ color: #610B29; 
+            margin-top:30px;
+            font-weight: bold;}
+        
+        .top1__intro{margin-top:35px;}
+        .top1__intro p{font-size: 12px; color: #666; line-height: 1.5; margin-top: 10px; word-break: keep-all;}
+        .top2-3__intro p {font-size: 12px; color: #666; line-height: 1.5; margin-top: 10px; word-break: keep-all;}
+
+
+        /* 도서카드 나열 (수정된 부분) */
+        .Total-bookconts {
+            width: 100%; 
+            display: block; 
+            /* height200px 오타 제거함 */
+        }
+        
+        .book-grid {
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); /* 2열 */
+            gap: 40px 20px;
+            margin-top:20px;
+        }
+        
+        /* ... (나머지 도서 카드 스타일은 기존과 동일하게 유지) ... */
+        a.book-link { text-decoration: none; color: inherit; display: block; }
+        .book-item { display: flex; align-items: flex-start; gap: 20px; padding: 10px; transition: transform 0.2s; }
+        .book-item:hover { transform: translateY(-5px); background-color: #f8f9fa; border-radius: 10px;}
+        .book-image { width: 140px; height: 200px; background: #eee; border-radius: 5px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); flex-shrink: 0; overflow: hidden; }
+        .book-image img { width: 100%; height: 100%; object-fit: cover; }
+        .book-info { flex-grow: 1; }
+        .book-info h3 { font-size: 18px; margin-bottom: 10px; color: #222; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-box-orient: vertical; }
+        .book-info p { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 15px; }
+        .price-area { text-align: right; }
+        .original-price { font-size: 13px; color: #999; text-decoration: line-through; }
+        .discount-price { font-size: 16px; color: #d32f2f; font-weight: bold; }
+
+        .page-btn { display: inline-block; padding: 10px 20px; background-color: #004680; color: white; text-decoration: none; border-radius: 20px; transition: 0.3s; }
+        .page-btn:hover { background-color: #003366; }
+
+
+        /* 이전페이지,다음페이지 클릭버튼 */
+        .page-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #004680;
+        color: white;
+        text-decoration: none;
+        border-radius: 20px;
+        transition: 0.3s;
+        }
+    .page-btn:hover {
+        background-color: #003366;
+        }
+    
+    </style>
+{% endblock css %}
+
+
+{% block script %}
+    <script>
+        function filterBooks(type) {
+            // type에는 'sim', 'popular' 또는 'new'가 들어옵니다.
+            
+            // 1. 버튼 색상 바꾸기 (시각적 효과)
+            const buttons = document.querySelectorAll('.filter-tabs button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 2. [핵심] 주소창(URL)을 변경해서 서버에 신호를 보냅니다!
+            // 물음표(?) 뒤에 오는 것을 '쿼리 스트링'이라고 부르는데, 
+            // 여기에 sort라는 이름표로 type 값을 담아 보냅니다.
+            
+            location.href = '?sort=' + type;
+        }
+    </script>
+{% endblock script %}
+
+
+
+
+{% block body %}
+    <!-- 헤더 이미지삽입부분 -->
+    <div class='store-header'>
+        <h2>RIBBON BOOKSTORE</h2>
+    </div>
+
+
+    <div class="container">
+        <div class="filter-bar">
+            <div class="filter-tabs">
+                <button class="{% if sort == 'popular' %}active{% endif %}" onclick="filterBooks('popular')">인기순</button>
+                <button class="{% if sort == 'new' %}active{% endif %}" onclick="filterBooks('new')">신상품순</button>
+                <a href="../../Book_Manage/blist/" class="only__manager">도서관리<br>(관리자만 접근가능)</a>
+            </div>
+        </div>
+
+        <div class='total-top3-book'>
+            <a href="/store/sview/9791155818015/?page=&sort=popular" style="text-decoration:none; color:inherit;">
+                <div class='top1'>
+                    <div class='top1-conts'>
+                        <img src="https://shopping-phinf.pstatic.net/main_5373501/53735012999.20250325080345.jpg" alt="정관스님">
+                        <div class='top1-details'>
+                            <h4>2025 요리부문 TOP 1위</h4>
+                            <h2>정관스님 나의 음식</h2>
+                            <div class='top1__intro'>
+                                <p>넷플릭스 〈셰프의 테이블〉의 주인공<br>
+                                    철학자 셰프 정관스님의 첫 번째 에세이.<br><br>
+
+                                    “가장 진귀한 음식은 마음을 닦는 것”<br>
+                                    50년 수행의 내공이 깃든 사계절 레시피 58품 최초 공개!<br><br>
+
+                                    단순한 요리책을 넘어 당신의 삶을<br>정갈하게 돌봐줄 치유의 식탁
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/store/sview/9791190920599/?page=&sort=popular" style="text-decoration:none; color:inherit;">
+                <div class='top2'>
+                    <div class='top2-3__conts'>
+                        <img src="https://shopping-phinf.pstatic.net/main_5812326/58123262207.20251217095414.jpg" alt="수퍼판">
+                        <div class='top2-3__details'>
+                            <h4>TOP 2위</h4>
+                            <h3>수퍼판 우정욱 레시피</h3>
+                            <div class='top2-3__intro'>
+                                <p>"케첩은 하인즈, 마요네즈는 오뚜기?<br>서울 엄마의 인생 요리 수업"</p>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </a>
+
+            <a href="/store/sview/9791124112014/?page=&sort=popular" style="text-decoration:none; color:inherit;">
+                <div class='top3'>
+                    <div class='top2-3__conts'>
+                        <img src="https://shopping-phinf.pstatic.net/main_5811555/58115557325.20251213095915.jpg" alt="크루아상">
+                        <div class='top2-3__details'>
+                            <h4>TOP 3위</h4> 
+                            <h3>크루아상의 세계</h3>
+                            <div class='top2-3__intro'>
+                                <p>결이 살아있는 버터의 풍미!<br>
+                                    실패 없는 '겉바속촉'을 위한<br>
+                                    8단계 시크릿 공정!</p>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </a>
+        </div>
+        <div class='Total-bookconts'>
+            <div class="book-grid" id="bookGrid">
+                {% if books %}
+                    {% for b in books %}
+                    <a href="/store/sview/{{b.bisbn}}?page={{ current_page }}&sort={{ sort }}" class="book-link">
+                        <div class="book-item">
+                            <div class="book-image">
+                                {% if b.bimage %}
+                                    <img src="{{ b.bimage }}" alt="{{ b.btitle|striptags }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/140x200?text=No+Image" alt="이미지 없음">
+                                {% endif %}
+                            </div>
+                            <div class="book-info">
+                                <h3>{{ b.btitle|striptags }}</h3>
+                                <p>
+                                    저자: {{ b.bauthor }}<br>
+                                    출판사: {{ b.bpublisher }}<br>
+                                    출간일: {{ b.bpubdate }}
+                                </p>
+                                <div class="price-area">
+                                    <div class="discount-price">{{ b.bprice | intcomma }}원</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div style="grid-column: span 2; text-align: center; padding: 50px;">
+                        <p>검색 결과가 없습니다.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+
+         <!-- 하단페이징 -->
+        <div class="btnAreaList" style="text-align: center; margin-top: 30px;">
+            
+            <div class="allPageMoving1">
+                {% if books.has_previous %}
+                <a href="?page=1&sort={{ sort }}" class="n">
+                    <img src="/static/images/common/btn_pre2.gif" alt="처음으로"/>
+                </a>
+                <a href="?page={{ books.previous_page_number }}&sort={{ sort }}" class="pre">
+                    <img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/>
+                </a>
+                
+                {% else %}
+                <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+                {% endif %}
+
+                {% for p in books.paginator.page_range %}
+                    {% if p >= books.number|add:'-3' and p <= books.number|add:'3' %}
+                    
+                        {% if p == books.number %}
+                            <strong style="color: red; font-size: 1.2em; margin: 0 5px;">{{ p }}</strong>
+                        {% else %}
+                            <a href="?page={{ p }}&sort={{ sort }}" style="margin: 0 5px;">{{ p }}</a>
+                    {% endif %}
+                    
+                    {% endif %}
+                {% endfor %}
+
+                {% if books.has_next %}
+                    <a href="?page={{ books.next_page_number }}&sort={{ sort }}" class="next">
+                        <img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/>
+                    </a>
+                    <a href="?page={{ books.paginator.num_pages }}&sort={{ sort }}" class="n">
+                        <img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/>
+                    </a>
+                {% else %}
+                    <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                    <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+                {% endif %}    
+            </div>
+        </div>
+    </div>
+{% endblock body %}
+
+
+</body>
+</html>

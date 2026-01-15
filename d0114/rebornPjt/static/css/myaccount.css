@@ -1,0 +1,214 @@
+/* 1번 고정 틀 베이스 */
+.board-wrapper {
+    background-color: #f4f7fa;
+    min-height: 100vh;
+    padding-bottom: 100px;
+}
+
+.top-hero {
+    height: 200px;
+    /* background: #2c3e50; */
+    background:url('/static/images/common/back_ribbon.jpg') center/cover no-repeat;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: -80px auto 0;
+    display: flex;
+    justify-content: center;
+    gap: 11px;
+    padding: 0 20px;
+}
+
+.sidebar {
+    width: 200px;
+    flex-shrink: 0;
+}
+
+.side-menu {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 20px 0;
+    list-style: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.side-menu li {
+    padding: 0 15px;
+}
+
+.side-menu li a {
+    display: block;
+    padding: 15px 10px;
+    color: #555;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.side-menu li.active a, .side-menu li a:hover {
+    background-color: #f0f7ff;
+    color: #0066ff;
+}
+
+/* 정보 수정 영역 카드 (2번 카드) */
+.content-card {
+    flex-grow: 1;
+    max-width: 800px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: center;
+    padding: 60px 0;
+}
+
+.inner-form-container {
+    width: 90%;
+    max-width: 450px; /* 1번 입력창 길이에 맞춤 */
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #222;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.sub-title {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.brand-text { color: #0066ff; font-weight: 700; }
+
+/* 탈퇴 페이지 전용: 주의사항 박스 */
+.warning-box {
+    background-color: #fcfcfc;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    margin-bottom: 30px;
+}
+
+.warning-title {
+    color: #ff4d4d;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.warning-list {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.8;
+    padding-left: 20px;
+    margin: 0;
+}
+
+/* 입력 스타일 (1번과 통일) */
+.form-group { margin-bottom: 22px; }
+.input-label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 8px; }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-field {
+    width: 100%;
+    padding: 14px 18px;
+    padding-right: 45px;
+    border: 1px solid #e1e4e8;
+    border-radius: 12px;
+    font-size: 15px;
+    background-color: #fafbfc;
+    box-sizing: border-box;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: #bbb;
+    font-size: 18px;
+    z-index: 10;
+}
+
+.status-msg {
+    font-size: 12px;
+    margin-top: 8px;
+    display: block;
+    color: #ce0202dc; /* 빨간색 고정 */
+    font-weight: 500;
+}
+
+/* 하단 탈퇴 컨펌 전체 박스 */
+.delete-confirm-box {
+    display: flex;
+    justify-content: space-between; /* 좌측 글씨와 우측 버튼 분리 */
+    background: #f9f9f9;
+    padding: 25px 30px 25px 30px; /* 도안처럼 넉넉한 높이 확보 */
+    border-radius: 15px;
+    margin-top: 30px;
+    
+}
+
+/* 좌측 질문 및 체크박스 묶음 */
+.confirm-left-group {
+    display: flex;
+    flex-direction: column; /* 위에서 아래로 쌓기 */
+    text-align: left;
+}
+
+.confirm-question {
+    font-size: 18px;
+    font-weight: 800;
+    color: #222;
+    margin: 0 0 15px 0; /* 질문 아래 간격 */
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+}
+
+.checkbox-text {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5; /* 줄 간격을 1.5배로 넓혀서 읽기 편하게 만듦 */
+}
+
+
+
+
+
+.btn-delete-action {
+    width: 105px;
+    padding: 10px 27px;
+    background: #ce0202dc;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: 0.2s;
+    /* 버튼이 너무 커지지 않게 높이 고정 */
+    margin-top:30px;
+    height: fit-content;
+}
+
+.btn-delete-action:hover {
+    background: #e60303dc;
+}
